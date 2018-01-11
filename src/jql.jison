@@ -73,105 +73,58 @@
 
 %%
 
-
 \s+                                 /* ignore whitespace */
 
-[0-9]+\.[0-9]*|[0-9]*\.[0-9]+\b     return 'NUMBER'
-[0-9]+                              return 'NUMBER'
+"select"                            return 'SELECT';
+"update"                            return 'UPDATE';
+"insert"                            return 'INSERT';
+"delete"                            return 'DELETE';
 
-'"'("\\"["]|[^"])*'"'				return 'STRING';
-"'"('\\'[']|[^'])*"'"				return 'STRING';
+"from"                              return 'FROM';
+"where"                             return 'WHERE';
+"limit"                             return 'LIMIT';
 
-"/*"(.|\n|\r)*?"*/"                 /* ignore multiline comment */
-
-
-"("                                 return '('
-")"                                 return ')'
-"!"                                 return '!'
-"^"                                 return '^'
-"*"                                 return '*'
-"/"                                 return '/'
-"%"                                 return '%'
-"+"                                 return '+'
-"-"                                 return '-'
-"<="                                return '<='
-"<"                                 return '<'
-">="                                return '>='
-">"                                 return '>'
-"=="                                return '=='
-"~="                                return '~='
-"!="                                return '!='
-"&&"                                return '&&'
-"||"                                return '||'
-"="                                 return '='
-","                                 return ','
 <<EOF>>                             return 'EOF'
-[A-Za-z_\$][A-Za-z0-9_]+            return 'IDENTIFIER'
 .                                   return 'INVALID'
 
 /lex
 
 /* operator associations and precedence */
 
-%nonassoc EMPTY
-%nonassoc ATTRLST
+%left UMINUS
 
 /* list element separator */
-%left ','
-
-/* assignment */
-%right '='
-
-/* conditional */
-%right '?' ':'
-
-/* logical or */
-%left '||'
-
-/* logical and */
-%left '&&'
-
-/* equality */
-%left '==' '~=' '!='
-
-/* relational */
-%left '<=' '<' '>=' '>'
-
-/* addition arithmetic */
-%left '+' '-'
-
-/* multiplication arithmetic */
-%left '*' '/'
-
-%right '%'
-
-/* exponentiation */
-%right '^'
-
-/* unary operators */
-%right UMINUS UPLUS '!'
-
-/* function call */
-%left '(' ')'
 
 %start JQL
 
 %% /* language grammar */
 
 JQL
-    : SelectStatement EOF                                      { return $1 }
-    | UpdateStatement EOF                                      { return $1 }
-    | InsertStatement EOF                                      { return $1 }
+    : StatementsList EOF                                       { return $1; }
+    ;
+
+StatementsList
+    : SelectStatement                                          { $$ = $1; }
+    | UpdateStatement                                          { $$ = $1; }
+    | InsertStatement                                          { $$ = $1; }
+    | DeleteStatement                                          { $$ = $1; }
     ;
 
 SelectStatement
-    : "SELECT"                                                 { return { opcode: "statement", type: "insert" }; }
+    : "SELECT" "FROM" "WHERE" "LIMIT"                          { $$ = { op: "statement", type: "select", from: true, where: true, limit: true }; }
+    | "SELECT"                                                 { $$ = { op: "statement", type: "select", from: null, where: null, limit: null }; }
+    | "SELECT" "FROM"                                          { $$ = { op: "statement", type: "select", from: true, where: null, limit: null }; }
+    | "SELECT" "FROM" "LIMIT"                                  { $$ = { op: "statement", type: "select", from: true, where: null, limit: true }; }
     ;
 
 UpdateStatement
-    : "UPDATE"                                                 { return { opcode: "statement", type: "update" }; }
+    : "UPDATE"                                                 { $$ = { op: "statement", type: "update" }; }
     ;
 
 InsertStatement
-    : "INSERT"                                                 { return { opcode: "statement", type: "insert    " }; }
+    : "INSERT"                                                 { $$ = { op: "statement", type: "insert" }; }
+    ;
+
+DeleteStatement
+    : "DELETE"                                                 { $$ = { op: "statement", type: "delete" }; }
     ;
