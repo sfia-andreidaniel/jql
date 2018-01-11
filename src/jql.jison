@@ -74,78 +74,104 @@
 %%
 
 
-\s+                       /* skip whitespace */
-[0-9]+("."[0-9]+)?\b      return 'NUMBER'
-true|false                return 'BOOLEAN'
-'"'("\\"["]|[^"])*'"'     return 'STRING'
-"'"('\\'[']|[^'])*"'"     return 'STRING'
-[A-Za-z_\$][A-Za-z0-9_]+  return 'IDENTIFIER'
-"*"                       return '*'
-"/"                       return '/'
-"-"                       return '-'
-"not"                     return 'not'
-"+"                       return '+'
-"&&"                      return '&&'
-"and"                     return '&&'
-"||"                      return '||'
-"or"                      return '||'
-"("                       return '('
-")"                       return ')'
-<<EOF>>                   return 'EOF'
-.                         return 'INVALID'
+\s+                                 /* ignore whitespace */
+
+[0-9]+\.[0-9]*|[0-9]*\.[0-9]+\b     return 'NUMBER'
+[0-9]+                              return 'NUMBER'
+
+'"'("\\"["]|[^"])*'"'				return 'STRING';
+"'"('\\'[']|[^'])*"'"				return 'STRING';
+
+"/*"(.|\n|\r)*?"*/"                 /* ignore multiline comment */
+
+
+"("                                 return '('
+")"                                 return ')'
+"!"                                 return '!'
+"^"                                 return '^'
+"*"                                 return '*'
+"/"                                 return '/'
+"%"                                 return '%'
+"+"                                 return '+'
+"-"                                 return '-'
+"<="                                return '<='
+"<"                                 return '<'
+">="                                return '>='
+">"                                 return '>'
+"=="                                return '=='
+"~="                                return '~='
+"!="                                return '!='
+"&&"                                return '&&'
+"||"                                return '||'
+"="                                 return '='
+","                                 return ','
+<<EOF>>                             return 'EOF'
+[A-Za-z_\$][A-Za-z0-9_]+            return 'IDENTIFIER'
+.                                   return 'INVALID'
 
 /lex
 
 /* operator associations and precedence */
 
-%left '+' '-'
-%left '*' '/'
-%left '||'
-%left '&&'
-%left UMINUS
+%nonassoc EMPTY
+%nonassoc ATTRLST
 
-%start jql
+/* list element separator */
+%left ','
+
+/* assignment */
+%right '='
+
+/* conditional */
+%right '?' ':'
+
+/* logical or */
+%left '||'
+
+/* logical and */
+%left '&&'
+
+/* equality */
+%left '==' '~=' '!='
+
+/* relational */
+%left '<=' '<' '>=' '>'
+
+/* addition arithmetic */
+%left '+' '-'
+
+/* multiplication arithmetic */
+%left '*' '/'
+
+%right '%'
+
+/* exponentiation */
+%right '^'
+
+/* unary operators */
+%right UMINUS UPLUS '!'
+
+/* function call */
+%left '(' ')'
+
+%start JQL
 
 %% /* language grammar */
 
-jql
-    : e EOF
-        { return $1; }
+JQL
+    : SelectStatement EOF                                      { return $1 }
+    | UpdateStatement EOF                                      { return $1 }
+    | InsertStatement EOF                                      { return $1 }
     ;
 
-e
-    : e '+' e
-        {$$ = { op: "operation", "operator": "+", "left": $1, "right": $3 }; }
-    | e '-' e
-        {$$ = { op: "operation", "operator": "-", "left": $1, "right": $3 }; }
-    | e '*' e
-        {$$ = { op: "operation", "operator": "*", "left": $1, "right": $3 }; }
-    | e '/' e
-        {$$ = { op: "operation", "operator": "/", "left": $1, "right": $3 }; }
-    | e '&&' e
-        {$$ = { op: "operation", "operator": "and", "left": $1, "right": $3 }; }
-    | e '||' e
-        {$$ = { op: "operation", "operator": "or", "left": $1, "right": $3 }; }
-    | '-' e %prec UMINUS
-        {$$ = -$2;}
-    | 'not' e %prec UMINUS
-        {$$ = { op: "operation", "operator": "not", "left": $2 }; }
-    | '(' e ')'
-        {$$ = $2;}
-    | NUMBER
-        {$$ =  { op: "value", value: Number(yytext), type: "number" }; }
-    | BOOLEAN
-        { $$ = {
-            op: "value",
-            value: String(yytext || '').toLowerCase() === 'true'
-                ? true
-                : false,
-            type: "boolean"
-          };
-        }
-    | STRING
-        { $$ = { op: "value", value: JQLParser.parseString(yytext), type: "string" }; }
-    | IDENTIFIER
-        { $$ = { op: "value", value: yytext, "type": "identifier" }; }
+SelectStatement
+    : "SELECT"                                                 { return { opcode: "statement", type: "insert" }; }
     ;
 
+UpdateStatement
+    : "UPDATE"                                                 { return { opcode: "statement", type: "update" }; }
+    ;
+
+InsertStatement
+    : "INSERT"                                                 { return { opcode: "statement", type: "insert    " }; }
+    ;
