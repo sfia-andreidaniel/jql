@@ -72,24 +72,33 @@
   }
 */
 var jql = (function(){
-var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[1,17],$V1=[5,27],$V2=[1,41],$V3=[1,49],$V4=[1,50],$V5=[1,42],$V6=[1,43],$V7=[1,44],$V8=[1,45],$V9=[1,46],$Va=[1,48],$Vb=[1,51],$Vc=[5,24],$Vd=[5,24,27],$Ve=[5,20,24],$Vf=[5,20,24,27],$Vg=[1,59],$Vh=[1,60],$Vi=[49,50],$Vj=[1,68],$Vk=[5,14,27],$Vl=[5,14,27,54],$Vm=[1,81],$Vn=[1,84],$Vo=[1,73],$Vp=[1,74],$Vq=[1,75],$Vr=[1,76],$Vs=[1,77],$Vt=[1,78],$Vu=[1,79],$Vv=[1,80],$Vw=[1,82],$Vx=[1,83],$Vy=[5,14,17,20,24,27,34,51,54,55,62,63,64,65,66,67,68,69,70,71,72,75,81,82],$Vz=[5,17,20,24,27,34],$VA=[5,14,17,20,24,27,34,54,55,62,63,64,65,66,67,68,69,70,72,75,81,82],$VB=[1,120],$VC=[1,128],$VD=[1,129],$VE=[5,14,17,20,24,27,34,54,55,63,64,65,66,75,81,82],$VF=[5,14,17,20,24,27,34,54,55,63,64,65,66,67,68,69,70,75,81,82],$VG=[54,75],$VH=[5,24,27,54],$VI=[1,137],$VJ=[1,138],$VK=[5,17,20,24,34,54];
+var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[1,18],$V1=[1,28],$V2=[1,15],$V3=[1,27],$V4=[1,21],$V5=[6,28],$V6=[1,43],$V7=[1,51],$V8=[1,52],$V9=[1,44],$Va=[1,45],$Vb=[1,46],$Vc=[1,47],$Vd=[1,48],$Ve=[1,50],$Vf=[1,53],$Vg=[6,25],$Vh=[6,25,28],$Vi=[6,21,25],$Vj=[6,21,25,28],$Vk=[1,61],$Vl=[1,62],$Vm=[50,51],$Vn=[1,71],$Vo=[6,15,28],$Vp=[6,15,28,55],$Vq=[1,84],$Vr=[1,87],$Vs=[1,76],$Vt=[1,77],$Vu=[1,78],$Vv=[1,79],$Vw=[1,80],$Vx=[1,81],$Vy=[1,82],$Vz=[1,83],$VA=[1,85],$VB=[1,86],$VC=[6,15,18,21,25,28,35,52,55,56,63,64,65,66,67,68,69,70,71,72,73,76,82,83],$VD=[6,18,21,25,28,35],$VE=[6,15,18,21,25,28,35,55,56,63,64,65,66,67,68,69,70,71,73,76,82,83],$VF=[1,123],$VG=[1,131],$VH=[1,132],$VI=[6,15,18,21,25,28,35,55,56,64,65,66,67,76,82,83],$VJ=[6,15,18,21,25,28,35,55,56,64,65,66,67,68,69,70,71,76,82,83],$VK=[55,76],$VL=[6,25,28,55],$VM=[1,140],$VN=[1,141],$VO=[6,18,21,25,35,55];
 var parser = {trace: function trace() { },
 yy: {},
-symbols_: {"error":2,"JQL":3,"StatementsList":4,"EOF":5,"SelectStatement":6,"UpdateStatement":7,"InsertStatement":8,"DeleteStatement":9,"SelectSingleRowStatement":10,"SELECT":11,"SelectFieldsList":12,"SelectFromTableStatement":13,"FROM":14,"TableReference":15,"SelectWithOptionalWHEREClause":16,"WHERE":17,"Expression":18,"SelectWithOptionalORDERClause":19,"ORDER":20,"BY":21,"OrderByClause":22,"SelectWithOptionalLIMITClause":23,"LIMIT":24,"LimitClause":25,"SelectStatementWithoutUnion":26,"UNION":27,"UpdateStatementBegin":28,"UPDATE":29,"DelayedClause":30,"DELAYED":31,"NUMBER":32,"UpdateAllRowsStatement":33,"SET":34,"UpdateFieldsList":35,"UpdateWithOptionalWHEREStatement":36,"UpdateWithOptionalORDERStatement":37,"UpdateWithOptionalLIMITStatement":38,"InsertStatementBegin":39,"INSERT":40,"IGNORE":41,"INTO":42,"DeleteAllRowsStatement":43,"DELETE":44,"DeleteWithOptionalWHEREClauseStatement":45,"DeleteWithOptionalORDERClauseStatement":46,"DeleteWithOptionalWHEREStatement":47,"DeleteWithOptionalLIMITClauseStatement":48,"IDENTIFIER":49,"ESCAPED_IDENTIFIER":50,"*":51,"SelectFieldEnumeration":52,"SelectField":53,",":54,"AS":55,"UpdateField":56,"=":57,"BOOLEAN":58,"NULL":59,"STRING":60,"!":61,"-":62,"||":63,"&&":64,"==":65,"~=":66,"<=":67,"<":68,">=":69,">":70,"/":71,"+":72,"FunctionCall":73,"(":74,")":75,"BINDING":76,"FunctionCallArgumentsList":77,"RANDOM":78,"OrderByClauseFieldsList":79,"OrderByField":80,"ASC":81,"DESC":82,"$accept":0,"$end":1},
-terminals_: {2:"error",5:"EOF",11:"SELECT",14:"FROM",17:"WHERE",20:"ORDER",21:"BY",24:"LIMIT",27:"UNION",29:"UPDATE",31:"DELAYED",32:"NUMBER",34:"SET",40:"INSERT",41:"IGNORE",42:"INTO",44:"DELETE",47:"DeleteWithOptionalWHEREStatement",49:"IDENTIFIER",50:"ESCAPED_IDENTIFIER",51:"*",54:",",55:"AS",57:"=",58:"BOOLEAN",59:"NULL",60:"STRING",61:"!",62:"-",63:"||",64:"&&",65:"==",66:"~=",67:"<=",68:"<",69:">=",70:">",71:"/",72:"+",74:"(",75:")",76:"BINDING",78:"RANDOM",81:"ASC",82:"DESC"},
-productions_: [0,[3,2],[4,1],[4,1],[4,1],[4,1],[10,2],[13,3],[16,3],[16,1],[19,4],[19,1],[23,3],[23,1],[26,1],[26,1],[6,1],[6,3],[28,2],[28,1],[30,2],[30,1],[33,4],[36,3],[36,1],[37,4],[37,1],[38,3],[38,1],[7,1],[39,2],[39,1],[8,5],[43,3],[45,3],[45,1],[46,4],[46,1],[48,3],[48,1],[9,1],[15,1],[15,1],[12,1],[12,1],[52,1],[52,3],[53,1],[53,3],[53,3],[35,1],[35,3],[35,3],[56,3],[56,3],[18,1],[18,1],[18,1],[18,1],[18,2],[18,2],[18,3],[18,3],[18,3],[18,3],[18,3],[18,3],[18,3],[18,3],[18,3],[18,3],[18,3],[18,3],[18,1],[18,3],[18,1],[18,1],[18,1],[73,3],[73,4],[77,1],[77,3],[22,1],[22,1],[79,1],[79,3],[80,2],[80,2],[80,1],[25,1],[25,3]],
+symbols_: {"error":2,"JQL":3,"REMOTE":4,"Statement":5,"EOF":6,"SelectStatement":7,"UpdateStatement":8,"InsertStatement":9,"DeleteStatement":10,"SelectSingleRowStatement":11,"SELECT":12,"SelectFieldsList":13,"SelectFromTableStatement":14,"FROM":15,"TableReference":16,"SelectWithOptionalWHEREClause":17,"WHERE":18,"Expression":19,"SelectWithOptionalORDERClause":20,"ORDER":21,"BY":22,"OrderByClause":23,"SelectWithOptionalLIMITClause":24,"LIMIT":25,"LimitClause":26,"SelectStatementWithoutUnion":27,"UNION":28,"UpdateStatementBegin":29,"UPDATE":30,"DelayedClause":31,"DELAYED":32,"NUMBER":33,"UpdateAllRowsStatement":34,"SET":35,"UpdateFieldsList":36,"UpdateWithOptionalWHEREStatement":37,"UpdateWithOptionalORDERStatement":38,"UpdateWithOptionalLIMITStatement":39,"InsertStatementBegin":40,"INSERT":41,"IGNORE":42,"INTO":43,"DeleteAllRowsStatement":44,"DELETE":45,"DeleteWithOptionalWHEREClauseStatement":46,"DeleteWithOptionalORDERClauseStatement":47,"DeleteWithOptionalWHEREStatement":48,"DeleteWithOptionalLIMITClauseStatement":49,"IDENTIFIER":50,"ESCAPED_IDENTIFIER":51,"*":52,"SelectFieldEnumeration":53,"SelectField":54,",":55,"AS":56,"UpdateField":57,"=":58,"BOOLEAN":59,"NULL":60,"STRING":61,"!":62,"-":63,"||":64,"&&":65,"==":66,"~=":67,"<=":68,"<":69,">=":70,">":71,"/":72,"+":73,"FunctionCall":74,"(":75,")":76,"BINDING":77,"FunctionCallArgumentsList":78,"RANDOM":79,"OrderByClauseFieldsList":80,"OrderByField":81,"ASC":82,"DESC":83,"$accept":0,"$end":1},
+terminals_: {2:"error",4:"REMOTE",6:"EOF",12:"SELECT",15:"FROM",18:"WHERE",21:"ORDER",22:"BY",25:"LIMIT",28:"UNION",30:"UPDATE",32:"DELAYED",33:"NUMBER",35:"SET",41:"INSERT",42:"IGNORE",43:"INTO",45:"DELETE",48:"DeleteWithOptionalWHEREStatement",50:"IDENTIFIER",51:"ESCAPED_IDENTIFIER",52:"*",55:",",56:"AS",58:"=",59:"BOOLEAN",60:"NULL",61:"STRING",62:"!",63:"-",64:"||",65:"&&",66:"==",67:"~=",68:"<=",69:"<",70:">=",71:">",72:"/",73:"+",75:"(",76:")",77:"BINDING",79:"RANDOM",82:"ASC",83:"DESC"},
+productions_: [0,[3,3],[3,2],[5,1],[5,1],[5,1],[5,1],[11,2],[14,3],[17,3],[17,1],[20,4],[20,1],[24,3],[24,1],[27,1],[27,1],[7,1],[7,3],[29,2],[29,1],[31,2],[31,1],[34,4],[37,3],[37,1],[38,4],[38,1],[39,3],[39,1],[8,1],[40,2],[40,1],[9,5],[44,3],[46,3],[46,1],[47,4],[47,1],[49,3],[49,1],[10,1],[16,1],[16,1],[13,1],[13,1],[53,1],[53,3],[54,1],[54,3],[54,3],[36,1],[36,3],[36,3],[57,3],[57,3],[19,1],[19,1],[19,1],[19,1],[19,2],[19,2],[19,3],[19,3],[19,3],[19,3],[19,3],[19,3],[19,3],[19,3],[19,3],[19,3],[19,3],[19,3],[19,1],[19,3],[19,1],[19,1],[19,1],[74,3],[74,4],[78,1],[78,3],[23,1],[23,1],[80,1],[80,3],[81,2],[81,2],[81,1],[26,1],[26,3]],
 performAction: function anonymous(yytext, yyleng, yylineno, yy, yystate /* action[1] */, $$ /* vstack */, _$ /* lstack */) {
 /* this == yyval */
 
 var $0 = $$.length - 1;
 switch (yystate) {
 case 1:
- return $$[$0-1]; 
+ this.$ = $$[$0-1];
+                                                                 this.$.remote = true;
+                                                                 return this.$;
+                                                               
 break;
-case 2: case 3: case 4: case 5: case 9: case 11: case 13: case 14: case 15: case 16: case 24: case 28: case 29: case 37: case 39: case 40:
+case 2:
+ this.$ = $$[$0-1];
+                                                                 this.$.remote = false;
+                                                                 return this.$;
+                                                               
+break;
+case 3: case 4: case 5: case 6: case 10: case 12: case 14: case 15: case 16: case 17: case 25: case 29: case 30: case 38: case 40: case 41:
  this.$ = $$[$0]; 
 break;
-case 6:
+case 7:
  this.$ = { 
                                                                         op: JQLParser.OP.statement,
                                                                         type: "select",
@@ -97,32 +106,32 @@ case 6:
                                                                     };
                                                                
 break;
-case 7:
+case 8:
   this.$ = $$[$0-2];
                                                                   this.$.table = $$[$0]
                                                                
 break;
-case 8: case 23:
+case 9: case 24:
  this.$ = $$[$0-2]; 
                                                                  this.$.where = $$[$0];
                                                                
 break;
-case 10:
+case 11:
  this.$ = $$[$0-3]; 
                                                                  this.$.orderBy = $$[$0];
                                                                
 break;
-case 12: case 27: case 38:
+case 13: case 28: case 39:
  this.$ = $$[$0-2];
                                                                  this.$.limit = $$[$0];
                                                                
 break;
-case 17:
+case 18:
  this.$ = $$[$0-2];
                                                                  this.$.union = $$[$0];
                                                                
 break;
-case 18:
+case 19:
  this.$ = {
                                                                         op: JQLParser.OP.statement,
                                                                         type: "update",
@@ -130,31 +139,31 @@ case 18:
                                                                      };
                                                               
 break;
-case 19:
+case 20:
  this.$ = {
                                                                         op: JQLParser.OP.statement,
                                                                         type: "update"
                                                                      };
                                                               
 break;
-case 20:
+case 21:
  this.$ = { op: JQLParser.OP.delayed_option, timer: $$[$0] }; 
 break;
-case 21:
+case 22:
  this.$ = { op: JQLParser.OP.delayed_option, timer: null }; 
 break;
-case 22:
+case 23:
  this.$ = $$[$0-3];
                                                                 this.$.table = $$[$0-2];
                                                                 this.$.fields = $$[$0];
                                                               
 break;
-case 25: case 36:
+case 26: case 37:
  this.$ = $$[$0-3];
                                                                  this.$.orderBy = $$[$0];
                                                                
 break;
-case 30:
+case 31:
  this.$ = { 
                                                                     op: JQLParser.OP.statement, 
                                                                     type: "insert",
@@ -162,20 +171,20 @@ case 30:
                                                                  }; 
                                                                
 break;
-case 31:
+case 32:
  this.$ = {
                                                                     op: JQLParser.OP.statement, 
                                                                     type: "insert"
                                                                  }; 
                                                                
 break;
-case 32:
+case 33:
  this.$ = $$[$0-4];
                                                                  this.$.table = $$[$0-2];
                                                                  this.$.fields = $$[$0]; 
                                                                
 break;
-case 33:
+case 34:
  this.$ = {
                                                                     op: JQLParser.OP.statement,
                                                                     type: "delete",
@@ -183,148 +192,148 @@ case 33:
                                                                  };
                                                                
 break;
-case 34:
+case 35:
  this.$ = $$[$0-2];
                                                                  this.$.where = $$[$0];
                                                                
 break;
-case 35:
+case 36:
  this.$ = $$[$0];
                                                                
 break;
-case 41:
+case 42:
  this.$ = { op: JQLParser.OP.table_reference, name: $$[$0] }; 
 break;
-case 42:
+case 43:
  this.$ = { op: JQLParser.OP.table_reference, name: JQLParser.unescapeIdentifier( $$[$0] ) }; 
 break;
-case 43:
+case 44:
  this.$ = { op: JQLParser.OP.fields_list, "type": "all" }; 
 break;
-case 44:
+case 45:
  this.$ = { op: JQLParser.OP.fields_list, "type": "enumeration", "fields": $$[$0] }; 
 break;
-case 45: case 50: case 80: case 84:
+case 46: case 51: case 81: case 85:
  this.$ = [ $$[$0] ]; 
 break;
-case 46: case 51: case 52: case 81: case 85:
+case 47: case 52: case 53: case 82: case 86:
  this.$ = $$[$0-2].concat($$[$0]); 
 break;
-case 47:
- this.$ = { op: JQLParser.OP.field,                                                expression: $$[$0] }; 
-break;
 case 48:
- this.$ = { op: JQLParser.OP.field, literal: $$[$0],                                   expression: $$[$0-2] }; 
+ this.$ = { op: JQLParser.OP.field, literal: JQLParser.createFieldAliasFromExpression($$[$0]),  expression: $$[$0] }; 
 break;
 case 49:
- this.$ = { op: JQLParser.OP.field, literal: JQLParser.unescapeIdentifier($$[$0]),     expression: $$[$0-2] }; 
+ this.$ = { op: JQLParser.OP.field, literal: $$[$0],                                            expression: $$[$0-2] }; 
 break;
-case 53:
- this.$ = { op: JQLParser.OP.update_field, name: $$[$0-2], expression: $$[$0] }; 
+case 50:
+ this.$ = { op: JQLParser.OP.field, literal: JQLParser.unescapeIdentifier($$[$0]),              expression: $$[$0-2] }; 
 break;
 case 54:
- this.$ = { op: JQLParser.OP.update_field, name: JQLParser.unescapeIdentifier($$[$0-2]), expression: $$[$0] }; 
+ this.$ = { op: JQLParser.OP.update_field, name: $$[$0-2], expression: $$[$0] }; 
 break;
 case 55:
- this.$ = { op: JQLParser.OP.expression, type: "number",     value: JQLParser.parseNumber( $$[$0] )                }; 
+ this.$ = { op: JQLParser.OP.update_field, name: JQLParser.unescapeIdentifier($$[$0-2]), expression: $$[$0] }; 
 break;
 case 56:
- this.$ = { op: JQLParser.OP.expression, type: "boolean",    value: JQLParser.parseBoolean( $$[$0] )               }; 
+ this.$ = { op: JQLParser.OP.expression, type: "number",     value: JQLParser.parseNumber( $$[$0] )                }; 
 break;
 case 57:
- this.$ = { op: JQLParser.OP.expression, type: "null"                                                          }; 
+ this.$ = { op: JQLParser.OP.expression, type: "boolean",    value: JQLParser.parseBoolean( $$[$0] )               }; 
 break;
 case 58:
- this.$ = { op: JQLParser.OP.expression, type: "string",     value: JQLParser.parseString( $$[$0] )                }; 
+ this.$ = { op: JQLParser.OP.expression, type: "null"                                                          }; 
 break;
 case 59:
- this.$ = { op: JQLParser.OP.expression, type: "unary",      operand: "!",  left: $$[$0]                           }; 
+ this.$ = { op: JQLParser.OP.expression, type: "string",     value: JQLParser.parseString( $$[$0] )                }; 
 break;
 case 60:
- this.$ = { op: JQLParser.OP.expression, type: "unary",      operand: "-",  left: $$[$0]                           }; 
+ this.$ = { op: JQLParser.OP.expression, type: "unary",      operand: "!",  left: $$[$0]                           }; 
 break;
 case 61:
- this.$ = { op: JQLParser.OP.expression, type: "logical",    operand: "||", left: $$[$0-2], right: $$[$0]                }; 
+ this.$ = { op: JQLParser.OP.expression, type: "unary",      operand: "-",  left: $$[$0]                           }; 
 break;
 case 62:
- this.$ = { op: JQLParser.OP.expression, type: "logical",    operand: "&&", left: $$[$0-2], right: $$[$0]                }; 
+ this.$ = { op: JQLParser.OP.expression, type: "logical",    operand: "||", left: $$[$0-2], right: $$[$0]                }; 
 break;
 case 63:
- this.$ = { op: JQLParser.OP.expression, type: "logical",    operand: "==", left: $$[$0-2], right: $$[$0]                }; 
+ this.$ = { op: JQLParser.OP.expression, type: "logical",    operand: "&&", left: $$[$0-2], right: $$[$0]                }; 
 break;
 case 64:
- this.$ = { op: JQLParser.OP.expression, type: "logical",    operand: "~=", left: $$[$0-2], right: $$[$0]                }; 
+ this.$ = { op: JQLParser.OP.expression, type: "logical",    operand: "==", left: $$[$0-2], right: $$[$0]                }; 
 break;
 case 65:
- this.$ = { op: JQLParser.OP.expression, type: "logical",    operand: "<=", left: $$[$0-2], right: $$[$0]                }; 
+ this.$ = { op: JQLParser.OP.expression, type: "logical",    operand: "~=", left: $$[$0-2], right: $$[$0]                }; 
 break;
 case 66:
- this.$ = { op: JQLParser.OP.expression, type: "logical",    operand: "<",  left: $$[$0-2], right: $$[$0]                }; 
+ this.$ = { op: JQLParser.OP.expression, type: "logical",    operand: "<=", left: $$[$0-2], right: $$[$0]                }; 
 break;
 case 67:
- this.$ = { op: JQLParser.OP.expression, type: "logical",    operand: ">=",  left: $$[$0-2], right: $$[$0]               }; 
+ this.$ = { op: JQLParser.OP.expression, type: "logical",    operand: "<",  left: $$[$0-2], right: $$[$0]                }; 
 break;
 case 68:
- this.$ = { op: JQLParser.OP.expression, type: "logical",    operand: ">",  left: $$[$0-2], right: $$[$0]                }; 
+ this.$ = { op: JQLParser.OP.expression, type: "logical",    operand: ">=",  left: $$[$0-2], right: $$[$0]               }; 
 break;
 case 69:
- this.$ = { op: JQLParser.OP.expression, type: "math",       operand: "*",  left: $$[$0-2], right: $$[$0]                }; 
+ this.$ = { op: JQLParser.OP.expression, type: "logical",    operand: ">",  left: $$[$0-2], right: $$[$0]                }; 
 break;
 case 70:
- this.$ = { op: JQLParser.OP.expression, type: "math",       operand: "/",  left: $$[$0-2], right: $$[$0]                }; 
+ this.$ = { op: JQLParser.OP.expression, type: "math",       operand: "*",  left: $$[$0-2], right: $$[$0]                }; 
 break;
 case 71:
- this.$ = { op: JQLParser.OP.expression, type: "math",       operand: "+",  left: $$[$0-2], right: $$[$0]                }; 
+ this.$ = { op: JQLParser.OP.expression, type: "math",       operand: "/",  left: $$[$0-2], right: $$[$0]                }; 
 break;
 case 72:
- this.$ = { op: JQLParser.OP.expression, type: "math",       operand: "-",  left: $$[$0-2], right: $$[$0]                }; 
+ this.$ = { op: JQLParser.OP.expression, type: "math",       operand: "+",  left: $$[$0-2], right: $$[$0]                }; 
 break;
 case 73:
- this.$ = $$[$0];                                                                                                     
+ this.$ = { op: JQLParser.OP.expression, type: "math",       operand: "-",  left: $$[$0-2], right: $$[$0]                }; 
 break;
 case 74:
- this.$ = { op: JQLParser.OP.expression, type: "group",      value: $$[$0-1]                                         }; 
+ this.$ = $$[$0];                                                                                                     
 break;
 case 75:
- this.$ = { op: JQLParser.OP.expression, type: "identifier", name:  $$[$0]                                         }; 
+ this.$ = { op: JQLParser.OP.expression, type: "group",      value: $$[$0-1]                                         }; 
 break;
 case 76:
- this.$ = { op: JQLParser.OP.expression, type: "identifier", name:  JQLParser.unescapeIdentifier($$[$0])           }; 
+ this.$ = { op: JQLParser.OP.expression, type: "identifier", name:  $$[$0]                                         }; 
 break;
 case 77:
- this.$ = { op: JQLParser.OP.expression, type: "binding",    name:  JQLParser.unescapeBindingName($$[$0])          }; 
+ this.$ = { op: JQLParser.OP.expression, type: "identifier", name:  JQLParser.unescapeIdentifier($$[$0])           }; 
 break;
 case 78:
- this.$ = { op: JQLParser.OP.expression, type: "function_call", function_name: $$[$0-2], arguments: []               }; 
+ this.$ = { op: JQLParser.OP.expression, type: "binding",    name:  JQLParser.unescapeBindingName($$[$0])          }; 
 break;
 case 79:
+ this.$ = { op: JQLParser.OP.expression, type: "function_call", function_name: $$[$0-2], arguments: []               }; 
+break;
+case 80:
  this.$ = { op: JQLParser.OP.expression, type: "function_call", function_name: $$[$0-3], arguments: $$[$0-1]               }; 
 break;
-case 82:
+case 83:
  this.$ = { op: JQLParser.OP.order_by_option, type: "random" } 
 break;
-case 83:
+case 84:
  this.$ = { op: JQLParser.OP.order_by_option, type: "by_fields", fields: $$[$0] } 
 break;
-case 86:
+case 87:
  this.$ = { op: JQLParser.OP.order_by_expression, expression: $$[$0-1], direction: 'asc' }; 
 break;
-case 87:
+case 88:
  this.$ = { op: JQLParser.OP.order_by_expression, expression: $$[$0-1], direction: 'desc' }; 
 break;
-case 88:
+case 89:
  this.$ = { op: JQLParser.OP.order_by_expression, expression: $$[$0], direction: 'asc' }; 
 break;
-case 89:
+case 90:
  this.$ = { op: JQLParser.OP.limit_option, limit: JQLParser.parseNumber( $$[$0] ), skip: 0                                }; 
 break;
-case 90:
+case 91:
  this.$ = { op: JQLParser.OP.limit_option, limit: JQLParser.parseNumber( $$[$0] ), skip: JQLParser.parseNumber( $$[$0-2] )      }; 
 break;
 }
 },
-table: [{3:1,4:2,6:3,7:4,8:5,9:6,10:12,11:$V0,13:24,16:21,19:16,23:11,26:7,28:25,29:[1,27],33:22,36:18,37:13,38:8,39:9,40:[1,14],43:23,44:[1,26],45:19,46:15,47:[1,20],48:10},{1:[3]},{5:[1,28]},{5:[2,2],27:[1,29]},{5:[2,3]},{5:[2,4]},{5:[2,5]},o($V1,[2,16]),{5:[2,29]},{42:[1,30]},{5:[2,40]},o($V1,[2,14]),o($V1,[2,15],{14:[1,31]}),{5:[2,28],24:[1,32]},{41:[1,33],42:[2,31]},{5:[2,39],24:[1,34]},o($V1,[2,13],{24:[1,35]}),{12:36,18:40,32:$V2,49:$V3,50:$V4,51:[1,37],52:38,53:39,58:$V5,59:$V6,60:$V7,61:$V8,62:$V9,73:47,74:$Va,76:$Vb},o($Vc,[2,26],{20:[1,52]}),{20:[1,53]},o($Vc,[2,37]),o($Vd,[2,11],{20:[1,54]}),o($Ve,[2,24],{17:[1,55]}),{17:[1,56],20:[2,35]},o($Vf,[2,9],{17:[1,57]}),{15:58,49:$Vg,50:$Vh},{14:[1,61]},o($Vi,[2,19],{30:62,31:[1,63]}),{1:[2,1]},{10:12,11:$V0,13:24,16:21,19:16,23:11,26:64},{15:65,49:$Vg,50:$Vh},{15:66,49:$Vg,50:$Vh},{25:67,32:$Vj},{42:[2,30]},{25:69,32:$Vj},{25:70,32:$Vj},o($Vk,[2,6]),o($Vk,[2,43]),o($Vk,[2,44],{54:[1,71]}),o($Vl,[2,45]),o($Vl,[2,47],{51:$Vm,55:[1,72],62:$Vn,63:$Vo,64:$Vp,65:$Vq,66:$Vr,67:$Vs,68:$Vt,69:$Vu,70:$Vv,71:$Vw,72:$Vx}),o($Vy,[2,55]),o($Vy,[2,56]),o($Vy,[2,57]),o($Vy,[2,58]),{18:85,32:$V2,49:$V3,50:$V4,58:$V5,59:$V6,60:$V7,61:$V8,62:$V9,73:47,74:$Va,76:$Vb},{18:86,32:$V2,49:$V3,50:$V4,58:$V5,59:$V6,60:$V7,61:$V8,62:$V9,73:47,74:$Va,76:$Vb},o($Vy,[2,73]),{18:87,32:$V2,49:$V3,50:$V4,58:$V5,59:$V6,60:$V7,61:$V8,62:$V9,73:47,74:$Va,76:$Vb},o($Vy,[2,75],{74:[1,88]}),o($Vy,[2,76]),o($Vy,[2,77]),{21:[1,89]},{21:[1,90]},{21:[1,91]},{18:92,32:$V2,49:$V3,50:$V4,58:$V5,59:$V6,60:$V7,61:$V8,62:$V9,73:47,74:$Va,76:$Vb},{18:93,32:$V2,49:$V3,50:$V4,58:$V5,59:$V6,60:$V7,61:$V8,62:$V9,73:47,74:$Va,76:$Vb},{18:94,32:$V2,49:$V3,50:$V4,58:$V5,59:$V6,60:$V7,61:$V8,62:$V9,73:47,74:$Va,76:$Vb},{34:[1,95]},o($Vz,[2,41]),o($Vz,[2,42]),{15:96,49:$Vg,50:$Vh},o($Vi,[2,18]),o($Vi,[2,21],{32:[1,97]}),o($V1,[2,17]),{34:[1,98]},o([5,17,20,24,27],[2,7]),{5:[2,27]},o($V1,[2,89],{54:[1,99]}),{5:[2,38]},o($V1,[2,12]),{18:40,32:$V2,49:$V3,50:$V4,53:100,58:$V5,59:$V6,60:$V7,61:$V8,62:$V9,73:47,74:$Va,76:$Vb},{49:[1,101],50:[1,102]},{18:103,32:$V2,49:$V3,50:$V4,58:$V5,59:$V6,60:$V7,61:$V8,62:$V9,73:47,74:$Va,76:$Vb},{18:104,32:$V2,49:$V3,50:$V4,58:$V5,59:$V6,60:$V7,61:$V8,62:$V9,73:47,74:$Va,76:$Vb},{18:105,32:$V2,49:$V3,50:$V4,58:$V5,59:$V6,60:$V7,61:$V8,62:$V9,73:47,74:$Va,76:$Vb},{18:106,32:$V2,49:$V3,50:$V4,58:$V5,59:$V6,60:$V7,61:$V8,62:$V9,73:47,74:$Va,76:$Vb},{18:107,32:$V2,49:$V3,50:$V4,58:$V5,59:$V6,60:$V7,61:$V8,62:$V9,73:47,74:$Va,76:$Vb},{18:108,32:$V2,49:$V3,50:$V4,58:$V5,59:$V6,60:$V7,61:$V8,62:$V9,73:47,74:$Va,76:$Vb},{18:109,32:$V2,49:$V3,50:$V4,58:$V5,59:$V6,60:$V7,61:$V8,62:$V9,73:47,74:$Va,76:$Vb},{18:110,32:$V2,49:$V3,50:$V4,58:$V5,59:$V6,60:$V7,61:$V8,62:$V9,73:47,74:$Va,76:$Vb},{18:111,32:$V2,49:$V3,50:$V4,58:$V5,59:$V6,60:$V7,61:$V8,62:$V9,73:47,74:$Va,76:$Vb},{18:112,32:$V2,49:$V3,50:$V4,58:$V5,59:$V6,60:$V7,61:$V8,62:$V9,73:47,74:$Va,76:$Vb},{18:113,32:$V2,49:$V3,50:$V4,58:$V5,59:$V6,60:$V7,61:$V8,62:$V9,73:47,74:$Va,76:$Vb},{18:114,32:$V2,49:$V3,50:$V4,58:$V5,59:$V6,60:$V7,61:$V8,62:$V9,73:47,74:$Va,76:$Vb},o($Vy,[2,59]),o($VA,[2,60],{51:$Vm,71:$Vw}),{51:$Vm,62:$Vn,63:$Vo,64:$Vp,65:$Vq,66:$Vr,67:$Vs,68:$Vt,69:$Vu,70:$Vv,71:$Vw,72:$Vx,75:[1,115]},{18:118,32:$V2,49:$V3,50:$V4,58:$V5,59:$V6,60:$V7,61:$V8,62:$V9,73:47,74:$Va,75:[1,116],76:$Vb,77:117},{18:123,22:119,32:$V2,49:$V3,50:$V4,58:$V5,59:$V6,60:$V7,61:$V8,62:$V9,73:47,74:$Va,76:$Vb,78:$VB,79:121,80:122},{18:123,22:124,32:$V2,49:$V3,50:$V4,58:$V5,59:$V6,60:$V7,61:$V8,62:$V9,73:47,74:$Va,76:$Vb,78:$VB,79:121,80:122},{18:123,22:125,32:$V2,49:$V3,50:$V4,58:$V5,59:$V6,60:$V7,61:$V8,62:$V9,73:47,74:$Va,76:$Vb,78:$VB,79:121,80:122},o($Ve,[2,23],{51:$Vm,62:$Vn,63:$Vo,64:$Vp,65:$Vq,66:$Vr,67:$Vs,68:$Vt,69:$Vu,70:$Vv,71:$Vw,72:$Vx}),{20:[2,34],51:$Vm,62:$Vn,63:$Vo,64:$Vp,65:$Vq,66:$Vr,67:$Vs,68:$Vt,69:$Vu,70:$Vv,71:$Vw,72:$Vx},o($Vf,[2,8],{51:$Vm,62:$Vn,63:$Vo,64:$Vp,65:$Vq,66:$Vr,67:$Vs,68:$Vt,69:$Vu,70:$Vv,71:$Vw,72:$Vx}),{35:126,49:$VC,50:$VD,56:127},o([17,20],[2,33]),o($Vi,[2,20]),{35:130,49:$VC,50:$VD,56:127},{32:[1,131]},o($Vl,[2,46]),o($Vl,[2,48]),o($Vl,[2,49]),o([5,14,17,20,24,27,34,54,55,63,75,81,82],[2,61],{51:$Vm,62:$Vn,64:$Vp,65:$Vq,66:$Vr,67:$Vs,68:$Vt,69:$Vu,70:$Vv,71:$Vw,72:$Vx}),o([5,14,17,20,24,27,34,54,55,63,64,75,81,82],[2,62],{51:$Vm,62:$Vn,65:$Vq,66:$Vr,67:$Vs,68:$Vt,69:$Vu,70:$Vv,71:$Vw,72:$Vx}),o($VE,[2,63],{51:$Vm,62:$Vn,67:$Vs,68:$Vt,69:$Vu,70:$Vv,71:$Vw,72:$Vx}),o($VE,[2,64],{51:$Vm,62:$Vn,67:$Vs,68:$Vt,69:$Vu,70:$Vv,71:$Vw,72:$Vx}),o($VF,[2,65],{51:$Vm,62:$Vn,71:$Vw,72:$Vx}),o($VF,[2,66],{51:$Vm,62:$Vn,71:$Vw,72:$Vx}),o($VF,[2,67],{51:$Vm,62:$Vn,71:$Vw,72:$Vx}),o($VF,[2,68],{51:$Vm,62:$Vn,71:$Vw,72:$Vx}),o($Vy,[2,69]),o($Vy,[2,70]),o($VA,[2,71],{51:$Vm,71:$Vw}),o($VA,[2,72],{51:$Vm,71:$Vw}),o($Vy,[2,74]),o($Vy,[2,78]),{54:[1,133],75:[1,132]},o($VG,[2,80],{51:$Vm,62:$Vn,63:$Vo,64:$Vp,65:$Vq,66:$Vr,67:$Vs,68:$Vt,69:$Vu,70:$Vv,71:$Vw,72:$Vx}),o($Vc,[2,25]),o($Vd,[2,82]),o($Vd,[2,83],{54:[1,134]}),o($VH,[2,84]),o($VH,[2,88],{51:$Vm,62:$Vn,63:$Vo,64:$Vp,65:$Vq,66:$Vr,67:$Vs,68:$Vt,69:$Vu,70:$Vv,71:$Vw,72:$Vx,81:[1,135],82:[1,136]}),o($Vc,[2,36]),o($Vd,[2,10]),o([5,17,20,24],[2,22],{34:$VI,54:$VJ}),o($VK,[2,50]),{57:[1,139]},{57:[1,140]},{5:[2,32],34:$VI,54:$VJ},o($V1,[2,90]),o($Vy,[2,79]),{18:141,32:$V2,49:$V3,50:$V4,58:$V5,59:$V6,60:$V7,61:$V8,62:$V9,73:47,74:$Va,76:$Vb},{18:123,32:$V2,49:$V3,50:$V4,58:$V5,59:$V6,60:$V7,61:$V8,62:$V9,73:47,74:$Va,76:$Vb,80:142},o($VH,[2,86]),o($VH,[2,87]),{49:$VC,50:$VD,56:143},{49:$VC,50:$VD,56:144},{18:145,32:$V2,49:$V3,50:$V4,58:$V5,59:$V6,60:$V7,61:$V8,62:$V9,73:47,74:$Va,76:$Vb},{18:146,32:$V2,49:$V3,50:$V4,58:$V5,59:$V6,60:$V7,61:$V8,62:$V9,73:47,74:$Va,76:$Vb},o($VG,[2,81],{51:$Vm,62:$Vn,63:$Vo,64:$Vp,65:$Vq,66:$Vr,67:$Vs,68:$Vt,69:$Vu,70:$Vv,71:$Vw,72:$Vx}),o($VH,[2,85]),o($VK,[2,51]),o($VK,[2,52]),o($VK,[2,53],{51:$Vm,62:$Vn,63:$Vo,64:$Vp,65:$Vq,66:$Vr,67:$Vs,68:$Vt,69:$Vu,70:$Vv,71:$Vw,72:$Vx}),o($VK,[2,54],{51:$Vm,62:$Vn,63:$Vo,64:$Vp,65:$Vq,66:$Vr,67:$Vs,68:$Vt,69:$Vu,70:$Vv,71:$Vw,72:$Vx})],
-defaultActions: {4:[2,3],5:[2,4],6:[2,5],8:[2,29],10:[2,40],28:[2,1],33:[2,30],67:[2,27],69:[2,38]},
+table: [{3:1,4:[1,2],5:3,7:4,8:5,9:6,10:7,11:13,12:$V0,14:25,17:22,20:17,24:12,27:8,29:26,30:$V1,34:23,37:19,38:14,39:9,40:10,41:$V2,44:24,45:$V3,46:20,47:16,48:$V4,49:11},{1:[3]},{5:29,7:4,8:5,9:6,10:7,11:13,12:$V0,14:25,17:22,20:17,24:12,27:8,29:26,30:$V1,34:23,37:19,38:14,39:9,40:10,41:$V2,44:24,45:$V3,46:20,47:16,48:$V4,49:11},{6:[1,30]},{6:[2,3],28:[1,31]},{6:[2,4]},{6:[2,5]},{6:[2,6]},o($V5,[2,17]),{6:[2,30]},{43:[1,32]},{6:[2,41]},o($V5,[2,15]),o($V5,[2,16],{15:[1,33]}),{6:[2,29],25:[1,34]},{42:[1,35],43:[2,32]},{6:[2,40],25:[1,36]},o($V5,[2,14],{25:[1,37]}),{13:38,19:42,33:$V6,50:$V7,51:$V8,52:[1,39],53:40,54:41,59:$V9,60:$Va,61:$Vb,62:$Vc,63:$Vd,74:49,75:$Ve,77:$Vf},o($Vg,[2,27],{21:[1,54]}),{21:[1,55]},o($Vg,[2,38]),o($Vh,[2,12],{21:[1,56]}),o($Vi,[2,25],{18:[1,57]}),{18:[1,58],21:[2,36]},o($Vj,[2,10],{18:[1,59]}),{16:60,50:$Vk,51:$Vl},{15:[1,63]},o($Vm,[2,20],{31:64,32:[1,65]}),{6:[1,66]},{1:[2,2]},{11:13,12:$V0,14:25,17:22,20:17,24:12,27:67},{16:68,50:$Vk,51:$Vl},{16:69,50:$Vk,51:$Vl},{26:70,33:$Vn},{43:[2,31]},{26:72,33:$Vn},{26:73,33:$Vn},o($Vo,[2,7]),o($Vo,[2,44]),o($Vo,[2,45],{55:[1,74]}),o($Vp,[2,46]),o($Vp,[2,48],{52:$Vq,56:[1,75],63:$Vr,64:$Vs,65:$Vt,66:$Vu,67:$Vv,68:$Vw,69:$Vx,70:$Vy,71:$Vz,72:$VA,73:$VB}),o($VC,[2,56]),o($VC,[2,57]),o($VC,[2,58]),o($VC,[2,59]),{19:88,33:$V6,50:$V7,51:$V8,59:$V9,60:$Va,61:$Vb,62:$Vc,63:$Vd,74:49,75:$Ve,77:$Vf},{19:89,33:$V6,50:$V7,51:$V8,59:$V9,60:$Va,61:$Vb,62:$Vc,63:$Vd,74:49,75:$Ve,77:$Vf},o($VC,[2,74]),{19:90,33:$V6,50:$V7,51:$V8,59:$V9,60:$Va,61:$Vb,62:$Vc,63:$Vd,74:49,75:$Ve,77:$Vf},o($VC,[2,76],{75:[1,91]}),o($VC,[2,77]),o($VC,[2,78]),{22:[1,92]},{22:[1,93]},{22:[1,94]},{19:95,33:$V6,50:$V7,51:$V8,59:$V9,60:$Va,61:$Vb,62:$Vc,63:$Vd,74:49,75:$Ve,77:$Vf},{19:96,33:$V6,50:$V7,51:$V8,59:$V9,60:$Va,61:$Vb,62:$Vc,63:$Vd,74:49,75:$Ve,77:$Vf},{19:97,33:$V6,50:$V7,51:$V8,59:$V9,60:$Va,61:$Vb,62:$Vc,63:$Vd,74:49,75:$Ve,77:$Vf},{35:[1,98]},o($VD,[2,42]),o($VD,[2,43]),{16:99,50:$Vk,51:$Vl},o($Vm,[2,19]),o($Vm,[2,22],{33:[1,100]}),{1:[2,1]},o($V5,[2,18]),{35:[1,101]},o([6,18,21,25,28],[2,8]),{6:[2,28]},o($V5,[2,90],{55:[1,102]}),{6:[2,39]},o($V5,[2,13]),{19:42,33:$V6,50:$V7,51:$V8,54:103,59:$V9,60:$Va,61:$Vb,62:$Vc,63:$Vd,74:49,75:$Ve,77:$Vf},{50:[1,104],51:[1,105]},{19:106,33:$V6,50:$V7,51:$V8,59:$V9,60:$Va,61:$Vb,62:$Vc,63:$Vd,74:49,75:$Ve,77:$Vf},{19:107,33:$V6,50:$V7,51:$V8,59:$V9,60:$Va,61:$Vb,62:$Vc,63:$Vd,74:49,75:$Ve,77:$Vf},{19:108,33:$V6,50:$V7,51:$V8,59:$V9,60:$Va,61:$Vb,62:$Vc,63:$Vd,74:49,75:$Ve,77:$Vf},{19:109,33:$V6,50:$V7,51:$V8,59:$V9,60:$Va,61:$Vb,62:$Vc,63:$Vd,74:49,75:$Ve,77:$Vf},{19:110,33:$V6,50:$V7,51:$V8,59:$V9,60:$Va,61:$Vb,62:$Vc,63:$Vd,74:49,75:$Ve,77:$Vf},{19:111,33:$V6,50:$V7,51:$V8,59:$V9,60:$Va,61:$Vb,62:$Vc,63:$Vd,74:49,75:$Ve,77:$Vf},{19:112,33:$V6,50:$V7,51:$V8,59:$V9,60:$Va,61:$Vb,62:$Vc,63:$Vd,74:49,75:$Ve,77:$Vf},{19:113,33:$V6,50:$V7,51:$V8,59:$V9,60:$Va,61:$Vb,62:$Vc,63:$Vd,74:49,75:$Ve,77:$Vf},{19:114,33:$V6,50:$V7,51:$V8,59:$V9,60:$Va,61:$Vb,62:$Vc,63:$Vd,74:49,75:$Ve,77:$Vf},{19:115,33:$V6,50:$V7,51:$V8,59:$V9,60:$Va,61:$Vb,62:$Vc,63:$Vd,74:49,75:$Ve,77:$Vf},{19:116,33:$V6,50:$V7,51:$V8,59:$V9,60:$Va,61:$Vb,62:$Vc,63:$Vd,74:49,75:$Ve,77:$Vf},{19:117,33:$V6,50:$V7,51:$V8,59:$V9,60:$Va,61:$Vb,62:$Vc,63:$Vd,74:49,75:$Ve,77:$Vf},o($VC,[2,60]),o($VE,[2,61],{52:$Vq,72:$VA}),{52:$Vq,63:$Vr,64:$Vs,65:$Vt,66:$Vu,67:$Vv,68:$Vw,69:$Vx,70:$Vy,71:$Vz,72:$VA,73:$VB,76:[1,118]},{19:121,33:$V6,50:$V7,51:$V8,59:$V9,60:$Va,61:$Vb,62:$Vc,63:$Vd,74:49,75:$Ve,76:[1,119],77:$Vf,78:120},{19:126,23:122,33:$V6,50:$V7,51:$V8,59:$V9,60:$Va,61:$Vb,62:$Vc,63:$Vd,74:49,75:$Ve,77:$Vf,79:$VF,80:124,81:125},{19:126,23:127,33:$V6,50:$V7,51:$V8,59:$V9,60:$Va,61:$Vb,62:$Vc,63:$Vd,74:49,75:$Ve,77:$Vf,79:$VF,80:124,81:125},{19:126,23:128,33:$V6,50:$V7,51:$V8,59:$V9,60:$Va,61:$Vb,62:$Vc,63:$Vd,74:49,75:$Ve,77:$Vf,79:$VF,80:124,81:125},o($Vi,[2,24],{52:$Vq,63:$Vr,64:$Vs,65:$Vt,66:$Vu,67:$Vv,68:$Vw,69:$Vx,70:$Vy,71:$Vz,72:$VA,73:$VB}),{21:[2,35],52:$Vq,63:$Vr,64:$Vs,65:$Vt,66:$Vu,67:$Vv,68:$Vw,69:$Vx,70:$Vy,71:$Vz,72:$VA,73:$VB},o($Vj,[2,9],{52:$Vq,63:$Vr,64:$Vs,65:$Vt,66:$Vu,67:$Vv,68:$Vw,69:$Vx,70:$Vy,71:$Vz,72:$VA,73:$VB}),{36:129,50:$VG,51:$VH,57:130},o([18,21],[2,34]),o($Vm,[2,21]),{36:133,50:$VG,51:$VH,57:130},{33:[1,134]},o($Vp,[2,47]),o($Vp,[2,49]),o($Vp,[2,50]),o([6,15,18,21,25,28,35,55,56,64,76,82,83],[2,62],{52:$Vq,63:$Vr,65:$Vt,66:$Vu,67:$Vv,68:$Vw,69:$Vx,70:$Vy,71:$Vz,72:$VA,73:$VB}),o([6,15,18,21,25,28,35,55,56,64,65,76,82,83],[2,63],{52:$Vq,63:$Vr,66:$Vu,67:$Vv,68:$Vw,69:$Vx,70:$Vy,71:$Vz,72:$VA,73:$VB}),o($VI,[2,64],{52:$Vq,63:$Vr,68:$Vw,69:$Vx,70:$Vy,71:$Vz,72:$VA,73:$VB}),o($VI,[2,65],{52:$Vq,63:$Vr,68:$Vw,69:$Vx,70:$Vy,71:$Vz,72:$VA,73:$VB}),o($VJ,[2,66],{52:$Vq,63:$Vr,72:$VA,73:$VB}),o($VJ,[2,67],{52:$Vq,63:$Vr,72:$VA,73:$VB}),o($VJ,[2,68],{52:$Vq,63:$Vr,72:$VA,73:$VB}),o($VJ,[2,69],{52:$Vq,63:$Vr,72:$VA,73:$VB}),o($VC,[2,70]),o($VC,[2,71]),o($VE,[2,72],{52:$Vq,72:$VA}),o($VE,[2,73],{52:$Vq,72:$VA}),o($VC,[2,75]),o($VC,[2,79]),{55:[1,136],76:[1,135]},o($VK,[2,81],{52:$Vq,63:$Vr,64:$Vs,65:$Vt,66:$Vu,67:$Vv,68:$Vw,69:$Vx,70:$Vy,71:$Vz,72:$VA,73:$VB}),o($Vg,[2,26]),o($Vh,[2,83]),o($Vh,[2,84],{55:[1,137]}),o($VL,[2,85]),o($VL,[2,89],{52:$Vq,63:$Vr,64:$Vs,65:$Vt,66:$Vu,67:$Vv,68:$Vw,69:$Vx,70:$Vy,71:$Vz,72:$VA,73:$VB,82:[1,138],83:[1,139]}),o($Vg,[2,37]),o($Vh,[2,11]),o([6,18,21,25],[2,23],{35:$VM,55:$VN}),o($VO,[2,51]),{58:[1,142]},{58:[1,143]},{6:[2,33],35:$VM,55:$VN},o($V5,[2,91]),o($VC,[2,80]),{19:144,33:$V6,50:$V7,51:$V8,59:$V9,60:$Va,61:$Vb,62:$Vc,63:$Vd,74:49,75:$Ve,77:$Vf},{19:126,33:$V6,50:$V7,51:$V8,59:$V9,60:$Va,61:$Vb,62:$Vc,63:$Vd,74:49,75:$Ve,77:$Vf,81:145},o($VL,[2,87]),o($VL,[2,88]),{50:$VG,51:$VH,57:146},{50:$VG,51:$VH,57:147},{19:148,33:$V6,50:$V7,51:$V8,59:$V9,60:$Va,61:$Vb,62:$Vc,63:$Vd,74:49,75:$Ve,77:$Vf},{19:149,33:$V6,50:$V7,51:$V8,59:$V9,60:$Va,61:$Vb,62:$Vc,63:$Vd,74:49,75:$Ve,77:$Vf},o($VK,[2,82],{52:$Vq,63:$Vr,64:$Vs,65:$Vt,66:$Vu,67:$Vv,68:$Vw,69:$Vx,70:$Vy,71:$Vz,72:$VA,73:$VB}),o($VL,[2,86]),o($VO,[2,52]),o($VO,[2,53]),o($VO,[2,54],{52:$Vq,63:$Vr,64:$Vs,65:$Vt,66:$Vu,67:$Vv,68:$Vw,69:$Vx,70:$Vy,71:$Vz,72:$VA,73:$VB}),o($VO,[2,55],{52:$Vq,63:$Vr,64:$Vs,65:$Vt,66:$Vu,67:$Vv,68:$Vw,69:$Vx,70:$Vy,71:$Vz,72:$VA,73:$VB})],
+defaultActions: {5:[2,4],6:[2,5],7:[2,6],9:[2,30],11:[2,41],30:[2,2],35:[2,31],66:[2,1],70:[2,28],72:[2,39]},
 parseError: function parseError(str, hash) {
     if (hash.recoverable) {
         this.trace(str);
@@ -569,6 +578,19 @@ parse: function parse(input) {
             }
 
             return result;
+        },
+
+        createFieldAliasFromExpression( expression ) {
+            switch ( expression.type ) {
+                case 'string':
+                case 'boolean':
+                case 'number':
+                    return String( expression.value );
+                case 'null':
+                    return 'null';
+                default:
+                    return null;
+            }
         }
 
     }
@@ -903,75 +925,75 @@ var YYSTATE=YY_START;
 switch($avoiding_name_collisions) {
 case 0:/* ignore whitespace */
 break;
-case 1:return 32;
+case 1:return 33;
 break;
-case 2:return 32;
+case 2:return 33;
 break;
-case 3:return 58;
+case 3:return 59;
 break;
-case 4:return 59;
+case 4:return 60;
 break;
-case 5:return 60;
+case 5:return 61;
 break;
-case 6:return 60;
+case 6:return 61;
 break;
-case 7:return 11;
+case 7:return 12;
 break;
-case 8:return 29;
+case 8:return 30;
 break;
-case 9:return 40;
+case 9:return 41;
 break;
-case 10:return 44;
+case 10:return 45;
 break;
-case 11:return 14;
+case 11:return 4;
 break;
-case 12:return 17;
+case 12:return 15;
 break;
-case 13:return 24;
+case 13:return 18;
 break;
-case 14:return 27;
+case 14:return 25;
 break;
-case 15:return 55;
+case 15:return 28;
 break;
-case 16:return 34;
+case 16:return 56;
 break;
-case 17:return 31;
+case 17:return 35;
 break;
-case 18:return 20;
+case 18:return 32;
 break;
 case 19:return 21;
 break;
-case 20:return 78;
+case 20:return 22;
 break;
-case 21:return 81;
+case 21:return 79;
 break;
-case 22:return 81;
+case 22:return 82;
 break;
 case 23:return 82;
 break;
-case 24:return 82;
+case 24:return 83;
 break;
-case 25:return 41;
+case 25:return 83;
 break;
 case 26:return 42;
 break;
-case 27:return 74;
+case 27:return 43;
 break;
 case 28:return 75;
 break;
-case 29:return 51;
+case 29:return 76;
 break;
-case 30:return 71;
+case 30:return 52;
 break;
 case 31:return 72;
 break;
-case 32:return 62;
+case 32:return 73;
 break;
-case 33:return 61;
+case 33:return 63;
 break;
-case 34:return '!=';
+case 34:return 62;
 break;
-case 35:return 67;
+case 35:return '!=';
 break;
 case 36:return 68;
 break;
@@ -979,38 +1001,40 @@ case 37:return 69;
 break;
 case 38:return 70;
 break;
-case 39:return 65;
+case 39:return 71;
 break;
-case 40:return 57;
+case 40:return 66;
 break;
-case 41:return '!=';
+case 41:return 58;
 break;
-case 42:return 66;
+case 42:return '!=';
 break;
-case 43:return 64;
+case 43:return 67;
 break;
-case 44:return 64;
+case 44:return 65;
 break;
-case 45:return 63;
+case 45:return 65;
 break;
-case 46:return 63;
+case 46:return 64;
 break;
-case 47:return 54;
+case 47:return 64;
 break;
-case 48:return 49;
+case 48:return 55;
 break;
 case 49:return 50;
 break;
-case 50:return 76;
+case 50:return 51;
 break;
-case 51:return 5
+case 51:return 77;
 break;
-case 52:return 'INVALID'
+case 52:return 6
+break;
+case 53:return 'INVALID'
 break;
 }
 },
-rules: [/^(?:\s+)/i,/^(?:[0-9]+\.[0-9]*|[0-9]*\.[0-9]+\b)/i,/^(?:[0-9]+)/i,/^(?:true|false\b)/i,/^(?:null\b)/i,/^(?:"(\\["]|[^"])*")/i,/^(?:'(\\[']|[^'])*')/i,/^(?:select\b)/i,/^(?:update\b)/i,/^(?:insert\b)/i,/^(?:delete\b)/i,/^(?:from\b)/i,/^(?:where\b)/i,/^(?:limit\b)/i,/^(?:union\b)/i,/^(?:as\b)/i,/^(?:set\b)/i,/^(?:delayed\b)/i,/^(?:order\b)/i,/^(?:by\b)/i,/^(?:random\b)/i,/^(?:asc\b)/i,/^(?:ascending\b)/i,/^(?:desc\b)/i,/^(?:descending\b)/i,/^(?:ignore\b)/i,/^(?:into\b)/i,/^(?:\()/i,/^(?:\))/i,/^(?:\*)/i,/^(?:\/)/i,/^(?:\+)/i,/^(?:-)/i,/^(?:!)/i,/^(?:<>)/i,/^(?:<=)/i,/^(?:<)/i,/^(?:>=)/i,/^(?:>)/i,/^(?:==)/i,/^(?:=)/i,/^(?:!=)/i,/^(?:~=)/i,/^(?:&&)/i,/^(?:and\b)/i,/^(?:\|\|)/i,/^(?:or\b)/i,/^(?:,)/i,/^(?:[A-Za-z_\$][A-Za-z0-9_]*)/i,/^(?:`[A-Za-z_\$][A-Za-z0-9_]*`)/i,/^(?::[A-Za-z_\$][A-Za-z0-9_]*)/i,/^(?:$)/i,/^(?:.)/i],
-conditions: {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52],"inclusive":true}}
+rules: [/^(?:\s+)/i,/^(?:[0-9]+\.[0-9]*|[0-9]*\.[0-9]+\b)/i,/^(?:[0-9]+)/i,/^(?:true|false\b)/i,/^(?:null\b)/i,/^(?:"(\\["]|[^"])*")/i,/^(?:'(\\[']|[^'])*')/i,/^(?:select\b)/i,/^(?:update\b)/i,/^(?:insert\b)/i,/^(?:delete\b)/i,/^(?:remote\b)/i,/^(?:from\b)/i,/^(?:where\b)/i,/^(?:limit\b)/i,/^(?:union\b)/i,/^(?:as\b)/i,/^(?:set\b)/i,/^(?:delayed\b)/i,/^(?:order\b)/i,/^(?:by\b)/i,/^(?:random\b)/i,/^(?:asc\b)/i,/^(?:ascending\b)/i,/^(?:desc\b)/i,/^(?:descending\b)/i,/^(?:ignore\b)/i,/^(?:into\b)/i,/^(?:\()/i,/^(?:\))/i,/^(?:\*)/i,/^(?:\/)/i,/^(?:\+)/i,/^(?:-)/i,/^(?:!)/i,/^(?:<>)/i,/^(?:<=)/i,/^(?:<)/i,/^(?:>=)/i,/^(?:>)/i,/^(?:==)/i,/^(?:=)/i,/^(?:!=)/i,/^(?:~=)/i,/^(?:&&)/i,/^(?:and\b)/i,/^(?:\|\|)/i,/^(?:or\b)/i,/^(?:,)/i,/^(?:[A-Za-z_\$][A-Za-z0-9_]*)/i,/^(?:`[A-Za-z_\$][A-Za-z0-9_]*`)/i,/^(?::[A-Za-z_\$][A-Za-z0-9_]*)/i,/^(?:$)/i,/^(?:.)/i],
+conditions: {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53],"inclusive":true}}
 });
 return lexer;
 })();

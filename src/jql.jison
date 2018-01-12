@@ -99,6 +99,19 @@
             }
 
             return result;
+        },
+
+        createFieldAliasFromExpression( expression ) {
+            switch ( expression.type ) {
+                case 'string':
+                case 'boolean':
+                case 'number':
+                    return String( expression.value );
+                case 'null':
+                    return 'null';
+                default:
+                    return null;
+            }
         }
 
     }
@@ -126,6 +139,7 @@ null                                return 'NULL';
 "insert"                            return 'INSERT';
 "delete"                            return 'DELETE';
 
+"remote"                            return 'REMOTE';
 "from"                              return 'FROM';
 "where"                             return 'WHERE';
 "limit"                             return 'LIMIT';
@@ -214,10 +228,17 @@ null                                return 'NULL';
 %% /* language grammar */
 
 JQL
-    : StatementsList EOF                                       { return $1; }
+    : "REMOTE" Statement EOF                                   { $$ = $2;
+                                                                 $$.remote = true;
+                                                                 return $$;
+                                                               }
+    | Statement EOF                                            { $$ = $1;
+                                                                 $$.remote = false;
+                                                                 return $$;
+                                                               }
     ;
 
-StatementsList
+Statement
     : SelectStatement                                          { $$ = $1; }
     | UpdateStatement                                          { $$ = $1; }
     | InsertStatement                                          { $$ = $1; }
@@ -402,9 +423,9 @@ SelectFieldEnumeration
     ;
 
 SelectField
-    : Expression                                               { $$ = { op: JQLParser.OP.field,                                                expression: $1 }; }
-    | Expression "AS" "IDENTIFIER"                             { $$ = { op: JQLParser.OP.field, literal: $3,                                   expression: $1 }; }
-    | Expression "AS" "ESCAPED_IDENTIFIER"                     { $$ = { op: JQLParser.OP.field, literal: JQLParser.unescapeIdentifier($3),     expression: $1 }; }
+    : Expression                                               { $$ = { op: JQLParser.OP.field, literal: JQLParser.createFieldAliasFromExpression($1),  expression: $1 }; }
+    | Expression "AS" "IDENTIFIER"                             { $$ = { op: JQLParser.OP.field, literal: $3,                                            expression: $1 }; }
+    | Expression "AS" "ESCAPED_IDENTIFIER"                     { $$ = { op: JQLParser.OP.field, literal: JQLParser.unescapeIdentifier($3),              expression: $1 }; }
     ;
 
 UpdateFieldsList
