@@ -219,7 +219,6 @@ JQL
 
 StatementsList
     : SelectStatement                                          { $$ = $1; }
-    | UnionSelectStatement                                     { $$ = $1; }
     | UpdateStatement                                          { $$ = $1; }
     | InsertStatement                                          { $$ = $1; }
     | DeleteStatement                                          { $$ = $1; }
@@ -236,7 +235,7 @@ SelectSingleRowStatement
 
 SelectFromTableStatement
     : SelectSingleRowStatement 
-      "FROM" TableOrTableAlias                                 {  $$ = $1;
+      "FROM" TableReference                                 {  $$ = $1;
                                                                   $$.table = $3
                                                                }
     ;
@@ -262,26 +261,15 @@ SelectWithOptionalLIMITClause
     | SelectWithOptionalORDERClause                            { $$ = $1; }
     ;
 
+SelectStatementWithoutUnion
+    : SelectWithOptionalLIMITClause                            { $$ = $1; }
+    | SelectSingleRowStatement                                 { $$ = $1; }
+    ;
+
 SelectStatement
-    : SelectSingleRowStatement                                 { $$ = $1; }
-    | SelectWithOptionalLIMITClause                            { $$ = $1; }
-;
-
-UnionSelectStatement
-    : SelectStatement "UNION" SelectStatement                  { $$ = {
-                                                                        op: JQLParser.OP.statement,
-                                                                        type: "union",
-                                                                        first: $1,
-                                                                        next: $3
-                                                                    };
-                                                               }
-    | SelectStatement "UNION" UnionSelectStatement             { $$ = {
-                                                                        op: JQLParser.OP.statement,
-                                                                        type: "union",
-                                                                        first: $1,
-                                                                        next: $3
-                                                                    };
-
+    : SelectStatementWithoutUnion                              { $$ = $1; }
+    | SelectStatement "UNION" SelectStatementWithoutUnion      { $$ = $1;
+                                                                 $$.union = $3;
                                                                }
     ;
 
@@ -306,7 +294,7 @@ DelayedClause
     ;
 
 UpdateAllRowsStatement
-    : UpdateStatementBegin TableOrTableAlias 
+    : UpdateStatementBegin TableReference 
       "SET" UpdateFieldsList                                  { $$ = $1;
                                                                 $$.table = $2;
                                                                 $$.fields = $4;
@@ -354,18 +342,51 @@ InsertStatementBegin
     ;
 
 InsertStatement
-    : InsertStatementBegin "INTO" TableOrTableAlias
+    : InsertStatementBegin "INTO" TableReference
       "SET" UpdateFieldsList                                   { $$ = $1;
                                                                  $$.table = $3;
                                                                  $$.fields = $5; 
                                                                }
     ;
 
-DeleteStatement
-    : "DELETE"                                                 { $$ = { op: JQLParser.OP.statement, type: "delete" }; }
+DeleteAllRowsStatement
+    : "DELETE" "FROM" TableReference                           { $$ = {
+                                                                    op: JQLParser.OP.statement,
+                                                                    type: "delete",
+                                                                    table: $3
+                                                                 };
+                                                               }
     ;
 
-TableOrTableAlias
+DeleteWithOptionalWHEREClauseStatement
+    : DeleteAllRowsStatement "WHERE" Expression                { $$ = $1;
+                                                                 $$.where = $3;
+                                                               }
+    | DeleteAllRowsStatement                                   { $$ = $1;
+                                                               }
+    ;
+
+DeleteWithOptionalORDERClauseStatement
+    : DeleteWithOptionalWHEREClauseStatement
+      "ORDER" "BY" OrderByClause                               { $$ = $1;
+                                                                 $$.orderBy = $4;
+                                                               }
+    | DeleteWithOptionalWHEREStatement                         { $$ = $1; }
+    ;
+
+DeleteWithOptionalLIMITClauseStatement
+    : DeleteWithOptionalORDERClauseStatement
+      "LIMIT" LimitClause                                      { $$ = $1;
+                                                                 $$.limit = $3;
+                                                               }
+    | DeleteWithOptionalORDERClauseStatement                   { $$ = $1; }
+    ;
+
+DeleteStatement
+    : DeleteWithOptionalLIMITClauseStatement                   { $$ = $1; }
+    ;
+
+TableReference
     : "IDENTIFIER"                                             { $$ = { op: JQLParser.OP.table_reference, name: $1 }; }
     | "ESCAPED_IDENTIFIER"                                     { $$ = { op: JQLParser.OP.table_reference, name: JQLParser.unescapeIdentifier( $1 ) }; }
     ;
@@ -381,7 +402,7 @@ SelectFieldEnumeration
     ;
 
 SelectField
-    : Expression                                               { $$ = { op: JQLParser.OP.field, literal: JQLParser.createAlias('column_'),     expression: $1 }; }
+    : Expression                                               { $$ = { op: JQLParser.OP.field,                                                expression: $1 }; }
     | Expression "AS" "IDENTIFIER"                             { $$ = { op: JQLParser.OP.field, literal: $3,                                   expression: $1 }; }
     | Expression "AS" "ESCAPED_IDENTIFIER"                     { $$ = { op: JQLParser.OP.field, literal: JQLParser.unescapeIdentifier($3),     expression: $1 }; }
     ;
@@ -406,8 +427,8 @@ Expression
     | "!" Expression                                           { $$ = { op: JQLParser.OP.expression, type: "unary",      operand: "!",  left: $2                           }; }
     | "-" Expression                                           { $$ = { op: JQLParser.OP.expression, type: "unary",      operand: "-",  left: $2                           }; }
     
-    | Expression "||" Expression                               { $$ = { op: JQLParser.OP.expression, type: "logical",    operant: "||", left: $1, right: $3                }; }
-    | Expression "&&" Expression                               { $$ = { op: JQLParser.OP.expression, type: "logical",    operant: "&&", left: $1, right: $3                }; }
+    | Expression "||" Expression                               { $$ = { op: JQLParser.OP.expression, type: "logical",    operand: "||", left: $1, right: $3                }; }
+    | Expression "&&" Expression                               { $$ = { op: JQLParser.OP.expression, type: "logical",    operand: "&&", left: $1, right: $3                }; }
 
     | Expression "==" Expression                               { $$ = { op: JQLParser.OP.expression, type: "logical",    operand: "==", left: $1, right: $3                }; }
     | Expression "~=" Expression                               { $$ = { op: JQLParser.OP.expression, type: "logical",    operand: "~=", left: $1, right: $3                }; }
