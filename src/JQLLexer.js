@@ -71,7 +71,7 @@
     recoverable: (boolean: TRUE when the parser has a error recovery rule available for this particular error)
   }
 */
-var jql = (function(){
+var JQLLexer = (function(){
 var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[1,18],$V1=[1,28],$V2=[1,15],$V3=[1,27],$V4=[1,21],$V5=[6,28],$V6=[1,43],$V7=[1,51],$V8=[1,52],$V9=[1,44],$Va=[1,45],$Vb=[1,46],$Vc=[1,47],$Vd=[1,48],$Ve=[1,50],$Vf=[1,53],$Vg=[6,25],$Vh=[6,25,28],$Vi=[6,21,25],$Vj=[6,21,25,28],$Vk=[1,61],$Vl=[1,62],$Vm=[50,51],$Vn=[1,71],$Vo=[6,15,28],$Vp=[6,15,28,55],$Vq=[1,84],$Vr=[1,87],$Vs=[1,76],$Vt=[1,77],$Vu=[1,78],$Vv=[1,79],$Vw=[1,80],$Vx=[1,81],$Vy=[1,82],$Vz=[1,83],$VA=[1,85],$VB=[1,86],$VC=[6,15,18,21,25,28,35,52,55,56,63,64,65,66,67,68,69,70,71,72,73,76,82,83],$VD=[6,18,21,25,28,35],$VE=[6,15,18,21,25,28,35,55,56,63,64,65,66,67,68,69,70,71,73,76,82,83],$VF=[1,123],$VG=[1,131],$VH=[1,132],$VI=[6,15,18,21,25,28,35,55,56,64,65,66,67,76,82,83],$VJ=[6,15,18,21,25,28,35,55,56,64,65,66,67,68,69,70,71,76,82,83],$VK=[55,76],$VL=[6,25,28,55],$VM=[1,140],$VN=[1,141],$VO=[6,18,21,25,35,55];
 var parser = {trace: function trace() { },
 yy: {},
@@ -84,251 +84,529 @@ performAction: function anonymous(yytext, yyleng, yylineno, yy, yystate /* actio
 var $0 = $$.length - 1;
 switch (yystate) {
 case 1:
- this.$ = $$[$0-1];
-                                                                 this.$.remote = true;
-                                                                 return this.$;
+
+                                                                    this.$ = $$[$0-1];
+                                                                    this.$.remote = true;
+                                                                    return this.$;
                                                                
 break;
 case 2:
- this.$ = $$[$0-1];
-                                                                 this.$.remote = false;
-                                                                 return this.$;
+
+                                                                    this.$ = $$[$0-1];
+                                                                    this.$.remote = false;
+                                                                    return this.$;
                                                                
 break;
-case 3: case 4: case 5: case 6: case 10: case 12: case 14: case 15: case 16: case 17: case 25: case 29: case 30: case 38: case 40: case 41:
- this.$ = $$[$0]; 
+case 3: case 4: case 5: case 6: case 10: case 12: case 14: case 15: case 16: case 17: case 25: case 29: case 30: case 36: case 38: case 40: case 41: case 74:
+
+                                                                    this.$ = $$[$0];
+                                                               
 break;
 case 7:
- this.$ = { 
-                                                                        op: JQLParser.OP.statement,
-                                                                        type: "select",
-                                                                        fields: $$[$0]
+
+                                                                    this.$ = {
+                                                                        op:           JQL_AST.TOKEN_TYPES.STATEMENT,
+                                                                        type:         JQL_AST.STATEMENT_TYPES.SELECT,
+                                                                        fields:       $$[$0]
                                                                     };
                                                                
 break;
 case 8:
-  this.$ = $$[$0-2];
-                                                                  this.$.table = $$[$0]
+
+                                                                    this.$ = $$[$0-2];
+                                                                    this.$.table = $$[$0]
                                                                
 break;
-case 9: case 24:
- this.$ = $$[$0-2]; 
-                                                                 this.$.where = $$[$0];
+case 9: case 24: case 35:
+
+                                                                    this.$ = $$[$0-2];
+                                                                    this.$.where = $$[$0];
                                                                
 break;
-case 11:
- this.$ = $$[$0-3]; 
-                                                                 this.$.orderBy = $$[$0];
+case 11: case 26: case 37:
+
+                                                                    this.$ = $$[$0-3];
+                                                                    this.$.orderBy = $$[$0];
                                                                
 break;
 case 13: case 28: case 39:
- this.$ = $$[$0-2];
-                                                                 this.$.limit = $$[$0];
+
+                                                                    this.$ = $$[$0-2];
+                                                                    this.$.limit = $$[$0];
                                                                
 break;
 case 18:
- this.$ = $$[$0-2];
-                                                                 this.$.union = $$[$0];
+
+                                                                    this.$ = $$[$0-2];
+                                                                    this.$.union = $$[$0];
                                                                
 break;
 case 19:
- this.$ = {
-                                                                        op: JQLParser.OP.statement,
-                                                                        type: "update",
+
+                                                                    this.$ = {
+                                                                        op:           JQL_AST.TOKEN_TYPES.STATEMENT,
+                                                                        type:         JQL_AST.STATEMENT_TYPES.UPDATE,
                                                                         delayed: $$[$0]
-                                                                     };
-                                                              
+                                                                    };
+                                                               
 break;
 case 20:
- this.$ = {
-                                                                        op: JQLParser.OP.statement,
-                                                                        type: "update"
-                                                                     };
-                                                              
+
+                                                                    this.$ = {
+                                                                        op:           JQL_AST.TOKEN_TYPES.STATEMENT,
+                                                                        type:         JQL_AST.STATEMENT_TYPES.UPDATE
+                                                                    };
+                                                               
 break;
 case 21:
- this.$ = { op: JQLParser.OP.delayed_option, timer: $$[$0] }; 
+
+                                                                    this.$ = {
+                                                                        op:           JQL_AST.TOKEN_TYPES.OPTION_DELAYED,
+                                                                        timer:        $$[$0]
+                                                                    };
+                                                               
 break;
 case 22:
- this.$ = { op: JQLParser.OP.delayed_option, timer: null }; 
+
+                                                                    this.$ = {
+                                                                        op:           JQL_AST.TOKEN_TYPES.OPTION_DELAYED,
+                                                                        timer:        null
+                                                                    };
+                                                               
 break;
 case 23:
- this.$ = $$[$0-3];
-                                                                this.$.table = $$[$0-2];
-                                                                this.$.fields = $$[$0];
-                                                              
-break;
-case 26: case 37:
- this.$ = $$[$0-3];
-                                                                 this.$.orderBy = $$[$0];
+
+                                                                    this.$ = $$[$0-3];
+                                                                    this.$.table = $$[$0-2];
+                                                                    this.$.fields = $$[$0];
                                                                
 break;
 case 31:
- this.$ = { 
-                                                                    op: JQLParser.OP.statement, 
-                                                                    type: "insert",
-                                                                    ignoreDuplicates: true
-                                                                 }; 
+
+                                                                    this.$ = {
+                                                                        op:           JQL_AST.TOKEN_TYPES.STATEMENT,
+                                                                        type:         JQL_AST.STATEMENT_TYPES.INSERT,
+                                                                        ignoreDuplicates: true
+                                                                    };
                                                                
 break;
 case 32:
- this.$ = {
-                                                                    op: JQLParser.OP.statement, 
-                                                                    type: "insert"
-                                                                 }; 
+
+                                                                    this.$ = {
+                                                                        op:           JQL_AST.TOKEN_TYPES.STATEMENT,
+                                                                        type:         JQL_AST.STATEMENT_TYPES.INSERT
+                                                                    };
                                                                
 break;
 case 33:
- this.$ = $$[$0-4];
-                                                                 this.$.table = $$[$0-2];
-                                                                 this.$.fields = $$[$0]; 
+
+                                                                    this.$ = $$[$0-4];
+                                                                    this.$.table = $$[$0-2];
+                                                                    this.$.fields = $$[$0];
                                                                
 break;
 case 34:
- this.$ = {
-                                                                    op: JQLParser.OP.statement,
-                                                                    type: "delete",
-                                                                    table: $$[$0]
-                                                                 };
-                                                               
-break;
-case 35:
- this.$ = $$[$0-2];
-                                                                 this.$.where = $$[$0];
-                                                               
-break;
-case 36:
- this.$ = $$[$0];
+
+                                                                    this.$ = {
+                                                                        op:           JQL_AST.TOKEN_TYPES.STATEMENT,
+                                                                        type:         JQL_AST.STATEMENT_TYPES.DELETE,
+                                                                        table:        $$[$0]
+                                                                    };
                                                                
 break;
 case 42:
- this.$ = { op: JQLParser.OP.table_reference, name: $$[$0] }; 
+
+                                                                    this.$ = {
+                                                                        op:           JQL_AST.TOKEN_TYPES.TABLE_REFERENCE,
+                                                                        name:         $$[$0]
+                                                                    };
+                                                               
 break;
 case 43:
- this.$ = { op: JQLParser.OP.table_reference, name: JQLParser.unescapeIdentifier( $$[$0] ) }; 
+
+                                                                    this.$ = {
+                                                                        op:           JQL_AST.TOKEN_TYPES.TABLE_REFERENCE,
+                                                                        name:         JQL_AST.unescapeIdentifier( $$[$0] )
+                                                                    };
+                                                               
 break;
 case 44:
- this.$ = { op: JQLParser.OP.fields_list, "type": "all" }; 
+
+                                                                    this.$ = {
+                                                                         op:          JQL_AST.TOKEN_TYPES.FIELDS_LIST,
+                                                                         type:        JQL_AST.FIELD_TYPES.ALL_FIELDS
+                                                                    };
+                                                               
 break;
 case 45:
- this.$ = { op: JQLParser.OP.fields_list, "type": "enumeration", "fields": $$[$0] }; 
+
+                                                                    this.$ = { op:        JQL_AST.TOKEN_TYPES.FIELDS_LIST,
+                                                                        type:         JQL_AST.FIELD_TYPES.SPECIFIC_FIELDS,
+                                                                        fields:       $$[$0]
+                                                                    };
+                                                               
 break;
 case 46: case 51: case 81: case 85:
- this.$ = [ $$[$0] ]; 
+
+                                                                    this.$ = [
+                                                                        $$[$0]
+                                                                    ];
+                                                               
 break;
 case 47: case 52: case 53: case 82: case 86:
- this.$ = $$[$0-2].concat($$[$0]); 
+
+                                                                    this.$ = $$[$0-2].concat($$[$0]);
+                                                               
 break;
 case 48:
- this.$ = { op: JQLParser.OP.field, literal: JQLParser.createFieldAliasFromExpression($$[$0]),  expression: $$[$0] }; 
+
+                                                                    this.$ = {
+                                                                         op:          JQL_AST.TOKEN_TYPES.FIELD,
+                                                                         literal:     JQL_AST.createFieldAliasFromExpression($$[$0]),
+                                                                         expression:  $$[$0]
+                                                                     };
+                                                               
 break;
 case 49:
- this.$ = { op: JQLParser.OP.field, literal: $$[$0],                                            expression: $$[$0-2] }; 
+
+                                                                    this.$ = {
+                                                                        op:           JQL_AST.TOKEN_TYPES.FIELD,
+                                                                        literal:      $$[$0],
+                                                                        expression:   $$[$0-2]
+                                                                    };
+                                                               
 break;
 case 50:
- this.$ = { op: JQLParser.OP.field, literal: JQLParser.unescapeIdentifier($$[$0]),              expression: $$[$0-2] }; 
+
+                                                                    this.$ = {
+                                                                        op:           JQL_AST.TOKEN_TYPES.FIELD,
+                                                                        literal:      JQL_AST.unescapeIdentifier($$[$0]),
+                                                                        expression:   $$[$0-2]
+                                                                    };
+                                                               
 break;
 case 54:
- this.$ = { op: JQLParser.OP.update_field, name: $$[$0-2], expression: $$[$0] }; 
+
+                                                                    this.$ = {
+                                                                        op:           JQL_AST.TOKEN_TYPES.UPDATE_FIELD,
+                                                                        name:         $$[$0-2],
+                                                                        expression:   $$[$0]
+                                                                    };
+                                                               
 break;
 case 55:
- this.$ = { op: JQLParser.OP.update_field, name: JQLParser.unescapeIdentifier($$[$0-2]), expression: $$[$0] }; 
+
+                                                                    this.$ = {
+                                                                        op:           JQL_AST.TOKEN_TYPES.UPDATE_FIELD,
+                                                                        name:         JQL_AST.unescapeIdentifier($$[$0-2]),
+                                                                        expression:   $$[$0]
+                                                                    };
+                                                               
 break;
 case 56:
- this.$ = { op: JQLParser.OP.expression, type: "number",     value: JQLParser.parseNumber( $$[$0] )                }; 
+
+                                                                    this.$ = {
+                                                                        op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
+                                                                        type:         JQL_AST.EXPRESSION.NUMBER,
+                                                                        value:        JQL_AST.parseNumber( $$[$0] )
+                                                                    };
+                                                               
 break;
 case 57:
- this.$ = { op: JQLParser.OP.expression, type: "boolean",    value: JQLParser.parseBoolean( $$[$0] )               }; 
+
+                                                                    this.$ = {
+                                                                        op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
+                                                                        type:         JQL_AST.EXPRESSION.BOOLEAN,
+                                                                        value:        JQL_AST.parseBoolean( $$[$0] )
+                                                                    };
+                                                               
 break;
 case 58:
- this.$ = { op: JQLParser.OP.expression, type: "null"                                                          }; 
+
+                                                                    this.$ = {
+                                                                        op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
+                                                                        type:         JQL_AST.EXPRESSION.NULL
+                                                                    };
+                                                               
 break;
 case 59:
- this.$ = { op: JQLParser.OP.expression, type: "string",     value: JQLParser.parseString( $$[$0] )                }; 
+
+                                                                    this.$ = {
+                                                                        op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
+                                                                        type:         JQL_AST.EXPRESSION.STRING,
+                                                                        value:        JQL_AST.parseString( $$[$0] )
+                                                                    };
+                                                               
 break;
 case 60:
- this.$ = { op: JQLParser.OP.expression, type: "unary",      operand: "!",  left: $$[$0]                           }; 
+
+                                                                    this.$ = {
+                                                                        op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
+                                                                        type:         JQL_AST.EXPRESSION.UNARY,
+                                                                        operator:     JQL_AST.OPERATOR.NOT,
+                                                                        left:         $$[$0]
+                                                                    };
+                                                               
 break;
 case 61:
- this.$ = { op: JQLParser.OP.expression, type: "unary",      operand: "-",  left: $$[$0]                           }; 
+
+                                                                    this.$ = {
+                                                                        op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
+                                                                        type:         JQL_AST.EXPRESSION.UNARY,
+                                                                        operator:     JQL_AST.OPERATOR.INVERT,
+                                                                        left:         $$[$0]
+                                                                    };
+                                                               
 break;
 case 62:
- this.$ = { op: JQLParser.OP.expression, type: "logical",    operand: "||", left: $$[$0-2], right: $$[$0]                }; 
+
+                                                                    this.$ = {
+                                                                        op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
+                                                                        type:         JQL_AST.EXPRESSION.LOGICAL,
+                                                                        operator:     JQL_AST.OPERATOR.OR,
+                                                                        left:         $$[$0-2],
+                                                                        right:        $$[$0]
+                                                                    };
+                                                               
 break;
 case 63:
- this.$ = { op: JQLParser.OP.expression, type: "logical",    operand: "&&", left: $$[$0-2], right: $$[$0]                }; 
+
+                                                                    this.$ = {
+                                                                        op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
+                                                                        type:         JQL_AST.EXPRESSION.LOGICAL,
+                                                                        operator:     JQL_AST.OPERATOR.AND,
+                                                                        left:         $$[$0-2],
+                                                                        right:        $$[$0]
+                                                                    };
+                                                               
 break;
 case 64:
- this.$ = { op: JQLParser.OP.expression, type: "logical",    operand: "==", left: $$[$0-2], right: $$[$0]                }; 
+
+                                                                    this.$ = {
+                                                                        op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
+                                                                        type:         JQL_AST.EXPRESSION.LOGICAL,
+                                                                        operator:     JQL_AST.OPERATOR.EQUALS,
+                                                                        left:         $$[$0-2],
+                                                                        right:        $$[$0]
+                                                                    };
+                                                               
 break;
 case 65:
- this.$ = { op: JQLParser.OP.expression, type: "logical",    operand: "~=", left: $$[$0-2], right: $$[$0]                }; 
+
+                                                                    this.$ = {
+                                                                        op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
+                                                                        type:         JQL_AST.EXPRESSION.LOGICAL,
+                                                                        operator:     JQL_AST.OPERATOR.LIKE,
+                                                                        left:         $$[$0-2],
+                                                                        right:        $$[$0]
+                                                                    };
+                                                               
 break;
 case 66:
- this.$ = { op: JQLParser.OP.expression, type: "logical",    operand: "<=", left: $$[$0-2], right: $$[$0]                }; 
+
+                                                                    this.$ = {
+                                                                        op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
+                                                                        type:         JQL_AST.EXPRESSION.LOGICAL,
+                                                                        operator:     JQL_AST.OPERATOR.LTE,
+                                                                        left:         $$[$0-2],
+                                                                        right:        $$[$0]
+                                                                    };
+                                                               
 break;
 case 67:
- this.$ = { op: JQLParser.OP.expression, type: "logical",    operand: "<",  left: $$[$0-2], right: $$[$0]                }; 
+
+                                                                    this.$ = {
+                                                                        op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
+                                                                        type:         JQL_AST.EXPRESSION.LOGICAL,
+                                                                        operator:     JQL_AST.OPERATOR.LT,
+                                                                        left:         $$[$0-2],
+                                                                        right:        $$[$0]
+                                                                    };
+                                                               
 break;
 case 68:
- this.$ = { op: JQLParser.OP.expression, type: "logical",    operand: ">=",  left: $$[$0-2], right: $$[$0]               }; 
+
+                                                                    this.$ = {
+                                                                        op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
+                                                                        type:         JQL_AST.EXPRESSION.LOGICAL,
+                                                                        operator:     JQL_AST.OPERATOR.GTE,
+                                                                        left:         $$[$0-2],
+                                                                        right:        $$[$0]
+                                                                    };
+                                                               
 break;
 case 69:
- this.$ = { op: JQLParser.OP.expression, type: "logical",    operand: ">",  left: $$[$0-2], right: $$[$0]                }; 
+
+                                                                    this.$ = {
+                                                                        op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
+                                                                        type:         JQL_AST.EXPRESSION.LOGICAL,
+                                                                        operator:     JQL_AST.OPERATOR.GT,
+                                                                        left:         $$[$0-2],
+                                                                        right:        $$[$0]
+                                                                    };
+                                                               
 break;
 case 70:
- this.$ = { op: JQLParser.OP.expression, type: "math",       operand: "*",  left: $$[$0-2], right: $$[$0]                }; 
+
+                                                                    this.$ = {
+                                                                        op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
+                                                                        type:         JQL_AST.EXPRESSION.MATH,
+                                                                        operator:     JQL_AST.OPERATOR.MULTIPLY,
+                                                                        left:         $$[$0-2],
+                                                                        right:        $$[$0]
+                                                                    };
+                                                               
 break;
 case 71:
- this.$ = { op: JQLParser.OP.expression, type: "math",       operand: "/",  left: $$[$0-2], right: $$[$0]                }; 
+
+                                                                    this.$ = {
+                                                                        op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
+                                                                        type:         JQL_AST.EXPRESSION.MATH,
+                                                                        operand:      JQL_AST.OPERATOR.DIVISION,
+                                                                        left:         $$[$0-2],
+                                                                        right:        $$[$0]
+                                                                    };
+                                                               
 break;
 case 72:
- this.$ = { op: JQLParser.OP.expression, type: "math",       operand: "+",  left: $$[$0-2], right: $$[$0]                }; 
+
+                                                                    this.$ = {
+                                                                        op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
+                                                                        type:         JQL_AST.EXPRESSION.MATH,
+                                                                        operator:     JQL_AST.OPERATOR.ADDITION,
+                                                                        left:         $$[$0-2],
+                                                                        right:        $$[$0]
+                                                                    };
+                                                               
 break;
 case 73:
- this.$ = { op: JQLParser.OP.expression, type: "math",       operand: "-",  left: $$[$0-2], right: $$[$0]                }; 
-break;
-case 74:
- this.$ = $$[$0];                                                                                                     
+
+                                                                    this.$ = {
+                                                                        op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
+                                                                        type:         JQL_AST.EXPRESSION.MATH,
+                                                                        operator:     JQL_AST.OPERATOR.DIFFERENCE,
+                                                                        left:         $$[$0-2],
+                                                                        right:        $$[$0]
+                                                                    };
+                                                               
 break;
 case 75:
- this.$ = { op: JQLParser.OP.expression, type: "group",      value: $$[$0-1]                                         }; 
+
+                                                                    this.$ = {
+                                                                        op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
+                                                                        type:         JQL_AST.EXPRESSION.GROUP,
+                                                                        expression:   $$[$0-1]
+                                                                    };
+                                                               
 break;
 case 76:
- this.$ = { op: JQLParser.OP.expression, type: "identifier", name:  $$[$0]                                         }; 
+
+                                                                    this.$ = {
+                                                                        op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
+                                                                        type:         JQL_AST.EXPRESSION.IDENTIFIER,
+                                                                        name:         $$[$0]
+                                                                    };
+                                                               
 break;
 case 77:
- this.$ = { op: JQLParser.OP.expression, type: "identifier", name:  JQLParser.unescapeIdentifier($$[$0])           }; 
+
+                                                                    this.$ = {
+                                                                        op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
+                                                                        type:         JQL_AST.EXPRESSION.IDENTIFIER,
+                                                                        name:         JQL_AST.unescapeIdentifier($$[$0])
+                                                                    };
+                                                               
 break;
 case 78:
- this.$ = { op: JQLParser.OP.expression, type: "binding",    name:  JQLParser.unescapeBindingName($$[$0])          }; 
+
+                                                                    this.$ = {
+                                                                        op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
+                                                                        type:         JQL_AST.EXPRESSION.BINDING,
+                                                                        name:         JQL_AST.unescapeBindingName($$[$0])
+                                                                    };
+                                                               
 break;
 case 79:
- this.$ = { op: JQLParser.OP.expression, type: "function_call", function_name: $$[$0-2], arguments: []               }; 
+
+                                                                    this.$ = {
+                                                                        op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
+                                                                        type:         JQL_AST.EXPRESSION.FUNCTION_CALL,
+                                                                        function_name: $$[$0-2],
+                                                                        arguments:    []
+                                                                    };
+                                                               
 break;
 case 80:
- this.$ = { op: JQLParser.OP.expression, type: "function_call", function_name: $$[$0-3], arguments: $$[$0-1]               }; 
+
+                                                                    this.$ = {
+                                                                        op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
+                                                                        type:         JQL_AST.EXPRESSION.FUNCTION_CALL,
+                                                                        function_name: $$[$0-3],
+                                                                        arguments:    $$[$0-1]
+                                                                    };
+                                                               
 break;
 case 83:
- this.$ = { op: JQLParser.OP.order_by_option, type: "random" } 
+
+                                                                    this.$ = {
+                                                                        op:           JQL_AST.TOKEN_TYPES.OPTION_ORDERING,
+                                                                        type:         JQL_AST.ORDERING_STRATEGY.RANDOM
+                                                                    };
+                                                               
 break;
 case 84:
- this.$ = { op: JQLParser.OP.order_by_option, type: "by_fields", fields: $$[$0] } 
+
+                                                                    this.$ = {
+                                                                        op:           JQL_AST.TOKEN_TYPES.OPTION_ORDERING,
+                                                                        type:         JQL_AST.ORDERING_STRATEGY.ORDERED,
+                                                                        fields:       $$[$0]
+                                                                    };
+                                                               
 break;
 case 87:
- this.$ = { op: JQLParser.OP.order_by_expression, expression: $$[$0-1], direction: 'asc' }; 
+
+                                                                    this.$ = {
+                                                                        op:           JQL_AST.TOKEN_TYPES.ORDER_EXPRESSION,
+                                                                        expression:   $$[$0-1],
+                                                                        direction:    JQL_AST.ORDER_DIRECTION.ASCENDING
+                                                                    };
+                                                               
 break;
 case 88:
- this.$ = { op: JQLParser.OP.order_by_expression, expression: $$[$0-1], direction: 'desc' }; 
+
+                                                                    this.$ = {
+                                                                        op:           JQL_AST.TOKEN_TYPES.ORDER_EXPRESSION,
+                                                                        expression:   $$[$0-1],
+                                                                        direction:    JQL_AST.ORDER_DIRECTION.DESCENDING
+                                                                    };
+                                                               
 break;
 case 89:
- this.$ = { op: JQLParser.OP.order_by_expression, expression: $$[$0], direction: 'asc' }; 
+
+                                                                    this.$ = {
+                                                                        op:           JQL_AST.TOKEN_TYPES.ORDER_EXPRESSION,
+                                                                        expression:   $$[$0],
+                                                                        direction:    JQL_AST.ORDER_DIRECTION.ASCENDING
+                                                                    };
+                                                               
 break;
 case 90:
- this.$ = { op: JQLParser.OP.limit_option, limit: JQLParser.parseNumber( $$[$0] ), skip: 0                                }; 
+
+                                                                    this.$ = {
+                                                                        op:           JQL_AST.TOKEN_TYPES.OPTION_LIMIT,
+                                                                        limit:        JQL_AST.parseNumber( $$[$0] ),
+                                                                        skip:         0
+                                                                    };
+                                                               
 break;
 case 91:
- this.$ = { op: JQLParser.OP.limit_option, limit: JQLParser.parseNumber( $$[$0] ), skip: JQLParser.parseNumber( $$[$0-2] )      }; 
+
+                                                                    this.$ = {
+                                                                        op:           JQL_AST.TOKEN_TYPES.OPTION_LIMIT,
+                                                                        limit:        JQL_AST.parseNumber( $$[$0] ),
+                                                                        skip:         JQL_AST.parseNumber( $$[$0-2] )
+                                                                    };
+                                                               
 break;
 }
 },
@@ -482,26 +760,87 @@ parse: function parse(input) {
 }};
 
 
-    var JQLParser = {
+    // JQL Abstract Syntax Tree
+    var JQL_AST = {
 
-        OP: {
-            statement:             'statement',
-            table_reference:       'table_reference',
-            expression:            'expression',
-            fields_list:           'fields_list',
-            field:                 'field',
-            update_field:          'update_field',
-            delayed_option:        'delayed_option',
-            limit_option:          'limit_option',
-            order_by_option:       'order_by_option',
-            order_by_expression:   'order_by_expression'
+        STATEMENT_TYPES: {
+            SELECT:                'select',
+            UPDATE:                'update',
+            INSERT:                'insert',
+            DELETE:                'delete'
+        },
+
+        TOKEN_TYPES: {
+            STATEMENT:             'statement',
+            TABLE_REFERENCE:       'table_reference',
+            EXPRESSION:            'expression',
+            FIELDS_LIST:           'fields_list',
+            FIELD:                 'field',
+            UPDATE_FIELD:          'update_field',
+            OPTION_DELAYED:        'delayed_option',
+            OPTION_LIMIT:          'limit_option',
+            OPTION_ORDERING:       'order_by_option',
+            ORDER_EXPRESSION:      'order_by_expression'
+        },
+
+        EXPRESSION: {
+            NUMBER:                'number',        // 0, 2.123, 2, 231231
+            BOOLEAN:               'boolean',       // true, false
+            NULL:                  'null',          // null
+            STRING:                'string',        // "mumu"
+            UNARY:                 'unary',         // !foo, -a
+            LOGICAL:               'logical',       // a && b, 2 || true
+            MATH:                  'math',          // foo + 3, 2 / 4
+            GROUP:                 'group',         // ( 2 + 3 * 6 + sum( '2', 3 ) )
+            IDENTIFIER:            'identifier',    // foo
+            BINDING:               'binding',       // :foo
+            FUNCTION_CALL:         'function_call'  // foo(2, 3, mar(bar + 2) )
+        },
+
+        OPERATOR: {
+
+            NOT:                   '!',             // !true, !1, !asd, !"1"
+            INVERT:                '-',             // -3, -true, -"asd",
+
+            OR:                    '||',            // a or b, a || b
+            AND:                   '&&',            // a && b, a and b
+
+            EQUALS:                '==',            // a == b, 1 == 2
+            LIKE:                  '~=',            // a ~= '%foo'
+
+            LTE:                   '<=',            // 3 <= 4
+            LT:                    '<',             // 3 <  4
+            GTE:                   '>=',            // 4 >= 3
+            GT:                    '>',             // 4 > 3
+
+            MULTIPLY:              '*',             // 3 * 4
+            DIVISION:              '/',             // 3 / 4
+
+            ADDITION:              '+',             // 3 + 4
+            DIFFERENCE:            '-',             // 4 - 3
+
+        },
+
+        ORDERING_STRATEGY: {
+            RANDOM:                'random',
+            ORDERED:               'ordered'
+        },
+
+        ORDER_DIRECTION: {
+            ASCENDING:             'asc',
+            DESCENDING:            'desc'
+        },
+
+        FIELD_TYPES: {
+            ALL_FIELDS:            'all',
+            SPECIFIC_FIELDS:       'enumeration'
         },
 
         id: 0,
 
         createAlias( prefix ) {
-            JQLParser.id++;
-            return ( prefix || 'field_' ) + JQLParser.id;
+            JQL_AST.id++;
+            return ( prefix || 'field_' ) + JQL_AST.id;
         },
 
         unescapeIdentifier: function( escapedIdentifier ) {
@@ -1048,9 +1387,9 @@ return new Parser;
 
 
 if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
-exports.parser = jql;
-exports.Parser = jql.Parser;
-exports.parse = function () { return jql.parse.apply(jql, arguments); };
+exports.parser = JQLLexer;
+exports.Parser = JQLLexer.Parser;
+exports.parse = function () { return JQLLexer.parse.apply(JQLLexer, arguments); };
 exports.main = function commonjsMain(args) {
     if (!args[1]) {
         console.log('Usage: '+args[0]+' FILE');
