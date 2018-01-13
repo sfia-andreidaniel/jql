@@ -164,7 +164,7 @@
             return result;
         },
 
-        createFieldAliasFromExpression( expression ) {
+        createFieldAliasFromExpression: function( expression ) {
             switch ( expression.type ) {
                 case 'string':
                 case 'boolean':
@@ -409,7 +409,7 @@ DelayedClause
     : "DELAYED" "NUMBER"                                       {
                                                                     $$ = {
                                                                         op:           JQL_AST.TOKEN_TYPES.OPTION_DELAYED,
-                                                                        timer:        $2
+                                                                        timer:        JQL_AST.parseNumber($2)
                                                                     };
                                                                }
     | "DELAYED"                                                {

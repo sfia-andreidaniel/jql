@@ -71,7 +71,7 @@
     recoverable: (boolean: TRUE when the parser has a error recovery rule available for this particular error)
   }
 */
-var JQLLexer = (function(){
+var JQLGrammar = (function(){
 var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[1,18],$V1=[1,28],$V2=[1,15],$V3=[1,27],$V4=[1,21],$V5=[6,28],$V6=[1,43],$V7=[1,51],$V8=[1,52],$V9=[1,44],$Va=[1,45],$Vb=[1,46],$Vc=[1,47],$Vd=[1,48],$Ve=[1,50],$Vf=[1,53],$Vg=[6,25],$Vh=[6,25,28],$Vi=[6,21,25],$Vj=[6,21,25,28],$Vk=[1,61],$Vl=[1,62],$Vm=[50,51],$Vn=[1,71],$Vo=[6,15,28],$Vp=[6,15,28,55],$Vq=[1,84],$Vr=[1,87],$Vs=[1,76],$Vt=[1,77],$Vu=[1,78],$Vv=[1,79],$Vw=[1,80],$Vx=[1,81],$Vy=[1,82],$Vz=[1,83],$VA=[1,85],$VB=[1,86],$VC=[6,15,18,21,25,28,35,52,55,56,63,64,65,66,67,68,69,70,71,72,73,76,82,83],$VD=[6,18,21,25,28,35],$VE=[6,15,18,21,25,28,35,55,56,63,64,65,66,67,68,69,70,71,73,76,82,83],$VF=[1,123],$VG=[1,131],$VH=[1,132],$VI=[6,15,18,21,25,28,35,55,56,64,65,66,67,76,82,83],$VJ=[6,15,18,21,25,28,35,55,56,64,65,66,67,68,69,70,71,76,82,83],$VK=[55,76],$VL=[6,25,28,55],$VM=[1,140],$VN=[1,141],$VO=[6,18,21,25,35,55];
 var parser = {trace: function trace() { },
 yy: {},
@@ -162,7 +162,7 @@ case 21:
 
                                                                     this.$ = {
                                                                         op:           JQL_AST.TOKEN_TYPES.OPTION_DELAYED,
-                                                                        timer:        $$[$0]
+                                                                        timer:        JQL_AST.parseNumber($$[$0])
                                                                     };
                                                                
 break;
@@ -919,7 +919,7 @@ parse: function parse(input) {
             return result;
         },
 
-        createFieldAliasFromExpression( expression ) {
+        createFieldAliasFromExpression: function( expression ) {
             switch ( expression.type ) {
                 case 'string':
                 case 'boolean':
@@ -1387,9 +1387,9 @@ return new Parser;
 
 
 if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
-exports.parser = JQLLexer;
-exports.Parser = JQLLexer.Parser;
-exports.parse = function () { return JQLLexer.parse.apply(JQLLexer, arguments); };
+exports.parser = JQLGrammar;
+exports.Parser = JQLGrammar.Parser;
+exports.parse = function () { return JQLGrammar.parse.apply(JQLGrammar, arguments); };
 exports.main = function commonjsMain(args) {
     if (!args[1]) {
         console.log('Usage: '+args[0]+' FILE');
