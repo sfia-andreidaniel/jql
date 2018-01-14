@@ -28,7 +28,19 @@ class JQLStatementInsert extends JQLStatement {
     }
 
     public getBindings(): JQLExpressionBinding[] {
+
         let result: JQLExpressionBinding[] = [];
+
+        for ( let i=0, len = this.fields.length; i<len; i++ ) {
+
+            for ( let j=0, bindings = this.fields[i].getExpression().getBindings(), n = bindings.length; j<n; j++ ) {
+
+                result.push( bindings[j] );
+
+            }
+
+        }
+
         return result;
     }
 
