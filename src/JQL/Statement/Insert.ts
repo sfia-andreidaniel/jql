@@ -45,8 +45,21 @@ class JQLStatementInsert extends JQLStatement {
     }
 
     public getFunctions(): JQLExpressionFunctionCall[] {
+
         let result: JQLExpressionFunctionCall[] = [];
+
+        for ( let i=0, len = this.fields.length; i<len; i++ ) {
+
+            for ( let j=0, functions = this.fields[i].getExpression().getFunctions(), n = functions.length; j<n; j++ ) {
+
+                result.push( functions[j] );
+
+            }
+
+        }
+
         return result;
+
     }
 
 }

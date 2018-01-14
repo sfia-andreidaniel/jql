@@ -1074,10 +1074,20 @@ var JQLStatementInsert = (function (_super) {
     };
     JQLStatementInsert.prototype.getBindings = function () {
         var result = [];
+        for (var i = 0, len = this.fields.length; i < len; i++) {
+            for (var j = 0, bindings = this.fields[i].getExpression().getBindings(), n = bindings.length; j < n; j++) {
+                result.push(bindings[j]);
+            }
+        }
         return result;
     };
     JQLStatementInsert.prototype.getFunctions = function () {
         var result = [];
+        for (var i = 0, len = this.fields.length; i < len; i++) {
+            for (var j = 0, functions = this.fields[i].getExpression().getFunctions(), n = functions.length; j < n; j++) {
+                result.push(functions[j]);
+            }
+        }
         return result;
     };
     return JQLStatementInsert;
