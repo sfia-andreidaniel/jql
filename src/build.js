@@ -891,10 +891,36 @@ var JQLStatementUpdateDelayedOption = (function (_super) {
 var JQLStatementDelete = (function (_super) {
     __extends(JQLStatementDelete, _super);
     function JQLStatementDelete(statement) {
-        return _super.call(this, statement) || this;
+        var _this = _super.call(this, statement) || this;
+        _this.filter = null;
+        _this.sorter = null;
+        _this.limit = null;
+        _this.table = JQLLexerFactory.create(statement.table);
+        if (!!statement.where) {
+            _this.filter = JQLLexerFactory.create(statement.where);
+        }
+        if (!!statement.orderBy) {
+            _this.sorter = JQLLexerFactory.create(statement.orderBy);
+        }
+        if (!!statement.limit) {
+            _this.limit = JQLLexerFactory.create(statement.limit);
+        }
+        return _this;
     }
     JQLStatementDelete.prototype.getStatementType = function () {
         return EJQL_LEXER_STATEMENT_TYPES.DELETE;
+    };
+    JQLStatementDelete.prototype.getTable = function () {
+        return this.table;
+    };
+    JQLStatementDelete.prototype.getFilter = function () {
+        return this.filter;
+    };
+    JQLStatementDelete.prototype.getSorter = function () {
+        return this.sorter;
+    };
+    JQLStatementDelete.prototype.getLimit = function () {
+        return this.limit;
     };
     return JQLStatementDelete;
 }(JQLStatement));

@@ -515,7 +515,7 @@ DeleteWithOptionalORDERClauseStatement
                                                                     $$ = $1;
                                                                     $$.orderBy = $4;
                                                                }
-    | DeleteWithOptionalWHEREStatement                         {
+    | DeleteWithOptionalWHEREClauseStatement                   {
                                                                     $$ = $1;
                                                                }
     ;
