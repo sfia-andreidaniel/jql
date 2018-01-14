@@ -10,11 +10,17 @@ class JQLStatementUpdate extends JQLStatement {
 
     private sorter: JQLSorterStrategy = null;
 
+    private timer: JQLStatementUpdateDelayedOption = null;
+
     constructor( statement: IJQL_LEXER_PARSED_UPDATE_STATEMENT ) {
 
         super( statement );
 
         this.table = <JQLTable>JQLLexerFactory.create(statement.table);
+
+        if ( !!statement.delayed ) {
+            this.timer = <JQLStatementUpdateDelayedOption>JQLLexerFactory.create( statement.delayed );
+        }
 
         for ( let i=0, len = statement.fields.length; i<len; i++ ) {
             this.fields.push( <JQLStatementUpdateField>JQLLexerFactory.create(statement.fields[i]) );
@@ -36,6 +42,10 @@ class JQLStatementUpdate extends JQLStatement {
 
     public getStatementType(): EJQL_LEXER_STATEMENT_TYPES {
         return EJQL_LEXER_STATEMENT_TYPES.UPDATE;
+    }
+
+    public getTimer(): JQLStatementUpdateDelayedOption {
+        return this.timer;
     }
 
     public getTable(): JQLTable {

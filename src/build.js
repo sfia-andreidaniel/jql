@@ -783,10 +783,22 @@ var JQLStatementSelectFieldsListSpecific = (function (_super) {
 var JQLStatementInsert = (function (_super) {
     __extends(JQLStatementInsert, _super);
     function JQLStatementInsert(statement) {
-        return _super.call(this, statement) || this;
+        var _this = _super.call(this, statement) || this;
+        _this.fields = [];
+        _this.table = JQLLexerFactory.create(statement.table);
+        for (var i = 0, len = statement.fields.length; i < len; i++) {
+            _this.fields.push(JQLLexerFactory.create(statement.fields[i]));
+        }
+        return _this;
     }
     JQLStatementInsert.prototype.getStatementType = function () {
         return EJQL_LEXER_STATEMENT_TYPES.INSERT;
+    };
+    JQLStatementInsert.prototype.getTable = function () {
+        return this.table;
+    };
+    JQLStatementInsert.prototype.getFields = function () {
+        return this.fields;
     };
     return JQLStatementInsert;
 }(JQLStatement));
@@ -798,7 +810,11 @@ var JQLStatementUpdate = (function (_super) {
         _this.filter = null;
         _this.limit = null;
         _this.sorter = null;
+        _this.timer = null;
         _this.table = JQLLexerFactory.create(statement.table);
+        if (!!statement.delayed) {
+            _this.timer = JQLLexerFactory.create(statement.delayed);
+        }
         for (var i = 0, len = statement.fields.length; i < len; i++) {
             _this.fields.push(JQLLexerFactory.create(statement.fields[i]));
         }
@@ -815,6 +831,9 @@ var JQLStatementUpdate = (function (_super) {
     }
     JQLStatementUpdate.prototype.getStatementType = function () {
         return EJQL_LEXER_STATEMENT_TYPES.UPDATE;
+    };
+    JQLStatementUpdate.prototype.getTimer = function () {
+        return this.timer;
     };
     JQLStatementUpdate.prototype.getTable = function () {
         return this.table;
