@@ -14,4 +14,6 @@ abstract class JQLSorterStrategy extends JQLSorter {
         return EJQL_LEXER_OPCODE_TYPES.ORDER_BY_OPTION;
     }
 
+    public abstract isRandom(): boolean;
+
 }

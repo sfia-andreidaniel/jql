@@ -4,4 +4,7 @@ class JQLStatementSelectFieldsListAll extends JQLStatementSelectFieldsList {
         super();
     }
 
+    public isSelectingAllFields(): boolean {
+        return true;
+    }
 }

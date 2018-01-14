@@ -16,4 +16,8 @@ class JQLSorterStrategyByExpression extends JQLSorterStrategy {
         return this.expressions;
     }
 
+    public isRandom(): boolean {
+        return false;
+    }
+
 }

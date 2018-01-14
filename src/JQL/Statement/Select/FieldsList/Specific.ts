@@ -18,4 +18,8 @@ class JQLStatementSelectFieldsListSpecific extends JQLStatementSelectFieldsList 
         return this.fields;
     }
 
+    public isSelectingAllFields(): boolean {
+        return false;
+    }
+
 }

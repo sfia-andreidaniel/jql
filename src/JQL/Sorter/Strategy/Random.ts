@@ -4,4 +4,7 @@ class JQLSorterStrategyRandom extends JQLSorterStrategy {
         super(token);
     }
 
+    public isRandom(): boolean {
+        return true;
+    }
 }

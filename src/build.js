@@ -824,6 +824,9 @@ var JQLSorterStrategyByExpression = (function (_super) {
     JQLSorterStrategyByExpression.prototype.getSortExpressions = function () {
         return this.expressions;
     };
+    JQLSorterStrategyByExpression.prototype.isRandom = function () {
+        return false;
+    };
     return JQLSorterStrategyByExpression;
 }(JQLSorterStrategy));
 var JQLSorterStrategyRandom = (function (_super) {
@@ -831,6 +834,9 @@ var JQLSorterStrategyRandom = (function (_super) {
     function JQLSorterStrategyRandom(token) {
         return _super.call(this, token) || this;
     }
+    JQLSorterStrategyRandom.prototype.isRandom = function () {
+        return true;
+    };
     return JQLSorterStrategyRandom;
 }(JQLSorterStrategy));
 var JQLSorterExpression = (function (_super) {
@@ -934,10 +940,56 @@ var JQLStatementSelect = (function (_super) {
     };
     JQLStatementSelect.prototype.getBindings = function () {
         var result = [];
+        if (null !== this.fields) {
+            if (!this.fields.isSelectingAllFields()) {
+                for (var specificFields = this.fields, i = 0, fields = specificFields.getFields(), len = fields.length; i < len; i++) {
+                    for (var j = 0, bindings = fields[i].getExpression().getBindings(), n = bindings.length; j < n; j++) {
+                        result.push(bindings[j]);
+                    }
+                }
+            }
+        }
+        if (null !== this.filter) {
+            for (var bindings = this.filter.getBindings(), i = 0, len = bindings.length; i < len; i++) {
+                result.push(bindings[i]);
+            }
+        }
+        if (null !== this.sorter) {
+            if (!this.sorter.isRandom()) {
+                for (var sorterByExpression = this.sorter, i = 0, expressions = sorterByExpression.getSortExpressions(), len = expressions.length; i < len; i++) {
+                    for (var j = 0, bindings = expressions[i].getExpression().getBindings(), n = bindings.length; j < n; j++) {
+                        result.push(bindings[i]);
+                    }
+                }
+            }
+        }
         return result;
     };
     JQLStatementSelect.prototype.getFunctions = function () {
         var result = [];
+        if (null !== this.fields) {
+            if (!this.fields.isSelectingAllFields()) {
+                for (var specificFields = this.fields, i = 0, fields = specificFields.getFields(), len = fields.length; i < len; i++) {
+                    for (var j = 0, functions = fields[i].getExpression().getFunctions(), n = functions.length; j < n; j++) {
+                        result.push(functions[j]);
+                    }
+                }
+            }
+        }
+        if (null !== this.filter) {
+            for (var functions = this.filter.getFunctions(), i = 0, len = functions.length; i < len; i++) {
+                result.push(functions[i]);
+            }
+        }
+        if (null !== this.sorter) {
+            if (!this.sorter.isRandom()) {
+                for (var sorterByExpression = this.sorter, i = 0, expressions = sorterByExpression.getSortExpressions(), len = expressions.length; i < len; i++) {
+                    for (var j = 0, functions = expressions[i].getExpression().getFunctions(), n = functions.length; j < n; j++) {
+                        result.push(functions[i]);
+                    }
+                }
+            }
+        }
         return result;
     };
     return JQLStatementSelect;
@@ -977,6 +1029,9 @@ var JQLStatementSelectFieldsListAll = (function (_super) {
     function JQLStatementSelectFieldsListAll(lexerToken) {
         return _super.call(this) || this;
     }
+    JQLStatementSelectFieldsListAll.prototype.isSelectingAllFields = function () {
+        return true;
+    };
     return JQLStatementSelectFieldsListAll;
 }(JQLStatementSelectFieldsList));
 var JQLStatementSelectFieldsListSpecific = (function (_super) {
@@ -991,6 +1046,9 @@ var JQLStatementSelectFieldsListSpecific = (function (_super) {
     }
     JQLStatementSelectFieldsListSpecific.prototype.getFields = function () {
         return this.fields;
+    };
+    JQLStatementSelectFieldsListSpecific.prototype.isSelectingAllFields = function () {
+        return false;
     };
     return JQLStatementSelectFieldsListSpecific;
 }(JQLStatementSelectFieldsList));

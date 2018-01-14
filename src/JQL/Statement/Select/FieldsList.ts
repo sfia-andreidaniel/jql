@@ -4,4 +4,6 @@ abstract class JQLStatementSelectFieldsList extends JQLOpcode{
         return EJQL_LEXER_OPCODE_TYPES.FIELDS_LIST;
     }
 
+    public abstract isSelectingAllFields(): boolean;
+
 }
