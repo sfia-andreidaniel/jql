@@ -1142,10 +1142,48 @@ var JQLStatementUpdate = (function (_super) {
     };
     JQLStatementUpdate.prototype.getBindings = function () {
         var result = [];
+        for (var i = 0, len = this.fields.length; i < len; i++) {
+            for (var j = 0, bindings = this.fields[i].getExpression().getBindings(), n = bindings.length; j < n; j++) {
+                result.push(bindings[j]);
+            }
+        }
+        if (!!this.filter) {
+            for (var i = 0, bindings = this.filter.getBindings(), len = bindings.length; i < len; i++) {
+                result.push(bindings[i]);
+            }
+        }
+        if (!!this.sorter) {
+            if (!this.sorter.isRandom()) {
+                for (var sorterByExpression = this.sorter, i = 0, expressions = sorterByExpression.getSortExpressions(), len = expressions.length; i < len; i++) {
+                    for (var j = 0, bindings = expressions[i].getExpression().getBindings(), n = bindings.length; j < n; j++) {
+                        result.push(bindings[i]);
+                    }
+                }
+            }
+        }
         return result;
     };
     JQLStatementUpdate.prototype.getFunctions = function () {
         var result = [];
+        for (var i = 0, len = this.fields.length; i < len; i++) {
+            for (var j = 0, functions = this.fields[i].getExpression().getFunctions(), n = functions.length; j < n; j++) {
+                result.push(functions[j]);
+            }
+        }
+        if (!!this.filter) {
+            for (var i = 0, functions = this.filter.getFunctions(), len = functions.length; i < len; i++) {
+                result.push(functions[i]);
+            }
+        }
+        if (!!this.sorter) {
+            if (!this.sorter.isRandom()) {
+                for (var sorterByExpression = this.sorter, i = 0, expressions = sorterByExpression.getSortExpressions(), len = expressions.length; i < len; i++) {
+                    for (var j = 0, functions = expressions[i].getExpression().getFunctions(), n = functions.length; j < n; j++) {
+                        result.push(functions[i]);
+                    }
+                }
+            }
+        }
         return result;
     };
     return JQLStatementUpdate;
@@ -1222,10 +1260,38 @@ var JQLStatementDelete = (function (_super) {
     };
     JQLStatementDelete.prototype.getBindings = function () {
         var result = [];
+        if (!!this.filter) {
+            for (var bindings = this.filter.getBindings(), i = 0, len = bindings.length; i < len; i++) {
+                result.push(bindings[i]);
+            }
+        }
+        if (!!this.sorter) {
+            if (!this.sorter.isRandom()) {
+                for (var sorterByExpression = this.sorter, i = 0, expressions = sorterByExpression.getSortExpressions(), len = expressions.length; i < len; i++) {
+                    for (var j = 0, bindings = expressions[i].getExpression().getBindings(), n = bindings.length; j < n; j++) {
+                        result.push(bindings[i]);
+                    }
+                }
+            }
+        }
         return result;
     };
     JQLStatementDelete.prototype.getFunctions = function () {
         var result = [];
+        if (null !== this.filter) {
+            for (var functions = this.filter.getFunctions(), i = 0, len = functions.length; i < len; i++) {
+                result.push(functions[i]);
+            }
+        }
+        if (null !== this.sorter) {
+            if (!this.sorter.isRandom()) {
+                for (var sorterByExpression = this.sorter, i = 0, expressions = sorterByExpression.getSortExpressions(), len = expressions.length; i < len; i++) {
+                    for (var j = 0, functions = expressions[i].getExpression().getFunctions(), n = functions.length; j < n; j++) {
+                        result.push(functions[i]);
+                    }
+                }
+            }
+        }
         return result;
     };
     return JQLStatementDelete;

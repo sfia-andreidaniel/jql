@@ -4,14 +4,14 @@ class JQLStatementInsert extends JQLStatement {
 
     private fields: JQLStatementUpdateField[] = [];
 
-    constructor ( statement: IJQL_LEXER_PARSED_INSERT_STATEMENT ) {
+    constructor(statement: IJQL_LEXER_PARSED_INSERT_STATEMENT) {
 
-        super( statement );
+        super(statement);
 
         this.table = <JQLTableReference>JQLLexerFactory.create(statement.table);
 
-        for ( let i=0, len = statement.fields.length; i<len; i++ ) {
-            this.fields.push( <JQLStatementUpdateField>JQLLexerFactory.create( statement.fields[i]) );
+        for (let i = 0, len = statement.fields.length; i < len; i++) {
+            this.fields.push(<JQLStatementUpdateField>JQLLexerFactory.create(statement.fields[ i ]));
         }
     }
 
@@ -31,11 +31,11 @@ class JQLStatementInsert extends JQLStatement {
 
         let result: JQLExpressionBinding[] = [];
 
-        for ( let i=0, len = this.fields.length; i<len; i++ ) {
+        for (let i = 0, len = this.fields.length; i < len; i++) {
 
-            for ( let j=0, bindings = this.fields[i].getExpression().getBindings(), n = bindings.length; j<n; j++ ) {
+            for (let j = 0, bindings = this.fields[ i ].getExpression().getBindings(), n = bindings.length; j < n; j++) {
 
-                result.push( bindings[j] );
+                result.push(bindings[ j ]);
 
             }
 
@@ -48,11 +48,11 @@ class JQLStatementInsert extends JQLStatement {
 
         let result: JQLExpressionFunctionCall[] = [];
 
-        for ( let i=0, len = this.fields.length; i<len; i++ ) {
+        for (let i = 0, len = this.fields.length; i < len; i++) {
 
-            for ( let j=0, functions = this.fields[i].getExpression().getFunctions(), n = functions.length; j<n; j++ ) {
+            for (let j = 0, functions = this.fields[ i ].getExpression().getFunctions(), n = functions.length; j < n; j++) {
 
-                result.push( functions[j] );
+                result.push(functions[ j ]);
 
             }
 
