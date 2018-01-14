@@ -1,6 +1,6 @@
-class JQLExpressionString extends JQLOpcode {
+class JQLExpressionString extends JQLExpression {
 
-    private readonly value: string;
+    private value: string;
 
     constructor( opcode: IJQL_LEXER_EXPRESSION_STRING ) {
 
@@ -16,5 +16,17 @@ class JQLExpressionString extends JQLOpcode {
 
     public getExpressionType(): EJQL_LEXER_EXPRESSION_TYPES {
         return EJQL_LEXER_EXPRESSION_TYPES.STRING;
+    }
+
+    public getBindings(): JQLExpressionBinding[] {
+        return [];
+    }
+
+    public getFunctions(): JQLExpressionFunctionCall[] {
+        return [];
+    }
+
+    public compute( context: IJQLTableRow ): JQLPrimitive {
+        return this.value;
     }
 }

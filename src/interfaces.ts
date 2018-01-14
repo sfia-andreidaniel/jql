@@ -278,3 +278,20 @@ type IJQL_LEXER_TOKENIZED_STATEMENT
     | IJQL_LEXER_PARSED_INSERT_STATEMENT
     | IJQL_LEXER_PARSED_DELETE_STATEMENT
     ;
+
+type JQLPrimitive
+    = string
+    | number
+    | boolean
+    | null;
+
+interface IJQLTableRow {
+    getColumnValue( columnName: string ): JQLPrimitive;
+}
+
+interface IJQLDatabase {
+
+    hasFunction( functionName: string ): boolean;
+    callFunction( functionName: string, functionArgs: JQLPrimitive[] ): JQLPrimitive;
+
+}

@@ -4,4 +4,11 @@ class JQLExpressionMathMultiply extends JQLExpressionMath {
         return EJQL_LEXER_OPERATOR_MATH_TYPE.MULTIPLY;
     }
 
+    public compute( context: IJQLTableRow ): JQLPrimitive {
+
+        console.warn('TODO: Properly implement "*" operator');
+
+        return Number(this.left.compute(context)) * Number(this.right.compute(context));
+    }
+
 }

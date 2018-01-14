@@ -85,4 +85,14 @@ class JQLStatementSelect extends JQLStatement {
         return this;
     }
 
+    public getBindings(): JQLExpressionBinding[] {
+        let result: JQLExpressionBinding[] = [];
+        return result;
+    }
+
+    public getFunctions(): JQLExpressionFunctionCall[] {
+        let result: JQLExpressionFunctionCall[] = [];
+        return result;
+    }
+
 }

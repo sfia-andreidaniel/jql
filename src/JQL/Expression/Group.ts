@@ -1,4 +1,4 @@
-class JQLExpressionGroup extends JQLOpcode {
+class JQLExpressionGroup extends JQLExpression {
 
     private expression: JQLExpression;
 
@@ -14,4 +14,17 @@ class JQLExpressionGroup extends JQLOpcode {
     public getExpressionType(): EJQL_LEXER_EXPRESSION_TYPES {
         return EJQL_LEXER_EXPRESSION_TYPES.GROUP;
     }
+
+    public getBindings(): JQLExpressionBinding[] {
+        return this.expression.getBindings();
+    }
+
+    public getFunctions(): JQLExpressionFunctionCall[] {
+        return this.expression.getFunctions();
+    }
+
+    public compute( context: IJQLTableRow ): JQLPrimitive {
+        return this.expression.compute( context );
+    }
+
 }

@@ -1,8 +1,8 @@
-abstract class JQLExpressionUnary extends JQLOpcode {
+abstract class JQLExpressionUnary extends JQLExpression {
 
-    private operand: JQLExpression;
+    protected operand: JQLExpression;
 
-    constructor( token: IJQL_LEXER_EXPRESSION_UNARY ) {
+    constructor(token: IJQL_LEXER_EXPRESSION_UNARY) {
 
         super();
 
@@ -23,4 +23,13 @@ abstract class JQLExpressionUnary extends JQLOpcode {
     public getOperand() {
         return this.operand;
     }
+
+    public getBindings(): JQLExpressionBinding[] {
+        return this.operand.getBindings();
+    }
+
+    public getFunctions(): JQLExpressionFunctionCall[] {
+        return this.operand.getFunctions();
+    }
+
 }

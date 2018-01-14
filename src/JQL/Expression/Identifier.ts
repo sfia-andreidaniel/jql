@@ -1,4 +1,4 @@
-class JQLExpressionIdentifier extends JQLOpcode {
+class JQLExpressionIdentifier extends JQLExpression {
 
     private identifierName: string;
 
@@ -17,6 +17,18 @@ class JQLExpressionIdentifier extends JQLOpcode {
 
     public getIdentifierName(): string {
         return this.identifierName;
+    }
+
+    public getBindings(): JQLExpressionBinding[] {
+        return [];
+    }
+
+    public getFunctions(): JQLExpressionFunctionCall[] {
+        return [];
+    }
+
+    public compute( context: IJQLTableRow ): JQLPrimitive {
+        return context.getColumnValue( this.identifierName );
     }
 
 }

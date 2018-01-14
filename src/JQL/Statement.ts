@@ -17,4 +17,8 @@ abstract class JQLStatement extends JQLOpcode {
         return this.remote;
     }
 
+    public abstract getBindings(): JQLExpressionBinding[];
+
+    public abstract getFunctions(): JQLExpressionFunctionCall[];
+
 }

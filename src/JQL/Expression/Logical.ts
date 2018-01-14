@@ -1,4 +1,4 @@
-abstract class JQLExpressionLogical extends JQLOpcode {
+abstract class JQLExpressionLogical extends JQLExpression {
 
     protected left: JQLExpression;
 
@@ -30,5 +30,35 @@ abstract class JQLExpressionLogical extends JQLOpcode {
 
     public getRightOperand(): JQLExpression {
         return this.right;
+    }
+
+    public getBindings(): JQLExpressionBinding[] {
+
+        let result: JQLExpressionBinding[] = [];
+
+        for ( let i=0, bindings = this.left.getBindings(), len = bindings.length; i<len; i++ ) {
+            result.push(bindings[i]);
+        }
+
+        for ( let i=0, bindings = this.right.getBindings(), len = bindings.length; i<len; i++ ) {
+            result.push(bindings[i]);
+        }
+
+        return result;
+    }
+
+    public getFunctions(): JQLExpressionFunctionCall[] {
+
+        let result: JQLExpressionFunctionCall[] = [];
+
+        for ( let i=0, functions = this.left.getFunctions(), len = functions.length; i<len; i++ ) {
+            result.push(functions[i]);
+        }
+
+        for ( let i=0, functions = this.right.getFunctions(), len = functions.length; i<len; i++ ) {
+            result.push(functions[i]);
+        }
+
+        return result;
     }
 }

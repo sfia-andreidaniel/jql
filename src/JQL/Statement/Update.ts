@@ -68,5 +68,14 @@ class JQLStatementUpdate extends JQLStatement {
         return this.limit;
     }
 
+    public getBindings(): JQLExpressionBinding[] {
+        let result: JQLExpressionBinding[] = [];
+        return result;
+    }
+
+    public getFunctions(): JQLExpressionFunctionCall[] {
+        let result: JQLExpressionFunctionCall[] = [];
+        return result;
+    }
 
 }

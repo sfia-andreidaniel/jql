@@ -6,4 +6,10 @@ abstract class JQLExpression extends JQLOpcode {
 
     public abstract getExpressionType(): EJQL_LEXER_EXPRESSION_TYPES;
 
+    public abstract getBindings(): JQLExpressionBinding[];
+
+    public abstract getFunctions(): JQLExpressionFunctionCall[];
+
+    public abstract compute( context: IJQLTableRow ): JQLPrimitive;
+
 }

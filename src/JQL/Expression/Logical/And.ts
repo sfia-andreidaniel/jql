@@ -4,4 +4,11 @@ class JQLExpressionLogicalAnd extends JQLExpressionLogical {
         return EJQL_LEXER_OPERATOR_LOGICAL_TYPE.AND;
     }
 
+    public compute( context: IJQLTableRow ): JQLPrimitive {
+
+        console.warn('TODO: Properly implement "Logical &&" operator');
+
+        return this.left.compute(context) || this.right.compute(context);
+    }
+
 }
