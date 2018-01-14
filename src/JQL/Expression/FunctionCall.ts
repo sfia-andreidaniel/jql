@@ -42,7 +42,7 @@ class JQLExpressionFunctionCall extends JQLExpression {
 
         for (let argI = 0, numArgs = this.arguments.length; argI < numArgs; argI++) {
 
-            for (let i = 0, bindings = this.arguments[ i ].getBindings(), len = bindings.length; i < len; i++) {
+            for (let i = 0, bindings = this.arguments[ argI ].getBindings(), len = bindings.length; i < len; i++) {
                 result.push(bindings[ i ]);
             }
 
@@ -58,7 +58,7 @@ class JQLExpressionFunctionCall extends JQLExpression {
 
         for (let argI = 0, numArgs = this.arguments.length; argI < numArgs; argI++) {
 
-            for (let i = 0, functions = this.arguments[ i ].getFunctions(), len = functions.length; i < len; i++) {
+            for (let i = 0, functions = this.arguments[ argI ].getFunctions(), len = functions.length; i < len; i++) {
                 result.push(functions[ i ]);
             }
 
@@ -74,7 +74,7 @@ class JQLExpressionFunctionCall extends JQLExpression {
 
         for (let argI = 0, numArgs = this.arguments.length; argI < numArgs; argI++) {
 
-            for (let i = 0, identifiers = this.arguments[ i ].getIdentifiers(), len = identifiers.length; i < len; i++) {
+            for (let i = 0, identifiers = this.arguments[ argI ].getIdentifiers(), len = identifiers.length; i < len; i++) {
                 result.push(identifiers[ i ]);
             }
 

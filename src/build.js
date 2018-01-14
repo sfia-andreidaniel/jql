@@ -505,7 +505,7 @@ var JQLExpressionFunctionCall = (function (_super) {
     JQLExpressionFunctionCall.prototype.getBindings = function () {
         var result = [];
         for (var argI = 0, numArgs = this.arguments.length; argI < numArgs; argI++) {
-            for (var i = 0, bindings = this.arguments[i].getBindings(), len = bindings.length; i < len; i++) {
+            for (var i = 0, bindings = this.arguments[argI].getBindings(), len = bindings.length; i < len; i++) {
                 result.push(bindings[i]);
             }
         }
@@ -514,7 +514,7 @@ var JQLExpressionFunctionCall = (function (_super) {
     JQLExpressionFunctionCall.prototype.getFunctions = function () {
         var result = [this];
         for (var argI = 0, numArgs = this.arguments.length; argI < numArgs; argI++) {
-            for (var i = 0, functions = this.arguments[i].getFunctions(), len = functions.length; i < len; i++) {
+            for (var i = 0, functions = this.arguments[argI].getFunctions(), len = functions.length; i < len; i++) {
                 result.push(functions[i]);
             }
         }
@@ -523,7 +523,7 @@ var JQLExpressionFunctionCall = (function (_super) {
     JQLExpressionFunctionCall.prototype.getIdentifiers = function () {
         var result = [];
         for (var argI = 0, numArgs = this.arguments.length; argI < numArgs; argI++) {
-            for (var i = 0, identifiers = this.arguments[i].getIdentifiers(), len = identifiers.length; i < len; i++) {
+            for (var i = 0, identifiers = this.arguments[argI].getIdentifiers(), len = identifiers.length; i < len; i++) {
                 result.push(identifiers[i]);
             }
         }
