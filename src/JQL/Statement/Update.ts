@@ -12,29 +12,29 @@ class JQLStatementUpdate extends JQLStatement {
 
     private timer: JQLStatementUpdateDelayedOption = null;
 
-    constructor( statement: IJQL_LEXER_PARSED_UPDATE_STATEMENT ) {
+    constructor(statement: IJQL_LEXER_PARSED_UPDATE_STATEMENT) {
 
-        super( statement );
+        super(statement);
 
         this.table = <JQLTableReference>JQLLexerFactory.create(statement.table);
 
-        if ( !!statement.delayed ) {
-            this.timer = <JQLStatementUpdateDelayedOption>JQLLexerFactory.create( statement.delayed );
+        if (!!statement.delayed) {
+            this.timer = <JQLStatementUpdateDelayedOption>JQLLexerFactory.create(statement.delayed);
         }
 
-        for ( let i=0, len = statement.fields.length; i<len; i++ ) {
-            this.fields.push( <JQLStatementUpdateField>JQLLexerFactory.create(statement.fields[i]) );
+        for (let i = 0, len = statement.fields.length; i < len; i++) {
+            this.fields.push(<JQLStatementUpdateField>JQLLexerFactory.create(statement.fields[ i ]));
         }
 
-        if ( !!statement.where ) {
-            this.filter = <JQLExpression>JQLLexerFactory.create(statement.where );
+        if (!!statement.where) {
+            this.filter = <JQLExpression>JQLLexerFactory.create(statement.where);
         }
 
-        if ( !!statement.limit ) {
+        if (!!statement.limit) {
             this.limit = <JQLLimit>JQLLexerFactory.create(statement.limit);
         }
 
-        if ( !!statement.orderBy ) {
+        if (!!statement.orderBy) {
             this.sorter = <JQLSorterStrategy>JQLLexerFactory.create(statement.orderBy);
         }
 
@@ -69,13 +69,67 @@ class JQLStatementUpdate extends JQLStatement {
     }
 
     public getBindings(): JQLExpressionBinding[] {
+
         let result: JQLExpressionBinding[] = [];
+
+        for (let i = 0, len = this.fields.length; i < len; i++) {
+
+            for (let j = 0, bindings = this.fields[ i ].getExpression().getBindings(), n = bindings.length; j < n; j++) {
+                result.push(bindings[ j ]);
+            }
+
+        }
+
+        if (!!this.filter) {
+            for (let i = 0, bindings = this.filter.getBindings(), len = bindings.length; i < len; i++) {
+                result.push(bindings[ i ]);
+            }
+        }
+
+        if (!!this.sorter) {
+            if (!this.sorter.isRandom()) {
+                for (let sorterByExpression = <JQLSorterStrategyByExpression>this.sorter, i = 0, expressions = sorterByExpression.getSortExpressions(), len = expressions.length; i < len; i++) {
+                    for (let j = 0, bindings = expressions[ i ].getExpression().getBindings(), n = bindings.length; j < n; j++) {
+                        result.push(bindings[ i ]);
+                    }
+                }
+            }
+        }
+
         return result;
+
     }
 
     public getFunctions(): JQLExpressionFunctionCall[] {
+
         let result: JQLExpressionFunctionCall[] = [];
+
+        for (let i = 0, len = this.fields.length; i < len; i++) {
+
+            for (let j = 0, functions = this.fields[ i ].getExpression().getFunctions(), n = functions.length; j < n; j++) {
+                result.push(functions[ j ]);
+            }
+
+        }
+
+        if (!!this.filter) {
+            for (let i = 0, functions = this.filter.getFunctions(), len = functions.length; i < len; i++) {
+                result.push(functions[ i ]);
+            }
+        }
+
+        if (!!this.sorter) {
+            if (!this.sorter.isRandom()) {
+                for (let sorterByExpression = <JQLSorterStrategyByExpression>this.sorter, i = 0, expressions = sorterByExpression.getSortExpressions(), len = expressions.length; i < len; i++) {
+                    for (let j = 0, functions = expressions[ i ].getExpression().getFunctions(), n = functions.length; j < n; j++) {
+                        result.push(functions[ i ]);
+                    }
+                }
+            }
+        }
+
         return result;
+
     }
 
 }

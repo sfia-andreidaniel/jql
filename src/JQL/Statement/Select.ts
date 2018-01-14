@@ -45,7 +45,7 @@ class JQLStatementSelect extends JQLStatement {
     }
 
     public isRemote(): boolean {
-        if ( this.previous ) {
+        if (this.previous) {
             return this.previous.isRemote();
         } else {
             return super.isRemote();
@@ -60,7 +60,7 @@ class JQLStatementSelect extends JQLStatement {
         return this.fields;
     }
 
-    public getTable(): JQLTableReference|null {
+    public getTable(): JQLTableReference | null {
         return this.table;
     }
 
@@ -80,7 +80,7 @@ class JQLStatementSelect extends JQLStatement {
         return this.union;
     }
 
-    public withPreviousStatement( statement: JQLStatementSelect ): this {
+    public withPreviousStatement(statement: JQLStatementSelect): this {
         this.previous = statement || null;
         return this;
     }
@@ -89,27 +89,27 @@ class JQLStatementSelect extends JQLStatement {
 
         let result: JQLExpressionBinding[] = [];
 
-        if ( null !== this.fields ) {
-            if ( !this.fields.isSelectingAllFields() ) {
-                for ( let specificFields = <JQLStatementSelectFieldsListSpecific>this.fields, i=0, fields = specificFields.getFields(), len = fields.length; i<len; i++) {
-                    for ( let j=0, bindings = fields[i].getExpression().getBindings(), n = bindings.length; j<n; j++ ) {
-                        result.push( bindings[j] );
+        if (null !== this.fields) {
+            if (!this.fields.isSelectingAllFields()) {
+                for (let specificFields = <JQLStatementSelectFieldsListSpecific>this.fields, i = 0, fields = specificFields.getFields(), len = fields.length; i < len; i++) {
+                    for (let j = 0, bindings = fields[ i ].getExpression().getBindings(), n = bindings.length; j < n; j++) {
+                        result.push(bindings[ j ]);
                     }
                 }
             }
         }
 
-        if ( null !== this.filter ) {
-            for ( let bindings = this.filter.getBindings(), i=0, len = bindings.length; i<len; i++ ) {
-                result.push(bindings[i] );
+        if (null !== this.filter) {
+            for (let bindings = this.filter.getBindings(), i = 0, len = bindings.length; i < len; i++) {
+                result.push(bindings[ i ]);
             }
         }
 
-        if ( null !== this.sorter ) {
-            if ( !this.sorter.isRandom() ) {
-                for ( let sorterByExpression = <JQLSorterStrategyByExpression>this.sorter, i=0, expressions = sorterByExpression.getSortExpressions(), len = expressions.length; i<len; i++ ) {
-                    for ( let j=0, bindings = expressions[i].getExpression().getBindings(), n = bindings.length; j<n; j++ ) {
-                        result.push(bindings[i]);
+        if (null !== this.sorter) {
+            if (!this.sorter.isRandom()) {
+                for (let sorterByExpression = <JQLSorterStrategyByExpression>this.sorter, i = 0, expressions = sorterByExpression.getSortExpressions(), len = expressions.length; i < len; i++) {
+                    for (let j = 0, bindings = expressions[ i ].getExpression().getBindings(), n = bindings.length; j < n; j++) {
+                        result.push(bindings[ i ]);
                     }
                 }
             }
@@ -122,27 +122,27 @@ class JQLStatementSelect extends JQLStatement {
 
         let result: JQLExpressionFunctionCall[] = [];
 
-        if ( null !== this.fields ) {
-            if ( !this.fields.isSelectingAllFields() ) {
-                for ( let specificFields = <JQLStatementSelectFieldsListSpecific>this.fields, i=0, fields = specificFields.getFields(), len = fields.length; i<len; i++) {
-                    for ( let j=0, functions = fields[i].getExpression().getFunctions(), n = functions.length; j<n; j++ ) {
-                        result.push( functions[j] );
+        if (null !== this.fields) {
+            if (!this.fields.isSelectingAllFields()) {
+                for (let specificFields = <JQLStatementSelectFieldsListSpecific>this.fields, i = 0, fields = specificFields.getFields(), len = fields.length; i < len; i++) {
+                    for (let j = 0, functions = fields[ i ].getExpression().getFunctions(), n = functions.length; j < n; j++) {
+                        result.push(functions[ j ]);
                     }
                 }
             }
         }
 
-        if ( null !== this.filter ) {
-            for ( let functions = this.filter.getFunctions(), i=0, len = functions.length; i<len; i++ ) {
-                result.push(functions[i] );
+        if (null !== this.filter) {
+            for (let functions = this.filter.getFunctions(), i = 0, len = functions.length; i < len; i++) {
+                result.push(functions[ i ]);
             }
         }
 
-        if ( null !== this.sorter ) {
-            if ( !this.sorter.isRandom() ) {
-                for ( let sorterByExpression = <JQLSorterStrategyByExpression>this.sorter, i=0, expressions = sorterByExpression.getSortExpressions(), len = expressions.length; i<len; i++ ) {
-                    for ( let j=0, functions = expressions[i].getExpression().getFunctions(), n = functions.length; j<n; j++ ) {
-                        result.push(functions[i]);
+        if (null !== this.sorter) {
+            if (!this.sorter.isRandom()) {
+                for (let sorterByExpression = <JQLSorterStrategyByExpression>this.sorter, i = 0, expressions = sorterByExpression.getSortExpressions(), len = expressions.length; i < len; i++) {
+                    for (let j = 0, functions = expressions[ i ].getExpression().getFunctions(), n = functions.length; j < n; j++) {
+                        result.push(functions[ i ]);
                     }
                 }
             }
