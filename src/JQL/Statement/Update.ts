@@ -132,4 +132,36 @@ class JQLStatementUpdate extends JQLStatement {
 
     }
 
+    public getIdentifiers(): JQLExpressionIdentifier[] {
+
+        let result: JQLExpressionIdentifier[] = [];
+
+        for (let i = 0, len = this.fields.length; i < len; i++) {
+
+            for (let j = 0, identifiers = this.fields[ i ].getExpression().getIdentifiers(), n = identifiers.length; j < n; j++) {
+                result.push(identifiers[ j ]);
+            }
+
+        }
+
+        if (!!this.filter) {
+            for (let i = 0, identifiers = this.filter.getIdentifiers(), len = identifiers.length; i < len; i++) {
+                result.push(identifiers[ i ]);
+            }
+        }
+
+        if (!!this.sorter) {
+            if (!this.sorter.isRandom()) {
+                for (let sorterByExpression = <JQLSorterStrategyByExpression>this.sorter, i = 0, expressions = sorterByExpression.getSortExpressions(), len = expressions.length; i < len; i++) {
+                    for (let j = 0, identifiers = expressions[ i ].getExpression().getIdentifiers(), n = identifiers.length; j < n; j++) {
+                        result.push(identifiers[ i ]);
+                    }
+                }
+            }
+        }
+
+        return result;
+
+    }
+
 }

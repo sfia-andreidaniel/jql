@@ -10,6 +10,8 @@ abstract class JQLExpression extends JQLOpcode {
 
     public abstract getFunctions(): JQLExpressionFunctionCall[];
 
+    public abstract getIdentifiers(): JQLExpressionIdentifier[];
+
     public abstract compute( context: IJQLTableRow ): JQLPrimitive;
 
 }

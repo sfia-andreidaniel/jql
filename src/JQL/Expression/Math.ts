@@ -63,4 +63,20 @@ abstract class JQLExpressionMath extends JQLExpression {
 
     }
 
+    public getIdentifiers(): JQLExpressionIdentifier[] {
+
+        let result: JQLExpressionIdentifier[] = [];
+
+        for ( let i=0, identifiers = this.left.getIdentifiers(), len = identifiers.length; i<len; i++ ) {
+            result.push( identifiers[i] );
+        }
+
+        for ( let i=0, identifiers = this.right.getIdentifiers(), len = identifiers.length; i<len; i++ ) {
+            result.push( identifiers[i] );
+        }
+
+        return result;
+
+    }
+
 }

@@ -73,6 +73,13 @@ var EJQL_LEXER_OPERATOR_MATH_TYPE;
     EJQL_LEXER_OPERATOR_MATH_TYPE["ADDITION"] = "+";
     EJQL_LEXER_OPERATOR_MATH_TYPE["DIFFERENCE"] = "-";
 })(EJQL_LEXER_OPERATOR_MATH_TYPE || (EJQL_LEXER_OPERATOR_MATH_TYPE = {}));
+var EJQLTableColumnType;
+(function (EJQLTableColumnType) {
+    EJQLTableColumnType["STRING"] = "string";
+    EJQLTableColumnType["NUMBER"] = "number";
+    EJQLTableColumnType["BOOLEAN"] = "boolean";
+    EJQLTableColumnType["NULL"] = "null";
+})(EJQLTableColumnType || (EJQLTableColumnType = {}));
 var JQLLexerFactory = (function () {
     function JQLLexerFactory() {
     }
@@ -190,6 +197,141 @@ var JQLLexerFactory = (function () {
     };
     return JQLLexerFactory;
 }());
+var JQLDatabase = (function () {
+    function JQLDatabase() {
+        this.functions = {};
+        this.tables = {};
+    }
+    JQLDatabase.prototype.withJQuery = function (jq) {
+        this.jq = jq;
+        this.planner = new JQLDatabaseQueryPlanner(this);
+        return this;
+    };
+    JQLDatabase.prototype.getJQuery = function () {
+        return this.jq;
+    };
+    JQLDatabase.prototype.isValidIdentifierName = function (identifier) {
+        return "string" === typeof identifier && /^[a-zA-Z$_][a-zA-Z0-9_$]+$/.test(identifier);
+    };
+    JQLDatabase.prototype.withFunction = function (functionName, func) {
+        if (!this.isValidIdentifierName(functionName)) {
+            throw new Error(JSON.stringify(functionName) + " is not a valid function name!");
+        }
+        if (undefined !== this.functions[functionName]) {
+            throw new Error("Function " + JSON.stringify(functionName) + " already registered in database!");
+        }
+        this.functions[functionName] = func;
+        return this;
+    };
+    JQLDatabase.prototype.hasFunction = function (functionName) {
+        return "string" === typeof functionName && undefined !== this.functions[functionName] && this.functions.hasOwnProperty(functionName);
+    };
+    JQLDatabase.prototype.callFunction = function (functionName, functionArgs) {
+        if (this.hasFunction(functionName)) {
+            return this.functions[functionName].call(this, functionArgs);
+        }
+        else {
+            throw new Error("Failed to call function " + JSON.stringify(functionName) + ": Function not defined!");
+        }
+    };
+    JQLDatabase.prototype.getFunction = function (functionName) {
+        if (this.hasFunction(functionName)) {
+            return this.functions[functionName];
+        }
+        else {
+            throw new Error("Failed to get function " + JSON.stringify(functionName) + ": Function not defined!");
+        }
+    };
+    JQLDatabase.prototype.withTable = function (tableName, table) {
+        if (!this.isValidIdentifierName(tableName)) {
+            throw new Error(JSON.stringify(tableName) + " is not a valid table name!");
+        }
+        if (undefined !== this.tables[tableName]) {
+            throw new Error("Table " + JSON.stringify(tableName) + " already created!");
+        }
+        this.tables[tableName] = table;
+        return this;
+    };
+    JQLDatabase.prototype.hasTable = function (tableName) {
+        return "string" === typeof tableName && undefined !== this.tables[tableName] && this.tables.hasOwnProperty(tableName);
+    };
+    JQLDatabase.prototype.getTable = function (tableName) {
+        if (this.hasTable(tableName)) {
+            return this.tables[tableName];
+        }
+        else {
+            throw new Error("Table " + JSON.stringify(tableName) + " does not exist!");
+        }
+    };
+    JQLDatabase.prototype.createStatement = function (statement) {
+        var stmt = JQLLexerFactory.create(JQLGrammar.parse(statement));
+        var tableReference = stmt.getTable();
+        if (tableReference) {
+            if (!this.hasTable(tableReference.getName())) {
+                throw new Error("Failed to create statement: Table " + JSON.stringify(tableReference.getName()) + " does not exist!");
+            }
+            var table = this.getTable(tableReference.getName()), statementIdentifiers = stmt.getIdentifiers();
+            for (var i = 0, len = statementIdentifiers.length; i < len; i++) {
+                if (!table.hasIdentifier(statementIdentifiers[i].getIdentifierName())) {
+                    throw new Error("Unknown table identifier " + JSON.stringify(statementIdentifiers[i].getIdentifierName()));
+                }
+            }
+            if (table.isRemote() !== stmt.isRemote()) {
+                if (stmt.isRemote()) {
+                    throw new Error("Cannot create remote statement affecting in-memory table!");
+                }
+                else {
+                    throw new Error("Cannot create in-memory statement affecting remote table!");
+                }
+            }
+        }
+        else {
+            if (stmt.getIdentifiers().length) {
+                throw new Error("A statement which does not affect a table cannot have identifiers!");
+            }
+        }
+        var statementFunctions = stmt.getFunctions();
+        for (var i = 0, len = statementFunctions.length; i < len; i++) {
+            if (!this.hasFunction(statementFunctions[i].getFunctionName())) {
+                throw new Error("Failed to create statement: Function " + JSON.stringify(statementFunctions[i].getFunctionName()) + " is not declared!");
+            }
+        }
+        return stmt;
+    };
+    JQLDatabase.prototype.executeStatement = function (statement, bindings) {
+        return (function ($, self) {
+            return $.Deferred(function (defer) {
+                try {
+                    statement.bind(bindings);
+                }
+                catch (e) {
+                    defer.reject(e);
+                    return;
+                }
+                return self.planner.scheduleStatement(statement)
+                    .then(function (result) {
+                    defer.resolve(result);
+                }).fail(function (e) {
+                    defer.reject(e);
+                });
+            }).promise();
+        })(this.jq, this);
+    };
+    return JQLDatabase;
+}());
+var JQLDatabaseQueryPlanner = (function () {
+    function JQLDatabaseQueryPlanner(database) {
+        this.database = database;
+    }
+    JQLDatabaseQueryPlanner.prototype.scheduleStatement = function (statement) {
+        return (function (self, $) {
+            return $.Deferred(function (defer) {
+                defer.reject(new Error('Work in progress'));
+            }).promise();
+        })(this, this.database.getJQuery());
+    };
+    return JQLDatabaseQueryPlanner;
+}());
 var JQLOpcode = (function () {
     function JQLOpcode() {
     }
@@ -217,6 +359,27 @@ var JQLStatement = (function (_super) {
     };
     JQLStatement.prototype.isRemote = function () {
         return this.remote;
+    };
+    JQLStatement.prototype.bind = function (data) {
+        this.binded = false;
+        var bindings = this.getBindings(), numBindings = bindings.length, bindingName;
+        for (var i = 0; i < numBindings; i++) {
+            bindings[i].unbind();
+        }
+        for (var i = 0; i < numBindings; i++) {
+            bindingName = bindings[i].getBindingName();
+            if (undefined === data[bindingName]) {
+                throw new Error("Failed to bind statement: Binding " + JSON.stringify(bindingName) + " is not defined in bind object!");
+            }
+            else {
+                bindings[i].bind(data[bindingName]);
+            }
+        }
+        this.binded = true;
+        return this;
+    };
+    JQLStatement.prototype.isBinded = function () {
+        return this.binded;
     };
     return JQLStatement;
 }(JQLOpcode));
@@ -267,8 +430,15 @@ var JQLExpressionBinding = (function (_super) {
     JQLExpressionBinding.prototype.getFunctions = function () {
         return [];
     };
+    JQLExpressionBinding.prototype.getIdentifiers = function () {
+        return [];
+    };
     JQLExpressionBinding.prototype.bind = function (value) {
         this.bindingValue = value;
+        return this;
+    };
+    JQLExpressionBinding.prototype.unbind = function () {
+        this.bindingValue = undefined;
         return this;
     };
     JQLExpressionBinding.prototype.compute = function (context) {
@@ -295,6 +465,9 @@ var JQLExpressionBoolean = (function (_super) {
         return EJQL_LEXER_EXPRESSION_TYPES.BOOLEAN;
     };
     JQLExpressionBoolean.prototype.getBindings = function () {
+        return [];
+    };
+    JQLExpressionBoolean.prototype.getIdentifiers = function () {
         return [];
     };
     JQLExpressionBoolean.prototype.getFunctions = function () {
@@ -339,7 +512,22 @@ var JQLExpressionFunctionCall = (function (_super) {
         return result;
     };
     JQLExpressionFunctionCall.prototype.getFunctions = function () {
-        return [this];
+        var result = [this];
+        for (var argI = 0, numArgs = this.arguments.length; argI < numArgs; argI++) {
+            for (var i = 0, functions = this.arguments[i].getFunctions(), len = functions.length; i < len; i++) {
+                result.push(functions[i]);
+            }
+        }
+        return result;
+    };
+    JQLExpressionFunctionCall.prototype.getIdentifiers = function () {
+        var result = [];
+        for (var argI = 0, numArgs = this.arguments.length; argI < numArgs; argI++) {
+            for (var i = 0, identifiers = this.arguments[i].getIdentifiers(), len = identifiers.length; i < len; i++) {
+                result.push(identifiers[i]);
+            }
+        }
+        return result;
     };
     JQLExpressionFunctionCall.prototype.withDatabase = function (database) {
         this.database = database || null;
@@ -378,6 +566,9 @@ var JQLExpressionGroup = (function (_super) {
     JQLExpressionGroup.prototype.getFunctions = function () {
         return this.expression.getFunctions();
     };
+    JQLExpressionGroup.prototype.getIdentifiers = function () {
+        return this.expression.getIdentifiers();
+    };
     JQLExpressionGroup.prototype.compute = function (context) {
         return this.expression.compute(context);
     };
@@ -404,6 +595,9 @@ var JQLExpressionIdentifier = (function (_super) {
     };
     JQLExpressionIdentifier.prototype.getFunctions = function () {
         return [];
+    };
+    JQLExpressionIdentifier.prototype.getIdentifiers = function () {
+        return [this];
     };
     JQLExpressionIdentifier.prototype.compute = function (context) {
         return context.getColumnValue(this.identifierName);
@@ -447,6 +641,16 @@ var JQLExpressionLogical = (function (_super) {
         }
         for (var i = 0, functions = this.right.getFunctions(), len = functions.length; i < len; i++) {
             result.push(functions[i]);
+        }
+        return result;
+    };
+    JQLExpressionLogical.prototype.getIdentifiers = function () {
+        var result = [];
+        for (var i = 0, identifiers = this.left.getIdentifiers(), len = identifiers.length; i < len; i++) {
+            result.push(identifiers[i]);
+        }
+        for (var i = 0, identifiers = this.right.getIdentifiers(), len = identifiers.length; i < len; i++) {
+            result.push(identifiers[i]);
         }
         return result;
     };
@@ -608,6 +812,16 @@ var JQLExpressionMath = (function (_super) {
         }
         return result;
     };
+    JQLExpressionMath.prototype.getIdentifiers = function () {
+        var result = [];
+        for (var i = 0, identifiers = this.left.getIdentifiers(), len = identifiers.length; i < len; i++) {
+            result.push(identifiers[i]);
+        }
+        for (var i = 0, identifiers = this.right.getIdentifiers(), len = identifiers.length; i < len; i++) {
+            result.push(identifiers[i]);
+        }
+        return result;
+    };
     return JQLExpressionMath;
 }(JQLExpression));
 var JQLExpressionMathAddition = (function (_super) {
@@ -683,6 +897,9 @@ var JQLExpressionNull = (function (_super) {
     JQLExpressionNull.prototype.getFunctions = function () {
         return [];
     };
+    JQLExpressionNull.prototype.getIdentifiers = function () {
+        return [];
+    };
     JQLExpressionNull.prototype.compute = function (context) {
         return null;
     };
@@ -707,6 +924,9 @@ var JQLExpressionNumber = (function (_super) {
     JQLExpressionNumber.prototype.getFunctions = function () {
         return [];
     };
+    JQLExpressionNumber.prototype.getIdentifiers = function () {
+        return [];
+    };
     JQLExpressionNumber.prototype.compute = function (context) {
         return this.value;
     };
@@ -729,6 +949,9 @@ var JQLExpressionString = (function (_super) {
         return [];
     };
     JQLExpressionString.prototype.getFunctions = function () {
+        return [];
+    };
+    JQLExpressionString.prototype.getIdentifiers = function () {
         return [];
     };
     JQLExpressionString.prototype.compute = function (context) {
@@ -757,6 +980,9 @@ var JQLExpressionUnary = (function (_super) {
     };
     JQLExpressionUnary.prototype.getFunctions = function () {
         return this.operand.getFunctions();
+    };
+    JQLExpressionUnary.prototype.getIdentifiers = function () {
+        return this.operand.getIdentifiers();
     };
     return JQLExpressionUnary;
 }(JQLExpression));
@@ -992,6 +1218,33 @@ var JQLStatementSelect = (function (_super) {
         }
         return result;
     };
+    JQLStatementSelect.prototype.getIdentifiers = function () {
+        var result;
+        if (null !== this.fields) {
+            if (!this.fields.isSelectingAllFields()) {
+                for (var specificFields = this.fields, i = 0, fields = specificFields.getFields(), len = fields.length; i < len; i++) {
+                    for (var j = 0, identifiers = fields[i].getExpression().getIdentifiers(), n = identifiers.length; j < n; j++) {
+                        result.push(identifiers[j]);
+                    }
+                }
+            }
+        }
+        if (null !== this.filter) {
+            for (var identifiers = this.filter.getIdentifiers(), i = 0, len = identifiers.length; i < len; i++) {
+                result.push(identifiers[i]);
+            }
+        }
+        if (null !== this.sorter) {
+            if (!this.sorter.isRandom()) {
+                for (var sorterByExpression = this.sorter, i = 0, expressions = sorterByExpression.getSortExpressions(), len = expressions.length; i < len; i++) {
+                    for (var j = 0, identifiers = expressions[i].getExpression().getIdentifiers(), n = identifiers.length; j < n; j++) {
+                        result.push(identifiers[i]);
+                    }
+                }
+            }
+        }
+        return result;
+    };
     return JQLStatementSelect;
 }(JQLStatement));
 var JQLStatementSelectField = (function (_super) {
@@ -1090,6 +1343,15 @@ var JQLStatementInsert = (function (_super) {
         }
         return result;
     };
+    JQLStatementInsert.prototype.getIdentifiers = function () {
+        var result = [];
+        for (var i = 0, len = this.fields.length; i < len; i++) {
+            for (var j = 0, identifiers = this.fields[i].getExpression().getIdentifiers(), n = identifiers.length; j < n; j++) {
+                result.push(identifiers[j]);
+            }
+        }
+        return result;
+    };
     return JQLStatementInsert;
 }(JQLStatement));
 var JQLStatementUpdate = (function (_super) {
@@ -1180,6 +1442,29 @@ var JQLStatementUpdate = (function (_super) {
                 for (var sorterByExpression = this.sorter, i = 0, expressions = sorterByExpression.getSortExpressions(), len = expressions.length; i < len; i++) {
                     for (var j = 0, functions = expressions[i].getExpression().getFunctions(), n = functions.length; j < n; j++) {
                         result.push(functions[i]);
+                    }
+                }
+            }
+        }
+        return result;
+    };
+    JQLStatementUpdate.prototype.getIdentifiers = function () {
+        var result = [];
+        for (var i = 0, len = this.fields.length; i < len; i++) {
+            for (var j = 0, identifiers = this.fields[i].getExpression().getIdentifiers(), n = identifiers.length; j < n; j++) {
+                result.push(identifiers[j]);
+            }
+        }
+        if (!!this.filter) {
+            for (var i = 0, identifiers = this.filter.getIdentifiers(), len = identifiers.length; i < len; i++) {
+                result.push(identifiers[i]);
+            }
+        }
+        if (!!this.sorter) {
+            if (!this.sorter.isRandom()) {
+                for (var sorterByExpression = this.sorter, i = 0, expressions = sorterByExpression.getSortExpressions(), len = expressions.length; i < len; i++) {
+                    for (var j = 0, identifiers = expressions[i].getExpression().getIdentifiers(), n = identifiers.length; j < n; j++) {
+                        result.push(identifiers[i]);
                     }
                 }
             }
@@ -1288,6 +1573,24 @@ var JQLStatementDelete = (function (_super) {
                 for (var sorterByExpression = this.sorter, i = 0, expressions = sorterByExpression.getSortExpressions(), len = expressions.length; i < len; i++) {
                     for (var j = 0, functions = expressions[i].getExpression().getFunctions(), n = functions.length; j < n; j++) {
                         result.push(functions[i]);
+                    }
+                }
+            }
+        }
+        return result;
+    };
+    JQLStatementDelete.prototype.getIdentifiers = function () {
+        var result = [];
+        if (null !== this.filter) {
+            for (var identifiers = this.filter.getIdentifiers(), i = 0, len = identifiers.length; i < len; i++) {
+                result.push(identifiers[i]);
+            }
+        }
+        if (null !== this.sorter) {
+            if (!this.sorter.isRandom()) {
+                for (var sorterByExpression = this.sorter, i = 0, expressions = sorterByExpression.getSortExpressions(), len = expressions.length; i < len; i++) {
+                    for (var j = 0, identifiers = expressions[i].getExpression().getIdentifiers(), n = identifiers.length; j < n; j++) {
+                        result.push(identifiers[i]);
                     }
                 }
             }

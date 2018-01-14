@@ -22,6 +22,10 @@ class JQLExpressionBoolean extends JQLExpression {
         return [];
     }
 
+    public getIdentifiers(): JQLExpressionIdentifier[] {
+        return [];
+    }
+
     public getFunctions(): JQLExpressionFunctionCall[] {
         return [];
     }

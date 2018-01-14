@@ -16,6 +16,10 @@ class JQLExpressionNull extends JQLExpression {
         return [];
     }
 
+    public getIdentifiers(): JQLExpressionIdentifier[] {
+        return [];
+    }
+
     public compute( context: IJQLTableRow ): JQLPrimitive {
         return null;
     }

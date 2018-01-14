@@ -32,4 +32,8 @@ abstract class JQLExpressionUnary extends JQLExpression {
         return this.operand.getFunctions();
     }
 
+    public getIdentifiers(): JQLExpressionIdentifier[] {
+        return this.operand.getIdentifiers();
+    }
+
 }

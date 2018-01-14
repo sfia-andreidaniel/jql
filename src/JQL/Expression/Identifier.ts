@@ -2,7 +2,7 @@ class JQLExpressionIdentifier extends JQLExpression {
 
     private identifierName: string;
 
-    constructor( token: IJQL_LEXER_EXPRESSION_IDENTIFIER ) {
+    constructor(token: IJQL_LEXER_EXPRESSION_IDENTIFIER) {
         super();
         this.identifierName = token.name;
     }
@@ -27,8 +27,12 @@ class JQLExpressionIdentifier extends JQLExpression {
         return [];
     }
 
-    public compute( context: IJQLTableRow ): JQLPrimitive {
-        return context.getColumnValue( this.identifierName );
+    public getIdentifiers(): JQLExpressionIdentifier[] {
+        return [ this ];
+    }
+
+    public compute(context: IJQLTableRow): JQLPrimitive {
+        return context.getColumnValue(this.identifierName);
     }
 
 }

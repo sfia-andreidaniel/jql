@@ -26,6 +26,10 @@ class JQLExpressionNumber extends JQLExpression {
         return [];
     }
 
+    public getIdentifiers(): JQLExpressionIdentifier[] {
+        return [];
+    }
+
     public compute( context: IJQLTableRow ): JQLPrimitive {
         return this.value;
     }

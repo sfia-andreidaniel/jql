@@ -32,8 +32,17 @@ class JQLExpressionBinding extends JQLExpression {
         return [];
     }
 
+    public getIdentifiers(): JQLExpressionIdentifier[] {
+        return [];
+    }
+
     public bind( value: JQLPrimitive ): this {
         this.bindingValue = value;
+        return this;
+    }
+
+    public unbind(): this {
+        this.bindingValue = undefined;
         return this;
     }
 

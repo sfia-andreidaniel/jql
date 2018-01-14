@@ -97,4 +97,28 @@ class JQLStatementDelete extends JQLStatement {
 
     }
 
+    public getIdentifiers(): JQLExpressionIdentifier[] {
+
+        let result: JQLExpressionIdentifier[] = [];
+
+        if (null !== this.filter) {
+            for (let identifiers = this.filter.getIdentifiers(), i = 0, len = identifiers.length; i < len; i++) {
+                result.push(identifiers[ i ]);
+            }
+        }
+
+        if (null !== this.sorter) {
+            if (!this.sorter.isRandom()) {
+                for (let sorterByExpression = <JQLSorterStrategyByExpression>this.sorter, i = 0, expressions = sorterByExpression.getSortExpressions(), len = expressions.length; i < len; i++) {
+                    for (let j = 0, identifiers = expressions[ i ].getExpression().getIdentifiers(), n = identifiers.length; j < n; j++) {
+                        result.push(identifiers[ i ]);
+                    }
+                }
+            }
+        }
+
+        return result;
+
+    }
+
 }

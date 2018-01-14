@@ -151,4 +151,38 @@ class JQLStatementSelect extends JQLStatement {
         return result;
     }
 
+    public getIdentifiers(): JQLExpressionIdentifier[] {
+
+        let result: JQLExpressionIdentifier[];
+
+        if (null !== this.fields) {
+            if (!this.fields.isSelectingAllFields()) {
+                for (let specificFields = <JQLStatementSelectFieldsListSpecific>this.fields, i = 0, fields = specificFields.getFields(), len = fields.length; i < len; i++) {
+                    for (let j = 0, identifiers = fields[ i ].getExpression().getIdentifiers(), n = identifiers.length; j < n; j++) {
+                        result.push(identifiers[ j ]);
+                    }
+                }
+            }
+        }
+
+        if (null !== this.filter) {
+            for (let identifiers = this.filter.getIdentifiers(), i = 0, len = identifiers.length; i < len; i++) {
+                result.push(identifiers[ i ]);
+            }
+        }
+
+        if (null !== this.sorter) {
+            if (!this.sorter.isRandom()) {
+                for (let sorterByExpression = <JQLSorterStrategyByExpression>this.sorter, i = 0, expressions = sorterByExpression.getSortExpressions(), len = expressions.length; i < len; i++) {
+                    for (let j = 0, identifiers = expressions[ i ].getExpression().getIdentifiers(), n = identifiers.length; j < n; j++) {
+                        result.push(identifiers[ i ]);
+                    }
+                }
+            }
+        }
+
+        return result;
+
+    }
+
 }

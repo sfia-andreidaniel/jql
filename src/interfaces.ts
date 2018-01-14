@@ -235,7 +235,7 @@ interface IJQL_LEXER_PARSED_SELECT_STATEMENT extends IJQL_LEXER_PARSED_STATEMENT
     union?: IJQL_LEXER_PARSED_SELECT_STATEMENT;
 }
 
-interface IJQL_LEXER_UPDATE_FIELD extends IJQL_LEXER_OPCODE{
+interface IJQL_LEXER_UPDATE_FIELD extends IJQL_LEXER_OPCODE {
     // op = EJQL_LEXER_OPCODE_TYPES.UPDATE_FIELD
     name: string;
     expression: IJQL_LEXER_EXPRESSION,
@@ -269,7 +269,7 @@ interface IJQL_LEXER_PARSED_DELETE_STATEMENT extends IJQL_LEXER_PARSED_STATEMENT
 }
 
 interface IJQL_LEXER_DELAYED_OPTION extends IJQL_LEXER_OPCODE {
-    timer: number|null;
+    timer: number | null;
 }
 
 type IJQL_LEXER_TOKENIZED_STATEMENT
@@ -285,13 +285,82 @@ type JQLPrimitive
     | boolean
     | null;
 
+interface IJQLBindData {
+    [ bindingName: string ]: JQLPrimitive;
+}
+
 interface IJQLTableRow {
-    getColumnValue( columnName: string ): JQLPrimitive;
+    getColumnValue(columnName: string): JQLPrimitive;
+}
+
+interface IJQLDatabaseFunction {
+    (...args: JQLPrimitive[]): JQLPrimitive;
+}
+
+interface IJQLFunctionHashMap {
+    [ functionName: string ]: IJQLDatabaseFunction;
+}
+
+enum EJQLTableColumnType {
+    STRING  = "string",
+    NUMBER  = "number",
+    BOOLEAN = "boolean",
+    NULL    = "null",
+}
+
+interface IJQLTableColumn {
+    name: string;
+    type: EJQLTableColumnType;
+}
+
+interface IJQLTable {
+
+    describe(): IJQLTableColumn[];
+
+    hasIdentifier( identifierName: string ): boolean;
+
+    isRemote(): boolean;
+
+}
+
+interface IJQLTableHashMap {
+    [ tableName: string ]: IJQLTable;
 }
 
 interface IJQLDatabase {
 
-    hasFunction( functionName: string ): boolean;
-    callFunction( functionName: string, functionArgs: JQLPrimitive[] ): JQLPrimitive;
+    hasFunction(functionName: string): boolean;
+
+    callFunction(functionName: string, functionArgs: JQLPrimitive[]): JQLPrimitive;
+
+    getFunction(functionName: string): IJQLDatabaseFunction;
+
+    withFunction(functionName: string, func: IJQLDatabaseFunction): this;
+
+    withTable(tableName: string, table: IJQLTable): this;
+
+    hasTable(tableName: string): boolean;
 
 }
+
+interface JQLSelectStatementResult {
+
+}
+
+interface JQLInsertStatementResult {
+
+}
+
+interface JQLDeleteStatementResult {
+
+}
+
+interface JQLUpdateStatementResult {
+
+}
+
+type JQLStatementResult
+    = JQLSelectStatementResult
+    | JQLInsertStatementResult
+    | JQLDeleteStatementResult
+    | JQLUpdateStatementResult;

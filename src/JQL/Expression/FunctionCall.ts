@@ -53,7 +53,35 @@ class JQLExpressionFunctionCall extends JQLExpression {
     }
 
     public getFunctions(): JQLExpressionFunctionCall[] {
-        return [ this ];
+
+        let result: JQLExpressionFunctionCall[] = [ this ];
+
+        for (let argI = 0, numArgs = this.arguments.length; argI < numArgs; argI++) {
+
+            for (let i = 0, functions = this.arguments[ i ].getFunctions(), len = functions.length; i < len; i++) {
+                result.push(functions[ i ]);
+            }
+
+        }
+
+        return result;
+
+    }
+
+    public getIdentifiers(): JQLExpressionIdentifier[] {
+
+        let result: JQLExpressionIdentifier[] = [];
+
+        for (let argI = 0, numArgs = this.arguments.length; argI < numArgs; argI++) {
+
+            for (let i = 0, identifiers = this.arguments[ i ].getIdentifiers(), len = identifiers.length; i < len; i++) {
+                result.push(identifiers[ i ]);
+            }
+
+        }
+
+        return result;
+
     }
 
     public withDatabase(database: IJQLDatabase): this {

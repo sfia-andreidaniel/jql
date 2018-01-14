@@ -1,6 +1,9 @@
 ///<reference path="./interfaces.ts" />
+///<reference path="./jquery2.d.ts" />
 ///<reference path="./Lexer.d.ts" />
 ///<reference path="./JQL/Lexer/Factory.ts" />
+///<reference path="./JQL/Database.ts" />
+///<reference path="./JQL/Database/QueryPlanner.ts" />
 ///<reference path="./JQL/Opcode.ts" />
 ///<reference path="./JQL/Statement.ts" />
 ///<reference path="./JQL/TableReference.ts" />

@@ -23,6 +23,10 @@ class JQLExpressionGroup extends JQLExpression {
         return this.expression.getFunctions();
     }
 
+    public getIdentifiers(): JQLExpressionIdentifier[] {
+        return this.expression.getIdentifiers();
+    }
+
     public compute( context: IJQLTableRow ): JQLPrimitive {
         return this.expression.compute( context );
     }
