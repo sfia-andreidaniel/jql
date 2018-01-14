@@ -838,7 +838,7 @@ parse: function parse(input) {
 
         id: 0,
 
-        createAlias( prefix ) {
+        createAlias: function( prefix ) {
             JQL_AST.id++;
             return ( prefix || 'field_' ) + JQL_AST.id;
         },
