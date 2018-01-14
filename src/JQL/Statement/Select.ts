@@ -153,7 +153,7 @@ class JQLStatementSelect extends JQLStatement {
 
     public getIdentifiers(): JQLExpressionIdentifier[] {
 
-        let result: JQLExpressionIdentifier[];
+        let result: JQLExpressionIdentifier[] = [];
 
         if (null !== this.fields) {
             if (!this.fields.isSelectingAllFields()) {

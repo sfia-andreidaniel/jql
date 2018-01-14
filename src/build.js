@@ -1219,7 +1219,7 @@ var JQLStatementSelect = (function (_super) {
         return result;
     };
     JQLStatementSelect.prototype.getIdentifiers = function () {
-        var result;
+        var result = [];
         if (null !== this.fields) {
             if (!this.fields.isSelectingAllFields()) {
                 for (var specificFields = this.fields, i = 0, fields = specificFields.getFields(), len = fields.length; i < len; i++) {
