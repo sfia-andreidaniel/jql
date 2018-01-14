@@ -1,4 +1,4 @@
-class JQLTable extends JQLOpcode {
+class JQLTableReference extends JQLOpcode {
 
     public name: string;
 

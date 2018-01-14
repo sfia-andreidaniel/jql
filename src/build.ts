@@ -3,7 +3,7 @@
 ///<reference path="./JQL/Lexer/Factory.ts" />
 ///<reference path="./JQL/Opcode.ts" />
 ///<reference path="./JQL/Statement.ts" />
-///<reference path="./JQL/Table.ts" />
+///<reference path="./JQL/TableReference.ts" />
 ///<reference path="./JQL/Expression.ts" />
 ///<reference path="./JQL/Expression/Binding.ts" />
 ///<reference path="./JQL/Expression/Boolean.ts" />

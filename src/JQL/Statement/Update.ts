@@ -1,6 +1,6 @@
 class JQLStatementUpdate extends JQLStatement {
 
-    private table: JQLTable;
+    private table: JQLTableReference;
 
     private fields: JQLStatementUpdateField[] = [];
 
@@ -16,7 +16,7 @@ class JQLStatementUpdate extends JQLStatement {
 
         super( statement );
 
-        this.table = <JQLTable>JQLLexerFactory.create(statement.table);
+        this.table = <JQLTableReference>JQLLexerFactory.create(statement.table);
 
         if ( !!statement.delayed ) {
             this.timer = <JQLStatementUpdateDelayedOption>JQLLexerFactory.create( statement.delayed );
@@ -48,7 +48,7 @@ class JQLStatementUpdate extends JQLStatement {
         return this.timer;
     }
 
-    public getTable(): JQLTable {
+    public getTable(): JQLTableReference {
         return this.table;
     }
 

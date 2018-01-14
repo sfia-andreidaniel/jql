@@ -1,6 +1,6 @@
 class JQLStatementDelete extends JQLStatement {
 
-    private table: JQLTable;
+    private table: JQLTableReference;
 
     private filter: JQLExpression = null;
 
@@ -12,7 +12,7 @@ class JQLStatementDelete extends JQLStatement {
 
         super( statement );
 
-        this.table = <JQLTable>JQLLexerFactory.create( statement.table );
+        this.table = <JQLTableReference>JQLLexerFactory.create( statement.table );
 
         if ( !!statement.where ) {
             this.filter = <JQLExpression>JQLLexerFactory.create( statement.where );
@@ -32,7 +32,7 @@ class JQLStatementDelete extends JQLStatement {
         return EJQL_LEXER_STATEMENT_TYPES.DELETE;
     }
 
-    public getTable(): JQLTable {
+    public getTable(): JQLTableReference {
         return this.table;
     }
 

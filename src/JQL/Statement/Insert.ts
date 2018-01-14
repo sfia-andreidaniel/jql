@@ -1,6 +1,6 @@
 class JQLStatementInsert extends JQLStatement {
 
-    private table: JQLTable;
+    private table: JQLTableReference;
 
     private fields: JQLStatementUpdateField[] = [];
 
@@ -8,7 +8,7 @@ class JQLStatementInsert extends JQLStatement {
 
         super( statement );
 
-        this.table = <JQLTable>JQLLexerFactory.create(statement.table);
+        this.table = <JQLTableReference>JQLLexerFactory.create(statement.table);
 
         for ( let i=0, len = statement.fields.length; i<len; i++ ) {
             this.fields.push( <JQLStatementUpdateField>JQLLexerFactory.create( statement.fields[i]) );
@@ -19,7 +19,7 @@ class JQLStatementInsert extends JQLStatement {
         return EJQL_LEXER_STATEMENT_TYPES.INSERT;
     }
 
-    public getTable(): JQLTable {
+    public getTable(): JQLTableReference {
         return this.table;
     }
 

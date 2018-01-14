@@ -2,7 +2,7 @@ class JQLStatementSelect extends JQLStatement {
 
     private fields: JQLStatementSelectFieldsList;
 
-    private table: JQLTable = null;
+    private table: JQLTableReference = null;
 
     private filter: JQLExpression = null;
 
@@ -22,7 +22,7 @@ class JQLStatementSelect extends JQLStatement {
 
         if (!!token.table) {
 
-            this.table = <JQLTable>JQLLexerFactory.create(token.table);
+            this.table = <JQLTableReference>JQLLexerFactory.create(token.table);
 
             if (!!token.where) {
                 this.filter = <JQLExpression>JQLLexerFactory.create(token.where);
@@ -60,7 +60,7 @@ class JQLStatementSelect extends JQLStatement {
         return this.fields;
     }
 
-    public getTable(): JQLTable|null {
+    public getTable(): JQLTableReference|null {
         return this.table;
     }
 

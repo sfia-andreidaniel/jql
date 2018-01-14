@@ -92,7 +92,7 @@ var JQLLexerFactory = (function () {
                         throw new Error('Cannot create statement from token: ' + JSON.stringify(lexerToken));
                 }
             case EJQL_LEXER_OPCODE_TYPES.TABLE:
-                return new JQLTable(lexerToken);
+                return new JQLTableReference(lexerToken);
             case EJQL_LEXER_OPCODE_TYPES.EXPRESSION:
                 switch (lexerToken.type) {
                     case EJQL_LEXER_EXPRESSION_TYPES.NUMBER:
@@ -220,20 +220,20 @@ var JQLStatement = (function (_super) {
     };
     return JQLStatement;
 }(JQLOpcode));
-var JQLTable = (function (_super) {
-    __extends(JQLTable, _super);
-    function JQLTable(opcode) {
+var JQLTableReference = (function (_super) {
+    __extends(JQLTableReference, _super);
+    function JQLTableReference(opcode) {
         var _this = _super.call(this) || this;
         _this.name = opcode.name;
         return _this;
     }
-    JQLTable.prototype.getOpcodeType = function () {
+    JQLTableReference.prototype.getOpcodeType = function () {
         return EJQL_LEXER_OPCODE_TYPES.TABLE;
     };
-    JQLTable.prototype.getName = function () {
+    JQLTableReference.prototype.getName = function () {
         return this.name;
     };
-    return JQLTable;
+    return JQLTableReference;
 }(JQLOpcode));
 var JQLExpression = (function (_super) {
     __extends(JQLExpression, _super);

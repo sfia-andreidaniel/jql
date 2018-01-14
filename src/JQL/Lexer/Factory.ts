@@ -27,7 +27,7 @@ class JQLLexerFactory {
 
 
             case EJQL_LEXER_OPCODE_TYPES.TABLE:
-                return new JQLTable( <IJQL_LEXER_TABLE_REFERENCE>lexerToken );
+                return new JQLTableReference( <IJQL_LEXER_TABLE_REFERENCE>lexerToken );
 
             case EJQL_LEXER_OPCODE_TYPES.EXPRESSION:
 
