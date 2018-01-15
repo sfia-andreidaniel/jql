@@ -365,6 +365,23 @@ interface JQLUpdateStatementResult {
 
 }
 
+interface IJQLQueryExecuteStrategy {
+    (): JQueryDeferred<JQLStatementResult>;
+}
+
+interface IDatabaseStatementExecutor {
+
+    execute(): IJQLQueryExecuteStrategy;
+
+}
+
+interface IJQLPlannerQueueEntry {
+    queryId: number;
+    strategy: IJQLQueryExecuteStrategy;
+    statement: JQLStatement;
+    defer: JQueryDeferred<JQLStatementResult>;
+}
+
 type JQLStatementResult
     = JQLSelectStatementResult
     | JQLInsertStatementResult

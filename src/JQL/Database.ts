@@ -188,40 +188,39 @@ class JQLDatabase implements IJQLDatabase {
 
     public executeStatement(statement: JQLStatement, bindings?: IJQLBindData): JQueryPromise<JQLStatementResult> {
 
-        return (function ($: JQueryStatic, self: JQLDatabase): JQueryPromise<JQLStatementResult> {
+        statement.bind(bindings);
 
-            return $.Deferred(function (defer) {
+        return this.planner.scheduleStatement( statement, this.createExecutionStrategy( statement ) );
 
-                try {
+    }
 
-                    statement.bind(bindings);
+    private createExecutionStrategy( statement: JQLStatement ): IJQLQueryExecuteStrategy {
 
-                }
-                catch (e) {
+        if ( !statement.isRemote() ) {
 
-                    // ERROR BINDING STATEMENT
+            switch ( statement.getStatementType() ) {
 
-                    defer.reject(e);
+                case EJQL_LEXER_STATEMENT_TYPES.SELECT:
+                    return (new JQLDatabaseStatementExecutorSelect(<JQLStatementSelect>statement, this) ).execute();
 
-                    return;
+                case EJQL_LEXER_STATEMENT_TYPES.INSERT:
+                    return (new JQLDatabaseStatementExecutorInsert(<JQLStatementInsert>statement, this) ).execute();
 
-                }
+                case EJQL_LEXER_STATEMENT_TYPES.UPDATE:
+                    return (new JQLDatabaseStatementExecutorUpdate(<JQLStatementUpdate>statement, this ) ).execute();
 
-                return self.planner.scheduleStatement(statement)
+                case EJQL_LEXER_STATEMENT_TYPES.DELETE:
+                    return (new JQLDatabaseStatementExecutorDelete(<JQLStatementDelete>statement, this ) ).execute();
 
-                    .then(function (result: JQLStatementResult) {
+                default:
+                    throw new Error('Failed to create execution strategy: Uknown statement type!' );
+            }
 
-                        defer.resolve(result);
+        } else {
 
-                    }).fail(function (e: Error) {
+            return (new JQLDatabaseStatementExecutorRemoteStatement(statement, this)).execute();
 
-                        defer.reject(e);
-
-                    });
-
-            }).promise();
-
-        })(this.jq, this);
+        }
 
     }
 

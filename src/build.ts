@@ -4,8 +4,14 @@
 ///<reference path="./JQL/Lexer/Factory.ts" />
 ///<reference path="./JQL/Utils.ts" />
 ///<reference path="./JQL/Database.ts" />
+///<reference path="./JQL/Database/StatementExecutor/Select.ts" />
+///<reference path="./JQL/Database/StatementExecutor/Update.ts" />
+///<reference path="./JQL/Database/StatementExecutor/Insert.ts" />
+///<reference path="./JQL/Database/StatementExecutor/Delete.ts" />
+///<reference path="./JQL/Database/StatementExecutor/RemoteStatement.ts" />
 ///<reference path="./JQL/Table.ts" />
 ///<reference path="./JQL/Table/InMemory.ts" />
+///<reference path="./JQL/Row.ts" />
 ///<reference path="./JQL/Database/QueryPlanner.ts" />
 ///<reference path="./JQL/Opcode.ts" />
 ///<reference path="./JQL/Statement.ts" />

@@ -415,25 +415,104 @@ var JQLDatabase = (function () {
         return stmt;
     };
     JQLDatabase.prototype.executeStatement = function (statement, bindings) {
-        return (function ($, self) {
-            return $.Deferred(function (defer) {
-                try {
-                    statement.bind(bindings);
-                }
-                catch (e) {
-                    defer.reject(e);
-                    return;
-                }
-                return self.planner.scheduleStatement(statement)
-                    .then(function (result) {
-                    defer.resolve(result);
-                }).fail(function (e) {
-                    defer.reject(e);
-                });
-            }).promise();
-        })(this.jq, this);
+        statement.bind(bindings);
+        return this.planner.scheduleStatement(statement, this.createExecutionStrategy(statement));
+    };
+    JQLDatabase.prototype.createExecutionStrategy = function (statement) {
+        if (!statement.isRemote()) {
+            switch (statement.getStatementType()) {
+                case EJQL_LEXER_STATEMENT_TYPES.SELECT:
+                    return (new JQLDatabaseStatementExecutorSelect(statement, this)).execute();
+                case EJQL_LEXER_STATEMENT_TYPES.INSERT:
+                    return (new JQLDatabaseStatementExecutorInsert(statement, this)).execute();
+                case EJQL_LEXER_STATEMENT_TYPES.UPDATE:
+                    return (new JQLDatabaseStatementExecutorUpdate(statement, this)).execute();
+                case EJQL_LEXER_STATEMENT_TYPES.DELETE:
+                    return (new JQLDatabaseStatementExecutorDelete(statement, this)).execute();
+                default:
+                    throw new Error('Failed to create execution strategy: Uknown statement type!');
+            }
+        }
+        else {
+            return (new JQLDatabaseStatementExecutorRemoteStatement(statement, this)).execute();
+        }
     };
     return JQLDatabase;
+}());
+var JQLDatabaseStatementExecutorSelect = (function () {
+    function JQLDatabaseStatementExecutorSelect(statement, db) {
+        this.statement = statement;
+        this.db = db;
+    }
+    JQLDatabaseStatementExecutorSelect.prototype.execute = function () {
+        var _this = this;
+        return function () {
+            return _this.db.getJQuery().Deferred(function (defer) {
+                defer.reject(new Error('SELECT statements not implemented!'));
+            }).promise();
+        };
+    };
+    return JQLDatabaseStatementExecutorSelect;
+}());
+var JQLDatabaseStatementExecutorUpdate = (function () {
+    function JQLDatabaseStatementExecutorUpdate(statement, db) {
+        this.statement = statement;
+        this.db = db;
+    }
+    JQLDatabaseStatementExecutorUpdate.prototype.execute = function () {
+        var _this = this;
+        return function () {
+            return _this.db.getJQuery().Deferred(function (defer) {
+                defer.reject(new Error('UPDATE statements not implemented!'));
+            }).promise();
+        };
+    };
+    return JQLDatabaseStatementExecutorUpdate;
+}());
+var JQLDatabaseStatementExecutorInsert = (function () {
+    function JQLDatabaseStatementExecutorInsert(statement, db) {
+        this.statement = statement;
+        this.db = db;
+    }
+    JQLDatabaseStatementExecutorInsert.prototype.execute = function () {
+        var _this = this;
+        return function () {
+            return _this.db.getJQuery().Deferred(function (defer) {
+                defer.reject(new Error('INSERT statements not implemented!'));
+            }).promise();
+        };
+    };
+    return JQLDatabaseStatementExecutorInsert;
+}());
+var JQLDatabaseStatementExecutorDelete = (function () {
+    function JQLDatabaseStatementExecutorDelete(statement, db) {
+        this.statement = statement;
+        this.db = db;
+    }
+    JQLDatabaseStatementExecutorDelete.prototype.execute = function () {
+        var _this = this;
+        return function () {
+            return _this.db.getJQuery().Deferred(function (defer) {
+                defer.reject(new Error('DELETE statements not implemented!'));
+            }).promise();
+        };
+    };
+    return JQLDatabaseStatementExecutorDelete;
+}());
+var JQLDatabaseStatementExecutorRemoteStatement = (function () {
+    function JQLDatabaseStatementExecutorRemoteStatement(statement, db) {
+        this.statement = statement;
+        this.db = db;
+    }
+    JQLDatabaseStatementExecutorRemoteStatement.prototype.execute = function () {
+        var _this = this;
+        return function () {
+            return _this.db.getJQuery().Deferred(function (defer) {
+                defer.reject(new Error('REMOTE statements not implemented!'));
+            }).promise();
+        };
+    };
+    return JQLDatabaseStatementExecutorRemoteStatement;
 }());
 var JQLTable = (function () {
     function JQLTable(identifiers) {
@@ -502,16 +581,73 @@ var JQLTableInMemory = (function (_super) {
     };
     return JQLTableInMemory;
 }(JQLTable));
+var JQLRow = (function () {
+    function JQLRow(columns, data, index) {
+        this.columns = {};
+        this.data = [];
+        this.numColumns = columns.length;
+        for (var i = 0; i < this.numColumns; i++) {
+            this.columns[columns[i].name] = { type: columns[i].type, index: i };
+        }
+        this.data = data;
+        this.columnIndex = index;
+    }
+    JQLRow.prototype.withIndex = function (index) {
+        this.columnIndex = index;
+        return this;
+    };
+    JQLRow.prototype.withRowData = function (data) {
+        this.data = data;
+        return this;
+    };
+    JQLRow.prototype.getColumnValue = function (columnName) {
+        return this.data[this.columns[columnName].index];
+    };
+    return JQLRow;
+}());
 var JQLDatabaseQueryPlanner = (function () {
     function JQLDatabaseQueryPlanner(database) {
+        this.queryId = 0;
+        this.queue = [];
+        this.running = false;
         this.database = database;
     }
-    JQLDatabaseQueryPlanner.prototype.scheduleStatement = function (statement) {
+    JQLDatabaseQueryPlanner.prototype.scheduleStatement = function (statement, strategy) {
         return (function (self, $) {
             return $.Deferred(function (defer) {
-                defer.reject(new Error('Work in progress'));
+                self.queryId++;
+                self.queue.push({
+                    queryId: self.queryId,
+                    statement: statement,
+                    strategy: strategy,
+                    defer: defer,
+                });
+                if (1 === self.queue.length && !self.running) {
+                    self.next();
+                }
             }).promise();
         })(this, this.database.getJQuery());
+    };
+    JQLDatabaseQueryPlanner.prototype.next = function () {
+        var _this = this;
+        if (this.running) {
+            return;
+        }
+        var item = this.queue.shift();
+        if (undefined === item) {
+            return;
+        }
+        this.running = true;
+        item.strategy().then(function (result) {
+            item.defer.resolve(result);
+        }).fail(function (e) {
+            item.defer.reject(e);
+        }).always(function () {
+            _this.running = false;
+            if (0 !== _this.queue.length) {
+                _this.next();
+            }
+        });
     };
     return JQLDatabaseQueryPlanner;
 }());
