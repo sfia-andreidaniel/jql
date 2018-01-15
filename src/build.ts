@@ -11,6 +11,7 @@
 ///<reference path="./JQL/Database/StatementExecutor/RemoteStatement.ts" />
 ///<reference path="./JQL/Table.ts" />
 ///<reference path="./JQL/Table/InMemory.ts" />
+///<reference path="./JQL/Table/Utils/Iterator.ts" />
 ///<reference path="./JQL/Row.ts" />
 ///<reference path="./JQL/Database/QueryPlanner.ts" />
 ///<reference path="./JQL/Opcode.ts" />

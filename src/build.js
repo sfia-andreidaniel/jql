@@ -281,6 +281,95 @@ var JQLUtils = (function () {
     JQLUtils.isReservedKeyword = function (k) {
         return this.RESERVED_KEYWORDS.indexOf(String(k || '')) > -1;
     };
+    JQLUtils.shuffleArray = function (a) {
+        for (var i = a.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+            _a = [a[j], a[i]], a[i] = _a[0], a[j] = _a[1];
+        }
+        return a;
+        var _a;
+    };
+    JQLUtils.compare = function (a, b) {
+        var aType = this.getType(a), bType = this.getType(b);
+        if (aType === null && bType === null) {
+            return 0;
+        }
+        if (aType === null || bType === null) {
+            if (aType === null) {
+                return -1;
+            }
+            else {
+                return 1;
+            }
+        }
+        var aToString, bToString;
+        if (aType === bType) {
+            switch (aType) {
+                case EJQLTableColumnType.BOOLEAN:
+                case EJQLTableColumnType.NUMBER:
+                case EJQLTableColumnType.NULL:
+                    if (a == b) {
+                        return 0;
+                    }
+                    else {
+                        if (a < b) {
+                            return -1;
+                        }
+                        else {
+                            return 1;
+                        }
+                    }
+                case EJQLTableColumnType.STRING:
+                    aToString = String(a).toLowerCase();
+                    bToString = String(b).toLowerCase();
+            }
+        }
+        else {
+            if (aType !== EJQLTableColumnType.STRING) {
+                if (aType === EJQLTableColumnType.NUMBER) {
+                    aToString = String(a);
+                }
+                else {
+                    if (aType === EJQLTableColumnType.NULL) {
+                        aToString = '';
+                    }
+                    else {
+                        aToString = a ? '1' : '0';
+                    }
+                }
+            }
+            else {
+                aToString = String(a).toLowerCase();
+            }
+            if (bType !== EJQLTableColumnType.STRING) {
+                if (bType === EJQLTableColumnType.NUMBER) {
+                    bToString = String(b);
+                }
+                else {
+                    if (bType === EJQLTableColumnType.NULL) {
+                        bToString = '';
+                    }
+                    else {
+                        bToString = b ? '1' : '0';
+                    }
+                }
+            }
+            else {
+                bToString = String(a).toLowerCase();
+            }
+        }
+        if (aToString === bToString) {
+            return 0;
+        }
+        else {
+            if (aToString < bToString) {
+                return -1;
+            }
+            else {
+                return 1;
+            }
+        }
+    };
     JQLUtils.RESERVED_KEYWORDS = [
         'select',
         'from',
@@ -411,6 +500,9 @@ var JQLDatabase = (function () {
             if (!this.hasFunction(statementFunctions[i].getFunctionName())) {
                 throw new Error("Failed to create statement: Function " + JSON.stringify(statementFunctions[i].getFunctionName()) + " is not declared!");
             }
+            else {
+                statementFunctions[i].withDatabase(this);
+            }
         }
         return stmt;
     };
@@ -441,6 +533,7 @@ var JQLDatabase = (function () {
 }());
 var JQLDatabaseStatementExecutorSelect = (function () {
     function JQLDatabaseStatementExecutorSelect(statement, db) {
+        this.nullAliasIndex = 0;
         this.statement = statement;
         this.db = db;
     }
@@ -448,9 +541,120 @@ var JQLDatabaseStatementExecutorSelect = (function () {
         var _this = this;
         return function () {
             return _this.db.getJQuery().Deferred(function (defer) {
-                defer.reject(new Error('SELECT statements not implemented!'));
+                var rows;
+                if (!_this.statement.getTable()) {
+                    rows = [_this.createSingleStatementRow()];
+                }
+                else {
+                    rows = _this.applyLimit(_this.applySorting(_this.getStatementCandidateRows()));
+                }
+                defer.resolve(rows);
             }).promise();
         };
+    };
+    JQLDatabaseStatementExecutorSelect.prototype.createSingleStatementRow = function () {
+        var result = Object.create(null), context = new JQLRow([], [], 0), fields = this.statement.getFields(), exprResult, fieldName;
+        if (fields.isSelectingAllFields()) {
+            return result;
+        }
+        this.nullAliasIndex = 0;
+        for (var i = 0, fieldsList = fields, specificFields = fieldsList.getFields(), len = specificFields.length; i < len; i++) {
+            fieldName = specificFields[i].getLiteral();
+            exprResult = specificFields[i].getExpression().compute(context);
+            if (null === fieldName) {
+                this.nullAliasIndex++;
+                fieldName = 'col_' + this.nullAliasIndex;
+            }
+            result[fieldName] = exprResult;
+        }
+        return result;
+    };
+    JQLDatabaseStatementExecutorSelect.prototype.getStatementCandidateRows = function () {
+        var table = this.db.getTable(this.statement.getTable().getName()), iterator = table.createIterator(), row, result = [], tableFieldsList = table.describe(), statementFieldsList = this.statement.getFields(), isAllFields = statementFieldsList.isSelectingAllFields(), specificFieldsList = statementFieldsList, specificFieldsListCollection, o, exprResult, fieldName, addRow, where = this.statement.getFilter();
+        if (!isAllFields) {
+            specificFieldsListCollection = specificFieldsList.getFields();
+        }
+        while (row = iterator.next()) {
+            if (!where) {
+                addRow = true;
+            }
+            else {
+                addRow = !!where.compute(row);
+            }
+            if (addRow) {
+                if (isAllFields) {
+                    result.push(row.toObject());
+                }
+                else {
+                    this.nullAliasIndex = 0;
+                    o = Object.create(null);
+                    for (var i = 0, len = specificFieldsListCollection.length; i < len; i++) {
+                        fieldName = specificFieldsListCollection[i].getLiteral();
+                        exprResult = specificFieldsListCollection[i].getExpression().compute(row);
+                        if (null === fieldName) {
+                            this.nullAliasIndex++;
+                            fieldName = 'col_' + this.nullAliasIndex;
+                        }
+                        o[fieldName] = exprResult;
+                    }
+                    result.push(o);
+                }
+            }
+        }
+        return result;
+    };
+    JQLDatabaseStatementExecutorSelect.prototype.applySorting = function (rows) {
+        var sorter = this.statement.getSorter();
+        if (!sorter || rows.length < 2) {
+            return rows;
+        }
+        if (sorter.isRandom()) {
+            return JQLUtils.shuffleArray(rows);
+        }
+        var expressions = sorter.getSortExpressions(), numExpressions = expressions.length;
+        var sortFunction = (function () {
+            var walkers = [];
+            for (var i = 0; i < numExpressions; i++) {
+                if (i === numExpressions - 1) {
+                    walkers.push((function (i) {
+                        return function (a, b) {
+                            var exprA = expressions[i].getExpression().compute(a), exprB = expressions[i].getExpression().compute(b), result = JQLUtils.compare(exprA, exprB);
+                            if (expressions[i].getDirection() === EJQL_LEXER_ORDER_DIRECTION.DESCENDING) {
+                                result = -result;
+                            }
+                            return result;
+                        };
+                    })(i));
+                }
+                else {
+                    walkers.push((function (i) {
+                        return function (a, b) {
+                            var exprA = expressions[i].getExpression().compute(a), exprB = expressions[i].getExpression().compute(b), result = JQLUtils.compare(exprA, exprB);
+                            if (expressions[i].getDirection() === EJQL_LEXER_ORDER_DIRECTION.DESCENDING) {
+                                result = -result;
+                            }
+                            if (0 === result) {
+                                return walkers[i + 1](a, b);
+                            }
+                            else {
+                                return result;
+                            }
+                        };
+                    })(i));
+                }
+                return function (a, b) {
+                    return walkers[0](JQLRow.createFromObject(a), JQLRow.createFromObject(b));
+                };
+            }
+        })();
+        return rows.sort(sortFunction);
+    };
+    JQLDatabaseStatementExecutorSelect.prototype.applyLimit = function (rows) {
+        var limit = this.statement.getLimit();
+        if (!limit) {
+            return rows;
+        }
+        return rows.slice(limit.getSkip(), limit.getSkip() + limit.getLimit());
     };
     return JQLDatabaseStatementExecutorSelect;
 }());
@@ -579,8 +783,32 @@ var JQLTableInMemory = (function (_super) {
     JQLTableInMemory.prototype.getStorageEngine = function () {
         return EJQLTableStorageEngine.IN_MEMORY;
     };
+    JQLTableInMemory.prototype.getRowAt = function (rowIndex) {
+        return this.rows[rowIndex] || null;
+    };
+    JQLTableInMemory.prototype.createIterator = function () {
+        return new JQLTableUtilsIterator(this);
+    };
     return JQLTableInMemory;
 }(JQLTable));
+var JQLTableUtilsIterator = (function () {
+    function JQLTableUtilsIterator(table) {
+        this.index = 0;
+        this.table = table;
+        this.row = new JQLRow(table.describe(), null, null);
+    }
+    JQLTableUtilsIterator.prototype.next = function () {
+        var data = this.table.getRowAt(this.index);
+        if (null === data) {
+            return null;
+        }
+        this.row.withIndex(this.index);
+        this.row.withRowData(data);
+        this.index++;
+        return this.row;
+    };
+    return JQLTableUtilsIterator;
+}());
 var JQLRow = (function () {
     function JQLRow(columns, data, index) {
         this.columns = {};
@@ -602,6 +830,28 @@ var JQLRow = (function () {
     };
     JQLRow.prototype.getColumnValue = function (columnName) {
         return this.data[this.columns[columnName].index];
+    };
+    JQLRow.prototype.toObject = function () {
+        var result = Object.create(null), v;
+        for (var columnName in this.columns) {
+            v = this.data[this.columns[columnName].index];
+            if (v === undefined) {
+                v = null;
+            }
+            result[columnName] = v;
+        }
+        return result;
+    };
+    JQLRow.createFromObject = function (o) {
+        var columns = [], values = [];
+        for (var k in o) {
+            columns.push({
+                type: EJQLTableColumnType.NULL,
+                name: k
+            });
+            values.push(o[k]);
+        }
+        return new JQLRow(columns, values, 0);
     };
     return JQLRow;
 }());
@@ -1537,7 +1787,7 @@ var JQLStatementSelect = (function (_super) {
             if (!this.sorter.isRandom()) {
                 for (var sorterByExpression = this.sorter, i = 0, expressions = sorterByExpression.getSortExpressions(), len = expressions.length; i < len; i++) {
                     for (var j = 0, identifiers = expressions[i].getExpression().getIdentifiers(), n = identifiers.length; j < n; j++) {
-                        result.push(identifiers[i]);
+                        result.push(identifiers[j]);
                     }
                 }
             }
@@ -1759,11 +2009,11 @@ var JQLStatementUpdate = (function (_super) {
                 result.push(identifiers[i]);
             }
         }
-        if (!!this.sorter) {
+        if (null !== this.sorter) {
             if (!this.sorter.isRandom()) {
                 for (var sorterByExpression = this.sorter, i = 0, expressions = sorterByExpression.getSortExpressions(), len = expressions.length; i < len; i++) {
                     for (var j = 0, identifiers = expressions[i].getExpression().getIdentifiers(), n = identifiers.length; j < n; j++) {
-                        result.push(identifiers[i]);
+                        result.push(identifiers[j]);
                     }
                 }
             }
@@ -1889,7 +2139,7 @@ var JQLStatementDelete = (function (_super) {
             if (!this.sorter.isRandom()) {
                 for (var sorterByExpression = this.sorter, i = 0, expressions = sorterByExpression.getSortExpressions(), len = expressions.length; i < len; i++) {
                     for (var j = 0, identifiers = expressions[i].getExpression().getIdentifiers(), n = identifiers.length; j < n; j++) {
-                        result.push(identifiers[i]);
+                        result.push(identifiers[j]);
                     }
                 }
             }

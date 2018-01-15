@@ -150,11 +150,11 @@ class JQLStatementUpdate extends JQLStatement {
             }
         }
 
-        if (!!this.sorter) {
+        if (null !== this.sorter) {
             if (!this.sorter.isRandom()) {
                 for (let sorterByExpression = <JQLSorterStrategyByExpression>this.sorter, i = 0, expressions = sorterByExpression.getSortExpressions(), len = expressions.length; i < len; i++) {
                     for (let j = 0, identifiers = expressions[ i ].getExpression().getIdentifiers(), n = identifiers.length; j < n; j++) {
-                        result.push(identifiers[ i ]);
+                        result.push(identifiers[ j ]);
                     }
                 }
             }

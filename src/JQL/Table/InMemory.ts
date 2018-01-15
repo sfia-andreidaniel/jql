@@ -20,4 +20,12 @@ class JQLTableInMemory extends JQLTable {
         return EJQLTableStorageEngine.IN_MEMORY;
     }
 
+    public getRowAt( rowIndex: number ): JQLPrimitive[] {
+        return this.rows[ rowIndex ] || null;
+    }
+
+    public createIterator(): JQLTableUtilsIterator {
+        return new JQLTableUtilsIterator(this);
+    }
+
 }

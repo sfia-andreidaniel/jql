@@ -147,9 +147,13 @@ class JQLDatabase implements IJQLDatabase {
             if (table.isRemote() !== stmt.isRemote()) {
 
                 if (stmt.isRemote()) {
+
                     throw new Error("Cannot create remote statement affecting in-memory table!");
+
                 } else {
+
                     throw new Error("Cannot create in-memory statement affecting remote table!");
+
                 }
 
             }
@@ -177,6 +181,10 @@ class JQLDatabase implements IJQLDatabase {
                 throw new Error(
                     "Failed to create statement: Function " + JSON.stringify(statementFunctions[ i ].getFunctionName()) + " is not declared!",
                 );
+
+            } else {
+
+                statementFunctions[i].withDatabase(this);
 
             }
 
