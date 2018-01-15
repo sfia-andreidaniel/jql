@@ -313,6 +313,10 @@ interface IJQLTableColumn {
     type: EJQLTableColumnType;
 }
 
+enum EJQLTableStorageEngine {
+    IN_MEMORY = 'memory',
+}
+
 interface IJQLTable {
 
     describe(): IJQLTableColumn[];
@@ -320,6 +324,8 @@ interface IJQLTable {
     hasIdentifier( identifierName: string ): boolean;
 
     isRemote(): boolean;
+
+    getStorageEngine(): EJQLTableStorageEngine;
 
 }
 

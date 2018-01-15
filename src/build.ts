@@ -2,7 +2,10 @@
 ///<reference path="./jquery2.d.ts" />
 ///<reference path="./Lexer.d.ts" />
 ///<reference path="./JQL/Lexer/Factory.ts" />
+///<reference path="./JQL/Utils.ts" />
 ///<reference path="./JQL/Database.ts" />
+///<reference path="./JQL/Table.ts" />
+///<reference path="./JQL/Table/InMemory.ts" />
 ///<reference path="./JQL/Database/QueryPlanner.ts" />
 ///<reference path="./JQL/Opcode.ts" />
 ///<reference path="./JQL/Statement.ts" />
@@ -48,3 +51,5 @@
 ///<reference path="./JQL/Statement/Update/Field.ts" />
 ///<reference path="./JQL/Statement/Update/DelayedOption.ts" />
 ///<reference path="./JQL/Statement/Delete.ts" />
+
+///<reference path="./demo.ts" />

@@ -28,6 +28,15 @@ class JQLDatabase implements IJQLDatabase {
             throw new Error(JSON.stringify(functionName) + " is not a valid function name!");
         }
 
+        functionName = functionName.toLowerCase();
+
+        /**
+         * IF FUNCTION NAME IS A RESERVED KEYWORD, ABORT
+         */
+        if ( JQLUtils.isReservedKeyword( functionName ) ) {
+            throw new Error( JSON.stringify(functionName) + " is a reserved keyword and cannot be used as a function name!" );
+        }
+
         if (undefined !== this.functions[ functionName ]) {
             throw new Error("Function " + JSON.stringify(functionName) + " already registered in database!");
         }
@@ -38,12 +47,24 @@ class JQLDatabase implements IJQLDatabase {
     }
 
     public hasFunction(functionName: string): boolean {
-        return "string" === typeof functionName && undefined !== this.functions[ functionName ] && this.functions.hasOwnProperty(functionName);
+
+        if ( "string" === typeof functionName ) {
+
+            functionName = functionName.toLowerCase();
+
+            if ( undefined !== this.functions[functionName] && this.functions.hasOwnProperty(functionName) ) {
+                return true;
+            }
+
+        }
+
+        return false;
+
     }
 
     public callFunction(functionName: string, functionArgs: JQLPrimitive[]): JQLPrimitive {
         if (this.hasFunction(functionName)) {
-            return this.functions[ functionName ].call(this, functionArgs);
+            return this.functions[ functionName.toLowerCase() ].apply(this, functionArgs);
         } else {
             throw new Error("Failed to call function " + JSON.stringify(functionName) + ": Function not defined!");
         }
@@ -88,6 +109,10 @@ class JQLDatabase implements IJQLDatabase {
     }
 
     public createStatement(statement: string): JQLStatement {
+
+        if ( !statement || 'string' !== typeof statement ) {
+            throw new Error('Invalid argument: statement: string expected!');
+        }
 
         let stmt = <JQLStatement>JQLLexerFactory.create(
             JQLGrammar.parse(

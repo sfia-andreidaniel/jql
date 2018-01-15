@@ -80,6 +80,10 @@ var EJQLTableColumnType;
     EJQLTableColumnType["BOOLEAN"] = "boolean";
     EJQLTableColumnType["NULL"] = "null";
 })(EJQLTableColumnType || (EJQLTableColumnType = {}));
+var EJQLTableStorageEngine;
+(function (EJQLTableStorageEngine) {
+    EJQLTableStorageEngine["IN_MEMORY"] = "memory";
+})(EJQLTableStorageEngine || (EJQLTableStorageEngine = {}));
 var JQLLexerFactory = (function () {
     function JQLLexerFactory() {
     }
@@ -197,6 +201,105 @@ var JQLLexerFactory = (function () {
     };
     return JQLLexerFactory;
 }());
+var JQLUtils = (function () {
+    function JQLUtils() {
+    }
+    JQLUtils.getType = function (variable) {
+        if (undefined === variable) {
+            return null;
+        }
+        else {
+            if (null === variable) {
+                return EJQLTableColumnType.NULL;
+            }
+            else {
+                var t = typeof variable;
+                if (t === 'number') {
+                    if (isFinite(variable)) {
+                        return EJQLTableColumnType.NUMBER;
+                    }
+                    else {
+                        return null;
+                    }
+                }
+                else {
+                    if (t === 'boolean') {
+                        return EJQLTableColumnType.BOOLEAN;
+                    }
+                    else {
+                        if (t === 'string') {
+                            return EJQLTableColumnType.STRING;
+                        }
+                        else {
+                            return null;
+                        }
+                    }
+                }
+            }
+        }
+    };
+    JQLUtils.isNumeric = function (s) {
+        var t = this.getType(s);
+        if (t === EJQLTableColumnType.NUMBER) {
+            return true;
+        }
+        else {
+            if (t === EJQLTableColumnType.STRING) {
+                if (s !== '-' && s !== '+') {
+                    return /^([\-+])?(0|[1-9]([0-9]+)?)?(\.[0-9]+)?/.test(s);
+                }
+            }
+        }
+        return false;
+    };
+    JQLUtils.getIdentifiers = function (o) {
+        var mappings = Object.create(null), type;
+        for (var y = 0, n = (o || []).length; y < n; y++) {
+            if (y === 0) {
+                for (var k in o[y]) {
+                    if (o[y].hasOwnProperty(k)) {
+                        type = this.getType(o[y][k]);
+                        mappings[k] = type;
+                    }
+                }
+            }
+            else {
+                break;
+            }
+        }
+        var result = [];
+        for (var k in mappings) {
+            if (null !== mappings[k]) {
+                result.push({
+                    type: mappings[k],
+                    name: k
+                });
+            }
+        }
+        return result;
+    };
+    JQLUtils.isReservedKeyword = function (k) {
+        return this.RESERVED_KEYWORDS.indexOf(String(k || '')) > -1;
+    };
+    JQLUtils.RESERVED_KEYWORDS = [
+        'select',
+        'from',
+        'where',
+        'in',
+        'limit',
+        'order',
+        'by',
+        'asc',
+        'update',
+        'table',
+        'set',
+        'insert',
+        'into',
+        'values',
+        'delete',
+    ];
+    return JQLUtils;
+}());
 var JQLDatabase = (function () {
     function JQLDatabase() {
         this.functions = {};
@@ -217,6 +320,10 @@ var JQLDatabase = (function () {
         if (!this.isValidIdentifierName(functionName)) {
             throw new Error(JSON.stringify(functionName) + " is not a valid function name!");
         }
+        functionName = functionName.toLowerCase();
+        if (JQLUtils.isReservedKeyword(functionName)) {
+            throw new Error(JSON.stringify(functionName) + " is a reserved keyword and cannot be used as a function name!");
+        }
         if (undefined !== this.functions[functionName]) {
             throw new Error("Function " + JSON.stringify(functionName) + " already registered in database!");
         }
@@ -224,11 +331,17 @@ var JQLDatabase = (function () {
         return this;
     };
     JQLDatabase.prototype.hasFunction = function (functionName) {
-        return "string" === typeof functionName && undefined !== this.functions[functionName] && this.functions.hasOwnProperty(functionName);
+        if ("string" === typeof functionName) {
+            functionName = functionName.toLowerCase();
+            if (undefined !== this.functions[functionName] && this.functions.hasOwnProperty(functionName)) {
+                return true;
+            }
+        }
+        return false;
     };
     JQLDatabase.prototype.callFunction = function (functionName, functionArgs) {
         if (this.hasFunction(functionName)) {
-            return this.functions[functionName].call(this, functionArgs);
+            return this.functions[functionName.toLowerCase()].apply(this, functionArgs);
         }
         else {
             throw new Error("Failed to call function " + JSON.stringify(functionName) + ": Function not defined!");
@@ -264,6 +377,9 @@ var JQLDatabase = (function () {
         }
     };
     JQLDatabase.prototype.createStatement = function (statement) {
+        if (!statement || 'string' !== typeof statement) {
+            throw new Error('Invalid argument: statement: string expected!');
+        }
         var stmt = JQLLexerFactory.create(JQLGrammar.parse(statement));
         var tableReference = stmt.getTable();
         if (tableReference) {
@@ -319,6 +435,73 @@ var JQLDatabase = (function () {
     };
     return JQLDatabase;
 }());
+var JQLTable = (function () {
+    function JQLTable(identifiers) {
+        this.identifiers = [];
+        for (var i = 0, idtf = identifiers || [], len = idtf.length; i < len; i++) {
+            this.identifiers.push(idtf[i]);
+        }
+    }
+    JQLTable.prototype.describe = function () {
+        return this.identifiers.slice(0);
+    };
+    JQLTable.prototype.hasIdentifier = function (identifierName) {
+        for (var i = 0, len = this.identifiers.length; i < len; i++) {
+            if (this.identifiers[i].name === identifierName) {
+                return true;
+            }
+        }
+        return false;
+    };
+    JQLTable.createFromInMemoryArrayOfObjects = function (rows) {
+        var identifiers = JQLUtils.getIdentifiers(rows), result = [], ncols = identifiers.length, row, v, vType;
+        if (!identifiers.length) {
+            throw new Error('No valid columns were detected in "in-memory" array!');
+        }
+        for (var i = 0, len = rows.length; i < len; i++) {
+            row = [];
+            for (var col = 0; col < ncols; col++) {
+                v = rows[i][identifiers[col].name];
+                vType = JQLUtils.getType(v);
+                if (vType === null || vType !== identifiers[col].type) {
+                    v = null;
+                }
+                row.push(v);
+            }
+            result.push(row);
+        }
+        return new JQLTableInMemory(identifiers, result);
+    };
+    return JQLTable;
+}());
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var JQLTableInMemory = (function (_super) {
+    __extends(JQLTableInMemory, _super);
+    function JQLTableInMemory(identifiers, rows) {
+        var _this = _super.call(this, identifiers) || this;
+        _this.rows = [];
+        for (var i = 0, len = rows.length; i < len; i++) {
+            _this.rows.push(rows[i]);
+        }
+        return _this;
+    }
+    JQLTableInMemory.prototype.isRemote = function () {
+        return false;
+    };
+    JQLTableInMemory.prototype.getStorageEngine = function () {
+        return EJQLTableStorageEngine.IN_MEMORY;
+    };
+    return JQLTableInMemory;
+}(JQLTable));
 var JQLDatabaseQueryPlanner = (function () {
     function JQLDatabaseQueryPlanner(database) {
         this.database = database;
@@ -337,16 +520,6 @@ var JQLOpcode = (function () {
     }
     return JQLOpcode;
 }());
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 var JQLStatement = (function (_super) {
     __extends(JQLStatement, _super);
     function JQLStatement(token) {
@@ -1589,3 +1762,41 @@ var JQLStatementDelete = (function (_super) {
     };
     return JQLStatementDelete;
 }(JQLStatement));
+var db = (new JQLDatabase()).withJQuery(jQuery.noConflict());
+db.withTable('persons', JQLTable.createFromInMemoryArrayOfObjects([
+    {
+        id: 1,
+        name: "Jack",
+        age: 12,
+    },
+    {
+        id: 2,
+        name: "Jill",
+        age: 14,
+    },
+    {
+        id: 3,
+        name: "Betty",
+        age: 32
+    },
+]));
+db.withTable('products', JQLTable.createFromInMemoryArrayOfObjects([
+    {
+        id: 1,
+        name: "VGA Card",
+        ownerId: 1,
+    },
+    {
+        id: 2,
+        name: "CPU",
+        ownerId: 1,
+    },
+    {
+        id: 4,
+        name: "Computer keyboard",
+        ownerId: 3,
+    }
+]));
+db.withFunction('sum', function (a, b) {
+    return a + b;
+});
