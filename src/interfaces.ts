@@ -382,8 +382,3 @@ interface IJQLPlannerQueueEntry {
     defer: JQueryDeferred<JQLStatementResult>;
 }
 
-type JQLStatementResult
-    = JQLSelectStatementResult
-    | JQLInsertStatementResult
-    | JQLDeleteStatementResult
-    | JQLUpdateStatementResult;

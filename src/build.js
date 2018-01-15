@@ -548,7 +548,18 @@ var JQLDatabaseStatementExecutorSelect = (function () {
                 else {
                     rows = _this.applyLimit(_this.applySorting(_this.getStatementCandidateRows()));
                 }
-                defer.resolve(rows);
+                var result = (new JQLStatementResultSelect()).addRows(rows);
+                if (_this.statement.getUnion()) {
+                    (new JQLDatabaseStatementExecutorSelect(_this.statement.getUnion(), _this.db)).execute()().then(function (unionResult) {
+                        result.addRows(unionResult.getRows());
+                        defer.resolve(result);
+                    }).fail(function (e) {
+                        defer.reject(e);
+                    });
+                }
+                else {
+                    defer.resolve(result);
+                }
             }).promise();
         };
     };
@@ -1652,6 +1663,61 @@ var JQLLimit = (function (_super) {
     };
     return JQLLimit;
 }(JQLOpcode));
+var JQLStatementResult = (function () {
+    function JQLStatementResult() {
+    }
+    JQLStatementResult.prototype.getAffectedRows = function () {
+        return this.affectedRows;
+    };
+    JQLStatementResult.prototype.withAffectedRows = function (affectedRowsCount) {
+        this.affectedRows = ~~affectedRowsCount;
+        return this;
+    };
+    return JQLStatementResult;
+}());
+var JQLStatementResultSelect = (function (_super) {
+    __extends(JQLStatementResultSelect, _super);
+    function JQLStatementResultSelect() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.rows = [];
+        return _this;
+    }
+    JQLStatementResultSelect.prototype.addRows = function (rows) {
+        if (rows && rows.length) {
+            for (var i = 0, len = rows.length; i < len; i++) {
+                this.rows.push(rows[i]);
+            }
+        }
+        return this;
+    };
+    JQLStatementResultSelect.prototype.getAffectedRows = function () {
+        return this.rows.length;
+    };
+    JQLStatementResultSelect.prototype.getRows = function () {
+        return this.rows;
+    };
+    JQLStatementResultSelect.prototype.getRowsAsArray = function () {
+        if (!this.rows || !this.rows.length) {
+            return [];
+        }
+        var result = [], keys, numKeys, row, v;
+        for (var i = 0, len = this.rows.length; i < len; i++) {
+            row = [];
+            keys = Object.keys(this.rows[i]);
+            numKeys = keys.length;
+            for (var j = 0; j < numKeys; j++) {
+                v = this.rows[i][keys[j]];
+                if (undefined === v) {
+                    v = null;
+                }
+                row.push(v);
+            }
+            result.push(row);
+        }
+        return result;
+    };
+    return JQLStatementResultSelect;
+}(JQLStatementResult));
 var JQLStatementSelect = (function (_super) {
     __extends(JQLStatementSelect, _super);
     function JQLStatementSelect(token) {

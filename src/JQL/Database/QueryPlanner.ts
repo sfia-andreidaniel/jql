@@ -18,11 +18,11 @@ class JQLDatabaseQueryPlanner {
 
         return (function (self: JQLDatabaseQueryPlanner, $: JQueryStatic): JQueryPromise<JQLStatementResult> {
 
-            return $.Deferred(function (defer) {
+            return <any>$.Deferred(function (defer) {
 
                 self.queryId++;
 
-                self.queue.push({
+                (<any>self.queue).push({
                     queryId: self.queryId,
                     statement: statement,
                     strategy: strategy,

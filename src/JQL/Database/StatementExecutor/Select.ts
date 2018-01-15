@@ -31,7 +31,29 @@ class JQLDatabaseStatementExecutorSelect implements IDatabaseStatementExecutor {
 
                 }
 
-                defer.resolve(rows);
+                let result = (new JQLStatementResultSelect()).addRows( rows );
+
+                // EXECUTE UNION
+
+                if ( this.statement.getUnion() ) {
+
+                    ( new JQLDatabaseStatementExecutorSelect( this.statement.getUnion(), this.db ) ).execute()().then(function( unionResult: JQLStatementResultSelect ) {
+
+                        result.addRows( unionResult.getRows() );
+
+                        defer.resolve( result );
+
+                    }).fail( function(e){
+
+                        defer.reject(e);
+
+                    });
+
+                } else {
+
+                    defer.resolve(result);
+
+                }
 
             }).promise();
 

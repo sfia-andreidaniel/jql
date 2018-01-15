@@ -48,6 +48,8 @@
 ///<reference path="./JQL/Sorter/Strategy/Random.ts" />
 ///<reference path="./JQL/Sorter/Expression.ts" />
 ///<reference path="./JQL/Limit.ts" />
+///<reference path="./JQL/StatementResult.ts" />
+///<reference path="./JQL/StatementResult/Select.ts" />
 ///<reference path="./JQL/Statement/Select.ts" />
 ///<reference path="./JQL/Statement/Select/Field.ts" />
 ///<reference path="./JQL/Statement/Select/FieldsList.ts" />
