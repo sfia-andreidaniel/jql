@@ -375,6 +375,11 @@ interface IDatabaseStatementExecutor {
 
 }
 
+interface IJQLMarkedRowForUpdate {
+    rowIndex: number,
+    values: JQLPrimitive[]
+}
+
 interface IJQLPlannerQueueEntry {
     queryId: number;
     strategy: IJQLQueryExecuteStrategy;

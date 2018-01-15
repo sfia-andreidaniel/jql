@@ -678,9 +678,98 @@ var JQLDatabaseStatementExecutorUpdate = (function () {
         var _this = this;
         return function () {
             return _this.db.getJQuery().Deferred(function (defer) {
-                defer.reject(new Error('UPDATE statements not implemented!'));
+                _this.markedRowsForUpdate = [];
+                var table = _this.db.getTable(_this.statement.getTable().getName()), iterator = table.createIterator(), row, addRow, where = _this.statement.getFilter();
+                while (row = iterator.next()) {
+                    if (null === where) {
+                        addRow = true;
+                    }
+                    else {
+                        addRow = !!where.compute(row);
+                    }
+                    if (addRow) {
+                        _this.markedRowsForUpdate.push({
+                            rowIndex: row.getRowIndex(),
+                            values: row.getDataAsArray(),
+                        });
+                    }
+                }
+                if (!_this.markedRowsForUpdate.length) {
+                    defer.resolve(new JQLStatementResult().withAffectedRows(0));
+                    return;
+                }
+                _this.applySorting();
+                _this.applyLimits();
+                if (!_this.markedRowsForUpdate.length) {
+                    defer.resolve(new JQLStatementResult().withAffectedRows(0));
+                    return;
+                }
+                var result = new JQLStatementResult().withAffectedRows(_this.markedRowsForUpdate.length), updateRow = JQLRow.createFromTable(table), updateExpressions = _this.statement.getFields(), numFields = updateExpressions.length, fieldName, newValue;
+                for (var i = 0, len = _this.markedRowsForUpdate.length; i < len; i++) {
+                    updateRow.withIndex(_this.markedRowsForUpdate[i].rowIndex).withRowData(_this.markedRowsForUpdate[i].values);
+                    for (var j = 0; j < numFields; j++) {
+                        fieldName = updateExpressions[j].getFieldName();
+                        newValue = updateExpressions[j].getExpression().compute(updateRow);
+                        updateRow.setColumnValue(fieldName, newValue);
+                    }
+                    table.replace(_this.markedRowsForUpdate[i].rowIndex, updateRow.getDataAsArray());
+                }
+                defer.resolve(result);
             }).promise();
         };
+    };
+    JQLDatabaseStatementExecutorUpdate.prototype.applySorting = function () {
+        var sorter = this.statement.getSorter(), table = this.db.getTable(this.statement.getTable().getName());
+        if (!sorter || this.markedRowsForUpdate.length < 2) {
+            return;
+        }
+        if (sorter.isRandom()) {
+            return JQLUtils.shuffleArray(this.markedRowsForUpdate);
+        }
+        var expressions = sorter.getSortExpressions(), numExpressions = expressions.length;
+        var sortFunction = (function () {
+            var walkers = [];
+            for (var i = 0; i < numExpressions; i++) {
+                if (i === numExpressions - 1) {
+                    walkers.push((function (i) {
+                        return function (a, b) {
+                            var exprA = expressions[i].getExpression().compute(a), exprB = expressions[i].getExpression().compute(b), result = JQLUtils.compare(exprA, exprB);
+                            if (expressions[i].getDirection() === EJQL_LEXER_ORDER_DIRECTION.DESCENDING) {
+                                result = -result;
+                            }
+                            return result;
+                        };
+                    })(i));
+                }
+                else {
+                    walkers.push((function (i) {
+                        return function (a, b) {
+                            var exprA = expressions[i].getExpression().compute(a), exprB = expressions[i].getExpression().compute(b), result = JQLUtils.compare(exprA, exprB);
+                            if (expressions[i].getDirection() === EJQL_LEXER_ORDER_DIRECTION.DESCENDING) {
+                                result = -result;
+                            }
+                            if (0 === result) {
+                                return walkers[i + 1](a, b);
+                            }
+                            else {
+                                return result;
+                            }
+                        };
+                    })(i));
+                }
+                return function (a, b) {
+                    return walkers[0](JQLRow.createFromTable(table).withRowData(a.values).withIndex(-1), JQLRow.createFromTable(table).withRowData(b.values).withIndex(-1));
+                };
+            }
+        })();
+        this.markedRowsForUpdate.sort(sortFunction);
+    };
+    JQLDatabaseStatementExecutorUpdate.prototype.applyLimits = function () {
+        var limit = this.statement.getLimit();
+        if (!limit) {
+            return;
+        }
+        this.markedRowsForUpdate = this.markedRowsForUpdate.slice(limit.getSkip(), limit.getSkip() + limit.getLimit());
     };
     return JQLDatabaseStatementExecutorUpdate;
 }());
@@ -800,6 +889,16 @@ var JQLTableInMemory = (function (_super) {
     JQLTableInMemory.prototype.createIterator = function () {
         return new JQLTableUtilsIterator(this);
     };
+    JQLTableInMemory.prototype.replace = function (index, newRow) {
+        if (this.rows[index]) {
+            for (var i = 0, len = this.rows[index].length; i < len; i++) {
+                this.rows[index][i] = newRow[i];
+            }
+        }
+        else {
+            throw new Error('Undefined table index: ' + JSON.stringify(index));
+        }
+    };
     return JQLTableInMemory;
 }(JQLTable));
 var JQLTableUtilsIterator = (function () {
@@ -829,18 +928,24 @@ var JQLRow = (function () {
             this.columns[columns[i].name] = { type: columns[i].type, index: i };
         }
         this.data = data;
-        this.columnIndex = index;
+        this.rowIndex = index;
     }
     JQLRow.prototype.withIndex = function (index) {
-        this.columnIndex = index;
+        this.rowIndex = index;
         return this;
     };
     JQLRow.prototype.withRowData = function (data) {
         this.data = data;
         return this;
     };
+    JQLRow.prototype.getDataAsArray = function () {
+        return this.data;
+    };
     JQLRow.prototype.getColumnValue = function (columnName) {
         return this.data[this.columns[columnName].index];
+    };
+    JQLRow.prototype.setColumnValue = function (columnName, columnValue) {
+        this.data[this.columns[columnName].index] = columnValue;
     };
     JQLRow.prototype.toObject = function () {
         var result = Object.create(null), v;
@@ -853,6 +958,9 @@ var JQLRow = (function () {
         }
         return result;
     };
+    JQLRow.prototype.getRowIndex = function () {
+        return this.rowIndex;
+    };
     JQLRow.createFromObject = function (o) {
         var columns = [], values = [];
         for (var k in o) {
@@ -863,6 +971,9 @@ var JQLRow = (function () {
             values.push(o[k]);
         }
         return new JQLRow(columns, values, 0);
+    };
+    JQLRow.createFromTable = function (table) {
+        return new JQLRow(table.describe(), table.getRowAt(0), undefined);
     };
     return JQLRow;
 }());

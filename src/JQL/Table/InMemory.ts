@@ -28,4 +28,18 @@ class JQLTableInMemory extends JQLTable {
         return new JQLTableUtilsIterator(this);
     }
 
+    public replace( index: number, newRow: JQLPrimitive[] ) {
+
+        if ( this.rows[ index ] ) {
+
+            for ( let i=0, len = this.rows[index].length; i<len; i++ ) {
+                this.rows[index][i] = newRow[i];
+            }
+
+        } else {
+            throw new Error('Undefined table index: ' + JSON.stringify( index ) );
+        }
+
+    }
+
 }

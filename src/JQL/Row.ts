@@ -6,7 +6,7 @@ class JQLRow implements IJQLTableRow {
 
     private data: JQLPrimitive[] = [];
 
-    private columnIndex: number;
+    private rowIndex: number;
 
     constructor(columns: IJQLTableColumn[], data: JQLPrimitive[], index: number) {
 
@@ -18,12 +18,12 @@ class JQLRow implements IJQLTableRow {
 
         this.data = data;
 
-        this.columnIndex = index;
+        this.rowIndex = index;
 
     }
 
     public withIndex(index: number): this {
-        this.columnIndex = index;
+        this.rowIndex = index;
         return this;
     }
 
@@ -32,8 +32,16 @@ class JQLRow implements IJQLTableRow {
         return this;
     }
 
+    public getDataAsArray(): JQLPrimitive[] {
+        return this.data;
+    }
+
     public getColumnValue(columnName: string): JQLPrimitive {
         return this.data[this.columns[columnName].index];
+    }
+
+    public setColumnValue(columnName: string, columnValue: JQLPrimitive) {
+        this.data[this.columns[columnName].index] = columnValue;
     }
 
     public toObject(): object {
@@ -56,6 +64,10 @@ class JQLRow implements IJQLTableRow {
         return result;
     }
 
+    public getRowIndex(): number {
+        return this.rowIndex;
+    }
+
     public static createFromObject(o: object): JQLRow {
 
         let columns: IJQLTableColumn[] = [],
@@ -69,7 +81,13 @@ class JQLRow implements IJQLTableRow {
             values.push(o[k]);
         }
 
-        return new JQLRow(columns, values, 0 );
+        return new JQLRow(columns, values, 0);
+
+    }
+
+    public static createFromTable(table: JQLTableInMemory): JQLRow {
+
+        return new JQLRow(table.describe(), table.getRowAt(0), undefined);
 
     }
 
