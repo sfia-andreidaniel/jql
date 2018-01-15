@@ -33,7 +33,6 @@
 ///<reference path="./JQL/Expression/Unary.ts" />
 ///<reference path="./JQL/Expression/Unary/Invert.ts" />
 ///<reference path="./JQL/Expression/Unary/Not.ts" />
-///<reference path="./JQL/Sorter.ts" />
 ///<reference path="./JQL/Sorter/Strategy.ts" />
 ///<reference path="./JQL/Sorter/Strategy/ByExpression.ts" />
 ///<reference path="./JQL/Sorter/Strategy/Random.ts" />

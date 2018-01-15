@@ -1,4 +1,4 @@
-abstract class JQLSorterStrategy extends JQLSorter {
+abstract class JQLSorterStrategy extends JQLOpcode {
 
     private strategy: EJQL_LEXER_ORDERING_STRATEGY;
 

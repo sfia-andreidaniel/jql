@@ -1015,16 +1015,6 @@ var JQLExpressionUnaryNot = (function (_super) {
     };
     return JQLExpressionUnaryNot;
 }(JQLExpressionUnary));
-var JQLSorter = (function (_super) {
-    __extends(JQLSorter, _super);
-    function JQLSorter() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    JQLSorter.prototype.getOpcodeType = function () {
-        return EJQL_LEXER_OPCODE_TYPES.ORDER_BY_OPTION;
-    };
-    return JQLSorter;
-}(JQLOpcode));
 var JQLSorterStrategy = (function (_super) {
     __extends(JQLSorterStrategy, _super);
     function JQLSorterStrategy(token) {
@@ -1036,7 +1026,7 @@ var JQLSorterStrategy = (function (_super) {
         return EJQL_LEXER_OPCODE_TYPES.ORDER_BY_OPTION;
     };
     return JQLSorterStrategy;
-}(JQLSorter));
+}(JQLOpcode));
 var JQLSorterStrategyByExpression = (function (_super) {
     __extends(JQLSorterStrategyByExpression, _super);
     function JQLSorterStrategyByExpression(token) {

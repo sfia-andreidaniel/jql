@@ -60,7 +60,7 @@ class JQLStatementUpdate extends JQLStatement {
         return this.filter;
     }
 
-    public getSorter(): JQLSorter {
+    public getSorter(): JQLSorterStrategy {
         return this.sorter;
     }
 
