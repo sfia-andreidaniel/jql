@@ -231,13 +231,17 @@ class JQLDatabaseStatementExecutorSelect implements IDatabaseStatementExecutor {
                     })(i));
                 }
 
-                return function(a: object, b: object): number {
+            }
 
-                    return walkers[0]( JQLRow.createFromObject(a), JQLRow.createFromObject(b) );
+            return function(a: object, b: object): number {
 
-                }
+                return walkers[0](
+                    JQLRow.createFromObject(a),
+                    JQLRow.createFromObject(b)
+                );
 
             }
+
 
         })();
 

@@ -42,4 +42,18 @@ class JQLTableInMemory extends JQLTable {
 
     }
 
+    public deleteRow( rowIndex: number ) {
+        if ( this.rows[rowIndex] ) {
+            this.rows[ rowIndex ] = null;
+        }
+    }
+
+    public compact() {
+        for ( let i = this.rows.length - 1; i>=0; i-- ) {
+            if ( null === this.rows[i] ) {
+                this.rows.splice(i, 1);
+            }
+        }
+    }
+
 }

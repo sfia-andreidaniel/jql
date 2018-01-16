@@ -178,14 +178,15 @@ class JQLDatabaseStatementExecutorUpdate implements IDatabaseStatementExecutor {
                     })(i));
                 }
 
-                return function (a: IJQLMarkedRowForUpdate, b: IJQLMarkedRowForUpdate): number {
 
-                    return walkers[0](
-                        JQLRow.createFromTable(table).withRowData(a.values).withIndex(-1),
-                        JQLRow.createFromTable(table).withRowData(b.values).withIndex(-1),
-                    );
+            }
 
-                }
+            return function (a: IJQLMarkedRowForUpdate, b: IJQLMarkedRowForUpdate): number {
+
+                return walkers[0](
+                    JQLRow.createFromTable(table).withRowData(a.values).withIndex(-1),
+                    JQLRow.createFromTable(table).withRowData(b.values).withIndex(-1),
+                );
 
             }
 
