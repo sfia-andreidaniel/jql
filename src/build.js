@@ -679,43 +679,49 @@ var JQLDatabaseStatementExecutorUpdate = (function () {
         var _this = this;
         return function () {
             return _this.db.getJQuery().Deferred(function (defer) {
-                _this.markedRowsForUpdate = [];
-                var table = _this.db.getTable(_this.statement.getTable().getName()), iterator = table.createIterator(), row, addRow, where = _this.statement.getFilter();
-                while (row = iterator.next()) {
-                    if (null === where) {
-                        addRow = true;
+                try {
+                    _this.markedRowsForUpdate = [];
+                    var table = _this.db.getTable(_this.statement.getTable().getName()), iterator = table.createIterator(), row = void 0, addRow = void 0, where = _this.statement.getFilter();
+                    while (row = iterator.next()) {
+                        if (null === where) {
+                            addRow = true;
+                        }
+                        else {
+                            addRow = !!where.compute(row);
+                        }
+                        if (addRow) {
+                            _this.markedRowsForUpdate.push({
+                                rowIndex: row.getRowIndex(),
+                                values: row.getDataAsArray(),
+                            });
+                        }
                     }
-                    else {
-                        addRow = !!where.compute(row);
+                    if (!_this.markedRowsForUpdate.length) {
+                        defer.resolve(new JQLStatementResult().withAffectedRows(0));
+                        return;
                     }
-                    if (addRow) {
-                        _this.markedRowsForUpdate.push({
-                            rowIndex: row.getRowIndex(),
-                            values: row.getDataAsArray(),
-                        });
+                    _this.applySorting();
+                    _this.applyLimits();
+                    if (!_this.markedRowsForUpdate.length) {
+                        defer.resolve(new JQLStatementResult().withAffectedRows(0));
+                        return;
                     }
-                }
-                if (!_this.markedRowsForUpdate.length) {
-                    defer.resolve(new JQLStatementResult().withAffectedRows(0));
-                    return;
-                }
-                _this.applySorting();
-                _this.applyLimits();
-                if (!_this.markedRowsForUpdate.length) {
-                    defer.resolve(new JQLStatementResult().withAffectedRows(0));
-                    return;
-                }
-                var result = new JQLStatementResult().withAffectedRows(_this.markedRowsForUpdate.length), updateRow = JQLRow.createFromTable(table), updateExpressions = _this.statement.getFields(), numFields = updateExpressions.length, fieldName, newValue;
-                for (var i = 0, len = _this.markedRowsForUpdate.length; i < len; i++) {
-                    updateRow.withIndex(_this.markedRowsForUpdate[i].rowIndex).withRowData(_this.markedRowsForUpdate[i].values);
-                    for (var j = 0; j < numFields; j++) {
-                        fieldName = updateExpressions[j].getFieldName();
-                        newValue = updateExpressions[j].getExpression().compute(updateRow);
-                        updateRow.setColumnValue(fieldName, newValue);
+                    var result = new JQLStatementResult().withAffectedRows(_this.markedRowsForUpdate.length), updateRow = JQLRow.createFromTable(table), updateExpressions = _this.statement.getFields(), numFields = updateExpressions.length, fieldName = void 0, newValue = void 0;
+                    for (var i = 0, len = _this.markedRowsForUpdate.length; i < len; i++) {
+                        updateRow.withIndex(_this.markedRowsForUpdate[i].rowIndex).withRowData(_this.markedRowsForUpdate[i].values);
+                        for (var j = 0; j < numFields; j++) {
+                            fieldName = updateExpressions[j].getFieldName();
+                            newValue = updateExpressions[j].getExpression().compute(updateRow);
+                            updateRow.setColumnValue(fieldName, newValue);
+                        }
+                        table.replace(_this.markedRowsForUpdate[i].rowIndex, updateRow.getDataAsArray());
                     }
-                    table.replace(_this.markedRowsForUpdate[i].rowIndex, updateRow.getDataAsArray());
+                    defer.resolve(result);
                 }
-                defer.resolve(result);
+                catch (e) {
+                    console.error(e);
+                    defer.reject('Failed to execute UPDATE statement!');
+                }
             }).promise();
         };
     };

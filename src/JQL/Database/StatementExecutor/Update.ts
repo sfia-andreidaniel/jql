@@ -17,91 +17,101 @@ class JQLDatabaseStatementExecutorUpdate implements IDatabaseStatementExecutor {
 
             return <any>this.db.getJQuery().Deferred((defer) => {
 
-                this.markedRowsForUpdate = [];
+                try {
 
-                let table: JQLTableInMemory = <JQLTableInMemory>this.db.getTable(this.statement.getTable().getName()),
-                    iterator = table.createIterator(),
-                    row: JQLRow,
-                    addRow: boolean,
-                    where = this.statement.getFilter();
+                    this.markedRowsForUpdate = [];
 
-                while (row = iterator.next()) {
+                    let table: JQLTableInMemory = <JQLTableInMemory>this.db.getTable(this.statement.getTable().getName()),
+                        iterator = table.createIterator(),
+                        row: JQLRow,
+                        addRow: boolean,
+                        where = this.statement.getFilter();
 
-                    if (null === where) {
+                    while (row = iterator.next()) {
 
-                        addRow = true;
+                        if (null === where) {
 
-                    } else {
+                            addRow = true;
 
-                        addRow = !!where.compute(row);
+                        } else {
 
-                    }
+                            addRow = !!where.compute(row);
 
-                    if (addRow) {
+                        }
 
-                        this.markedRowsForUpdate.push({
-                            rowIndex: row.getRowIndex(),
-                            values: row.getDataAsArray(),
-                        });
+                        if (addRow) {
 
-                    }
+                            this.markedRowsForUpdate.push({
+                                rowIndex: row.getRowIndex(),
+                                values: row.getDataAsArray(),
+                            });
 
-                }
-
-                if (!this.markedRowsForUpdate.length) {
-
-                    defer.resolve(new JQLStatementResult().withAffectedRows(0));
-
-                    return;
-
-                }
-
-                // APPLY SORTING
-
-                this.applySorting();
-
-                // APPLY LIMITS
-
-                this.applyLimits();
-
-                if (!this.markedRowsForUpdate.length) {
-
-                    defer.resolve(new JQLStatementResult().withAffectedRows(0));
-
-                    return;
-
-                }
-
-
-                // DO UPDATES
-
-                let result = new JQLStatementResult().withAffectedRows(this.markedRowsForUpdate.length),
-                    updateRow: JQLRow = JQLRow.createFromTable( table ),
-                    updateExpressions = this.statement.getFields(),
-                    numFields: number = updateExpressions.length,
-                    fieldName: string,
-                    newValue: JQLPrimitive;
-
-                for ( let i=0, len = this.markedRowsForUpdate.length; i<len; i++ ) {
-
-                    updateRow.withIndex( this.markedRowsForUpdate[i].rowIndex ).withRowData( this.markedRowsForUpdate[i].values );
-
-                    for ( let j=0; j<numFields; j++ ) {
-
-                        fieldName = updateExpressions[j].getFieldName();
-
-                        newValue = updateExpressions[j].getExpression().compute( updateRow );
-
-                        updateRow.setColumnValue( fieldName, newValue );
-
+                        }
 
                     }
 
-                    table.replace( this.markedRowsForUpdate[i].rowIndex, updateRow.getDataAsArray() );
+                    if (!this.markedRowsForUpdate.length) {
+
+                        defer.resolve(new JQLStatementResult().withAffectedRows(0));
+
+                        return;
+
+                    }
+
+                    // APPLY SORTING
+
+                    this.applySorting();
+
+                    // APPLY LIMITS
+
+                    this.applyLimits();
+
+                    if (!this.markedRowsForUpdate.length) {
+
+                        defer.resolve(new JQLStatementResult().withAffectedRows(0));
+
+                        return;
+
+                    }
+
+
+                    // DO UPDATES
+
+                    let result = new JQLStatementResult().withAffectedRows(this.markedRowsForUpdate.length),
+                        updateRow: JQLRow = JQLRow.createFromTable(table),
+                        updateExpressions = this.statement.getFields(),
+                        numFields: number = updateExpressions.length,
+                        fieldName: string,
+                        newValue: JQLPrimitive;
+
+                    for (let i = 0, len = this.markedRowsForUpdate.length; i < len; i++) {
+
+                        updateRow.withIndex(this.markedRowsForUpdate[i].rowIndex).withRowData(this.markedRowsForUpdate[i].values);
+
+                        for (let j = 0; j < numFields; j++) {
+
+                            fieldName = updateExpressions[j].getFieldName();
+
+                            newValue = updateExpressions[j].getExpression().compute(updateRow);
+
+                            updateRow.setColumnValue(fieldName, newValue);
+
+
+                        }
+
+                        table.replace(this.markedRowsForUpdate[i].rowIndex, updateRow.getDataAsArray());
+
+                    }
+
+                    defer.resolve(result);
+
+                } catch (e) {
+
+                    console.error(e);
+
+                    defer.reject('Failed to execute UPDATE statement!' );
 
                 }
-
-                defer.resolve( result );
 
             }).promise();
         }
