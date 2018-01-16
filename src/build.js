@@ -540,24 +540,30 @@ var JQLDatabaseStatementExecutorSelect = (function () {
         var _this = this;
         return function () {
             return _this.db.getJQuery().Deferred(function (defer) {
-                var rows;
-                if (!_this.statement.getTable()) {
-                    rows = [_this.createSingleStatementRow()];
+                try {
+                    var rows = void 0;
+                    if (!_this.statement.getTable()) {
+                        rows = [_this.createSingleStatementRow()];
+                    }
+                    else {
+                        rows = _this.applyLimit(_this.applySorting(_this.getStatementCandidateRows()));
+                    }
+                    var result_1 = (new JQLStatementResultSelect()).addRows(rows);
+                    if (_this.statement.getUnion()) {
+                        (new JQLDatabaseStatementExecutorSelect(_this.statement.getUnion(), _this.db)).execute()().then(function (unionResult) {
+                            result_1.addRows(unionResult.getRows());
+                            defer.resolve(result_1);
+                        }).fail(function (e) {
+                            defer.reject(e);
+                        });
+                    }
+                    else {
+                        defer.resolve(result_1);
+                    }
                 }
-                else {
-                    rows = _this.applyLimit(_this.applySorting(_this.getStatementCandidateRows()));
-                }
-                var result = (new JQLStatementResultSelect()).addRows(rows);
-                if (_this.statement.getUnion()) {
-                    (new JQLDatabaseStatementExecutorSelect(_this.statement.getUnion(), _this.db)).execute()().then(function (unionResult) {
-                        result.addRows(unionResult.getRows());
-                        defer.resolve(result);
-                    }).fail(function (e) {
-                        defer.reject(e);
-                    });
-                }
-                else {
-                    defer.resolve(result);
+                catch (e) {
+                    console.error(e);
+                    defer.reject('Failed to execute INSERT statement!');
                 }
             }).promise();
         };
@@ -786,7 +792,8 @@ var JQLDatabaseStatementExecutorInsert = (function () {
                     defer.resolve((new JQLStatementResult()).withAffectedRows(1));
                 }
                 catch (e) {
-                    defer.reject('Failed to INSERT: ' + e);
+                    console.error(e);
+                    defer.reject('Failed to execute INSERT statement');
                 }
             }).promise();
         };
@@ -802,37 +809,43 @@ var JQLDatabaseStatementExecutorDelete = (function () {
         var _this = this;
         return function () {
             return _this.db.getJQuery().Deferred(function (defer) {
-                _this.markedRowsForDelete = [];
-                var table = _this.db.getTable(_this.statement.getTable().getName()), iterator = table.createIterator(), row, addRow, where = _this.statement.getFilter();
-                while (row = iterator.next()) {
-                    if (null === where) {
-                        addRow = true;
+                try {
+                    _this.markedRowsForDelete = [];
+                    var table = _this.db.getTable(_this.statement.getTable().getName()), iterator = table.createIterator(), row = void 0, addRow = void 0, where = _this.statement.getFilter();
+                    while (row = iterator.next()) {
+                        if (null === where) {
+                            addRow = true;
+                        }
+                        else {
+                            addRow = !!where.compute(row);
+                        }
+                        if (addRow) {
+                            _this.markedRowsForDelete.push({
+                                rowIndex: row.getRowIndex(),
+                                values: row.getDataAsArray(),
+                            });
+                        }
                     }
-                    else {
-                        addRow = !!where.compute(row);
+                    if (!_this.markedRowsForDelete.length) {
+                        defer.resolve(new JQLStatementResult().withAffectedRows(0));
+                        return;
                     }
-                    if (addRow) {
-                        _this.markedRowsForDelete.push({
-                            rowIndex: row.getRowIndex(),
-                            values: row.getDataAsArray(),
-                        });
+                    _this.applySorting();
+                    _this.applyLimits();
+                    if (!_this.markedRowsForDelete.length) {
+                        defer.resolve(new JQLStatementResult().withAffectedRows(0));
+                        return;
                     }
+                    for (var i = 0, len = _this.markedRowsForDelete.length; i < len; i++) {
+                        table.deleteRow(_this.markedRowsForDelete[i].rowIndex);
+                    }
+                    table.compact();
+                    defer.resolve(new JQLStatementResult().withAffectedRows(_this.markedRowsForDelete.length));
                 }
-                if (!_this.markedRowsForDelete.length) {
-                    defer.resolve(new JQLStatementResult().withAffectedRows(0));
-                    return;
+                catch (e) {
+                    console.error(e);
+                    defer.reject(new Error('Failed to execute DELETE statement!'));
                 }
-                _this.applySorting();
-                _this.applyLimits();
-                if (!_this.markedRowsForDelete.length) {
-                    defer.resolve(new JQLStatementResult().withAffectedRows(0));
-                    return;
-                }
-                for (var i = 0, len = _this.markedRowsForDelete.length; i < len; i++) {
-                    table.deleteRow(_this.markedRowsForDelete[i].rowIndex);
-                }
-                table.compact();
-                defer.resolve(new JQLStatementResult().withAffectedRows(_this.markedRowsForDelete.length));
             }).promise();
         };
     };

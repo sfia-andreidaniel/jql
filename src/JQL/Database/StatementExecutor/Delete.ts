@@ -15,68 +15,78 @@ class JQLDatabaseStatementExecutorDelete implements IDatabaseStatementExecutor {
         return (): JQueryDeferred<JQLStatementResult> => {
             return <any>this.db.getJQuery().Deferred(( defer ) => {
 
-                this.markedRowsForDelete = [];
+                try {
 
-                let table: JQLTableInMemory = <JQLTableInMemory>this.db.getTable(this.statement.getTable().getName()),
-                    iterator = table.createIterator(),
-                    row: JQLRow,
-                    addRow: boolean,
-                    where = this.statement.getFilter();
+                    this.markedRowsForDelete = [];
 
-                while (row = iterator.next()) {
+                    let table: JQLTableInMemory = <JQLTableInMemory>this.db.getTable(this.statement.getTable().getName()),
+                        iterator = table.createIterator(),
+                        row: JQLRow,
+                        addRow: boolean,
+                        where = this.statement.getFilter();
 
-                    if (null === where) {
+                    while (row = iterator.next()) {
 
-                        addRow = true;
+                        if (null === where) {
 
-                    } else {
+                            addRow = true;
 
-                        addRow = !!where.compute(row);
+                        } else {
+
+                            addRow = !!where.compute(row);
+
+                        }
+
+                        if (addRow) {
+
+                            this.markedRowsForDelete.push({
+                                rowIndex: row.getRowIndex(),
+                                values: row.getDataAsArray(),
+                            });
+
+                        }
 
                     }
 
-                    if (addRow) {
+                    if (!this.markedRowsForDelete.length) {
 
-                        this.markedRowsForDelete.push({
-                            rowIndex: row.getRowIndex(),
-                            values: row.getDataAsArray(),
-                        });
+                        defer.resolve(new JQLStatementResult().withAffectedRows(0));
+
+                        return;
 
                     }
 
+                    // APPLY SORTING
+
+                    this.applySorting();
+
+                    // APPLY LIMITS
+
+                    this.applyLimits();
+
+                    if (!this.markedRowsForDelete.length) {
+
+                        defer.resolve(new JQLStatementResult().withAffectedRows(0));
+
+                        return;
+
+                    }
+
+                    for (let i = 0, len = this.markedRowsForDelete.length; i < len; i++) {
+                        table.deleteRow(this.markedRowsForDelete[i].rowIndex);
+                    }
+
+                    table.compact();
+
+                    defer.resolve(new JQLStatementResult().withAffectedRows(this.markedRowsForDelete.length));
+
+                } catch (e) {
+
+                    console.error(e);
+
+                    defer.reject( new Error('Failed to execute DELETE statement!' ) );
+
                 }
-
-                if (!this.markedRowsForDelete.length) {
-
-                    defer.resolve(new JQLStatementResult().withAffectedRows(0));
-
-                    return;
-
-                }
-
-                // APPLY SORTING
-
-                this.applySorting();
-
-                // APPLY LIMITS
-
-                this.applyLimits();
-
-                if (!this.markedRowsForDelete.length) {
-
-                    defer.resolve(new JQLStatementResult().withAffectedRows(0));
-
-                    return;
-
-                }
-
-                for ( let i=0, len = this.markedRowsForDelete.length; i<len; i++ ) {
-                    table.deleteRow( this.markedRowsForDelete[i].rowIndex );
-                }
-
-                table.compact();
-
-                defer.resolve(new JQLStatementResult().withAffectedRows(this.markedRowsForDelete.length));
 
             } ).promise();
         }

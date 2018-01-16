@@ -28,7 +28,9 @@ class JQLDatabaseStatementExecutorInsert implements IDatabaseStatementExecutor {
 
                 } catch (e) {
 
-                    defer.reject( 'Failed to INSERT: ' + e );
+                    console.error(e);
+
+                    defer.reject( 'Failed to execute INSERT statement' );
 
                 }
 
