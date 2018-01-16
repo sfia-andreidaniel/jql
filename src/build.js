@@ -812,6 +812,10 @@ var JQLDatabaseStatementExecutorRemoteStatement = (function () {
         var _this = this;
         return function () {
             return _this.db.getJQuery().Deferred(function (defer) {
+                if (_this.statement.getStatementType() !== EJQL_LEXER_STATEMENT_TYPES.SELECT) {
+                    defer.reject(new Error('Only select statements can be sent to backend!'));
+                    return;
+                }
                 defer.reject(new Error('REMOTE statements not implemented!'));
             }).promise();
         };
