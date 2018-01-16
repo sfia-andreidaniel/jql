@@ -1,13 +1,27 @@
-class JQLTableInMemory extends JQLTable {
+class JQLTableStorageEngineInMemory extends JQLTable {
 
     private rows: JQLPrimitive[][] = [];
+
+    private lastTransactionSnapshot: string;
 
     constructor( identifiers: IJQLTableColumn[], rows: JQLPrimitive[][] ) {
 
         super( identifiers );
 
         for ( let i=0, len = rows.length; i<len; i++ ) {
+
             this.rows.push( rows[i] );
+
+        }
+
+        for ( let idtf = identifiers || [], len = idtf.length, i = 0; i<len; i++ ) {
+
+            if ( undefined !== idtf[i].unique ) {
+
+                this.indexes.push( JQLTableIndex.createFromColumnIdentifier( this, idtf[i] ) );
+
+            }
+
         }
 
     }
@@ -67,6 +81,30 @@ class JQLTableInMemory extends JQLTable {
             if ( null === this.rows[i] ) {
                 this.rows.splice(i, 1);
             }
+        }
+    }
+
+    public isTransactional(): boolean {
+        return true;
+    }
+
+    public startTransaction(): void {
+        this.lastTransactionSnapshot = JSON.stringify( this.rows );
+    }
+
+    public commitTransaction(): void {
+        if ( this.lastTransactionSnapshot !== undefined ) {
+            this.lastTransactionSnapshot = undefined;
+        } else {
+            throw new Error('No transaction started before!"' );
+        }
+    }
+
+    public rollbackTransaction() {
+        if ( this.lastTransactionSnapshot !== undefined ) {
+            this.rows = JSON.parse( this.lastTransactionSnapshot );
+        } else {
+            throw new Error('Failed to rollback transaction: No transaction started before!');
         }
     }
 

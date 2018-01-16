@@ -1,12 +1,12 @@
 class JQLTableUtilsIterator {
 
-    private table: JQLTableInMemory;
+    private table: JQLTableStorageEngineInMemory;
 
     private index: number = 0;
 
     private row: JQLRow;
 
-    constructor( table: JQLTableInMemory ) {
+    constructor( table: JQLTableStorageEngineInMemory ) {
         this.table = table;
         this.row = new JQLRow(table.describe(), null, null);
     }

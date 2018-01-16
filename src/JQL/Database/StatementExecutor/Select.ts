@@ -101,14 +101,14 @@ class JQLDatabaseStatementExecutorSelect implements IDatabaseStatementExecutor {
 
     private getStatementCandidateRows(): object[] {
 
-        let table: JQLTableInMemory = <JQLTableInMemory>this.db.getTable(this.statement.getTable().getName()),
-            iterator = table.createIterator(),
+        let table: JQLTableStorageEngineInMemory = <JQLTableStorageEngineInMemory>this.db.getTable(this.statement.getTable().getName()),
+            iterator                             = table.createIterator(),
             row: JQLRow,
-            result: object[] = [],
-            tableFieldsList = table.describe(),
-            statementFieldsList = this.statement.getFields(),
-            isAllFields: boolean = statementFieldsList.isSelectingAllFields(),
-            specificFieldsList = <JQLStatementSelectFieldsListSpecific>statementFieldsList,
+            result: object[]                     = [],
+            tableFieldsList                      = table.describe(),
+            statementFieldsList                  = this.statement.getFields(),
+            isAllFields: boolean                 = statementFieldsList.isSelectingAllFields(),
+            specificFieldsList                   = <JQLStatementSelectFieldsListSpecific>statementFieldsList,
             specificFieldsListCollection: JQLStatementSelectField[],
             o: object,
             exprResult: JQLPrimitive,

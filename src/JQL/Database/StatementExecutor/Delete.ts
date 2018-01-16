@@ -15,15 +15,20 @@ class JQLDatabaseStatementExecutorDelete implements IDatabaseStatementExecutor {
         return (): JQueryDeferred<JQLStatementResult> => {
             return <any>this.db.getJQuery().Deferred(( defer ) => {
 
+                let table: JQLTableStorageEngineInMemory = <JQLTableStorageEngineInMemory>this.db.getTable(this.statement.getTable().getName());
+
+                if ( table.isTransactional() ) {
+                    table.startTransaction();
+                }
+
                 try {
 
                     this.markedRowsForDelete = [];
 
-                    let table: JQLTableInMemory = <JQLTableInMemory>this.db.getTable(this.statement.getTable().getName()),
-                        iterator = table.createIterator(),
+                    let iterator                             = table.createIterator(),
                         row: JQLRow,
                         addRow: boolean,
-                        where = this.statement.getFilter();
+                        where                                = this.statement.getFilter();
 
                     while (row = iterator.next()) {
 
@@ -50,6 +55,10 @@ class JQLDatabaseStatementExecutorDelete implements IDatabaseStatementExecutor {
 
                     if (!this.markedRowsForDelete.length) {
 
+                        if ( table.isTransactional() ) {
+                            table.commitTransaction();
+                        }
+
                         defer.resolve(new JQLStatementResult().withAffectedRows(0));
 
                         return;
@@ -66,6 +75,10 @@ class JQLDatabaseStatementExecutorDelete implements IDatabaseStatementExecutor {
 
                     if (!this.markedRowsForDelete.length) {
 
+                        if ( table.isTransactional() ) {
+                            table.commitTransaction();
+                        }
+
                         defer.resolve(new JQLStatementResult().withAffectedRows(0));
 
                         return;
@@ -78,11 +91,19 @@ class JQLDatabaseStatementExecutorDelete implements IDatabaseStatementExecutor {
 
                     table.compact();
 
+                    if ( table.isTransactional() ) {
+                        table.commitTransaction();
+                    }
+
                     defer.resolve(new JQLStatementResult().withAffectedRows(this.markedRowsForDelete.length));
 
                 } catch (e) {
 
                     console.error(e);
+
+                    if ( table.isTransactional() ) {
+                        table.rollbackTransaction();
+                    }
 
                     defer.reject( new Error('Failed to execute DELETE statement!' ) );
 
@@ -95,7 +116,7 @@ class JQLDatabaseStatementExecutorDelete implements IDatabaseStatementExecutor {
     private applySorting() {
 
         let sorter = this.statement.getSorter(),
-            table = <JQLTableInMemory>this.db.getTable(this.statement.getTable().getName());
+            table = <JQLTableStorageEngineInMemory>this.db.getTable(this.statement.getTable().getName());
 
         if (!sorter || this.markedRowsForDelete.length < 2) {
             return;

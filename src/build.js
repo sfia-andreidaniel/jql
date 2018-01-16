@@ -679,9 +679,13 @@ var JQLDatabaseStatementExecutorUpdate = (function () {
         var _this = this;
         return function () {
             return _this.db.getJQuery().Deferred(function (defer) {
+                var table = _this.db.getTable(_this.statement.getTable().getName());
+                if (table.isTransactional()) {
+                    table.startTransaction();
+                }
                 try {
                     _this.markedRowsForUpdate = [];
-                    var table = _this.db.getTable(_this.statement.getTable().getName()), iterator = table.createIterator(), row = void 0, addRow = void 0, where = _this.statement.getFilter();
+                    var iterator = table.createIterator(), row = void 0, addRow = void 0, where = _this.statement.getFilter();
                     while (row = iterator.next()) {
                         if (null === where) {
                             addRow = true;
@@ -697,12 +701,18 @@ var JQLDatabaseStatementExecutorUpdate = (function () {
                         }
                     }
                     if (!_this.markedRowsForUpdate.length) {
+                        if (table.isTransactional()) {
+                            table.commitTransaction();
+                        }
                         defer.resolve(new JQLStatementResult().withAffectedRows(0));
                         return;
                     }
                     _this.applySorting();
                     _this.applyLimits();
                     if (!_this.markedRowsForUpdate.length) {
+                        if (table.isTransactional()) {
+                            table.commitTransaction();
+                        }
                         defer.resolve(new JQLStatementResult().withAffectedRows(0));
                         return;
                     }
@@ -716,10 +726,16 @@ var JQLDatabaseStatementExecutorUpdate = (function () {
                         }
                         table.replace(_this.markedRowsForUpdate[i].rowIndex, updateRow.getDataAsArray());
                     }
+                    if (table.isTransactional()) {
+                        table.commitTransaction();
+                    }
                     defer.resolve(result);
                 }
                 catch (e) {
                     console.error(e);
+                    if (table.isTransactional()) {
+                        table.rollbackTransaction();
+                    }
                     defer.reject('Failed to execute UPDATE statement!');
                 }
             }).promise();
@@ -789,15 +805,23 @@ var JQLDatabaseStatementExecutorInsert = (function () {
         var _this = this;
         return function () {
             return _this.db.getJQuery().Deferred(function (defer) {
+                var table = _this.db.getTable(_this.statement.getTable().getName());
+                if (table.isTransactional()) {
+                    table.startTransaction();
+                }
                 try {
-                    var table = _this.db.getTable(_this.statement.getTable().getName()), row = JQLRow.createFromTable(table);
+                    var row = JQLRow.createFromTable(table);
                     for (var i = 0, fields = _this.statement.getFields(), len = fields.length; i < len; i++) {
                         row.setColumnValue(fields[i].getFieldName(), fields[i].getExpression().compute(row));
                     }
                     table.insertRow(row.getDataAsArray());
+                    table.commitTransaction();
                     defer.resolve((new JQLStatementResult()).withAffectedRows(1));
                 }
                 catch (e) {
+                    if (table.isTransactional()) {
+                        table.rollbackTransaction();
+                    }
                     console.error(e);
                     defer.reject('Failed to execute INSERT statement');
                 }
@@ -815,9 +839,13 @@ var JQLDatabaseStatementExecutorDelete = (function () {
         var _this = this;
         return function () {
             return _this.db.getJQuery().Deferred(function (defer) {
+                var table = _this.db.getTable(_this.statement.getTable().getName());
+                if (table.isTransactional()) {
+                    table.startTransaction();
+                }
                 try {
                     _this.markedRowsForDelete = [];
-                    var table = _this.db.getTable(_this.statement.getTable().getName()), iterator = table.createIterator(), row = void 0, addRow = void 0, where = _this.statement.getFilter();
+                    var iterator = table.createIterator(), row = void 0, addRow = void 0, where = _this.statement.getFilter();
                     while (row = iterator.next()) {
                         if (null === where) {
                             addRow = true;
@@ -833,12 +861,18 @@ var JQLDatabaseStatementExecutorDelete = (function () {
                         }
                     }
                     if (!_this.markedRowsForDelete.length) {
+                        if (table.isTransactional()) {
+                            table.commitTransaction();
+                        }
                         defer.resolve(new JQLStatementResult().withAffectedRows(0));
                         return;
                     }
                     _this.applySorting();
                     _this.applyLimits();
                     if (!_this.markedRowsForDelete.length) {
+                        if (table.isTransactional()) {
+                            table.commitTransaction();
+                        }
                         defer.resolve(new JQLStatementResult().withAffectedRows(0));
                         return;
                     }
@@ -846,10 +880,16 @@ var JQLDatabaseStatementExecutorDelete = (function () {
                         table.deleteRow(_this.markedRowsForDelete[i].rowIndex);
                     }
                     table.compact();
+                    if (table.isTransactional()) {
+                        table.commitTransaction();
+                    }
                     defer.resolve(new JQLStatementResult().withAffectedRows(_this.markedRowsForDelete.length));
                 }
                 catch (e) {
                     console.error(e);
+                    if (table.isTransactional()) {
+                        table.rollbackTransaction();
+                    }
                     defer.reject(new Error('Failed to execute DELETE statement!'));
                 }
             }).promise();
@@ -933,6 +973,7 @@ var JQLTable = (function () {
     function JQLTable(identifiers) {
         this.identifiers = [];
         this.emptyRow = [];
+        this.indexes = [];
         for (var i = 0, idtf = identifiers || [], len = idtf.length; i < len; i++) {
             this.identifiers.push(idtf[i]);
             if (undefined !== idtf[i].default) {
@@ -986,12 +1027,41 @@ var JQLTable = (function () {
             }
             result.push(row);
         }
-        return new JQLTableInMemory(identifiers, result);
+        return new JQLTableStorageEngineInMemory(identifiers, result);
     };
     JQLTable.prototype.createEmptyRow = function () {
         return this.emptyRow.slice(0);
     };
+    JQLTable.prototype.getIndexes = function () {
+        return this.indexes;
+    };
+    JQLTable.prototype.reIndex = function () {
+        for (var i = 0, len = this.indexes.length; i < len; i++) {
+            this.indexes[i].index();
+        }
+    };
     return JQLTable;
+}());
+var JQLTableIndex = (function () {
+    function JQLTableIndex(table, columns) {
+        this.table = table;
+        this.columns = (columns || []).slice(0);
+    }
+    JQLTableIndex.prototype.getColumns = function () {
+        return this.columns;
+    };
+    JQLTableIndex.prototype.getTable = function () {
+        return this.table;
+    };
+    JQLTableIndex.createFromColumnIdentifier = function (table, column) {
+        if (table.getStorageEngine() === EJQLTableStorageEngine.IN_MEMORY) {
+            return new JQLTableIndexSingleColumn(table, column);
+        }
+        else {
+            throw new Error('Backend-side table indexes not supported!');
+        }
+    };
+    return JQLTableIndex;
 }());
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -1003,29 +1073,58 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var JQLTableInMemory = (function (_super) {
-    __extends(JQLTableInMemory, _super);
-    function JQLTableInMemory(identifiers, rows) {
+var JQLTableIndexSingleColumn = (function (_super) {
+    __extends(JQLTableIndexSingleColumn, _super);
+    function JQLTableIndexSingleColumn(table, column) {
+        var _this = _super.call(this, table, [column]) || this;
+        _this.unique = !!column.unique;
+        return _this;
+    }
+    JQLTableIndexSingleColumn.prototype.isUnique = function () {
+        return this.unique;
+    };
+    JQLTableIndexSingleColumn.prototype.index = function () {
+        this.values = [];
+        var row, iterator = this.table.createIterator(), value;
+        while (row = iterator.next()) {
+            if (this.values.indexOf(value = row.getColumnValue(this.columns[0].name)) > -1) {
+                throw new Error('Duplicate key ' + JSON.stringify(this.columns[0].name) + ' found with value ' + JSON.stringify(value) + ' found!');
+            }
+            else {
+                this.values.push(value);
+            }
+        }
+    };
+    return JQLTableIndexSingleColumn;
+}(JQLTableIndex));
+var JQLTableStorageEngineInMemory = (function (_super) {
+    __extends(JQLTableStorageEngineInMemory, _super);
+    function JQLTableStorageEngineInMemory(identifiers, rows) {
         var _this = _super.call(this, identifiers) || this;
         _this.rows = [];
         for (var i = 0, len = rows.length; i < len; i++) {
             _this.rows.push(rows[i]);
         }
+        for (var idtf = identifiers || [], len = idtf.length, i = 0; i < len; i++) {
+            if (undefined !== idtf[i].unique) {
+                _this.indexes.push(JQLTableIndex.createFromColumnIdentifier(_this, idtf[i]));
+            }
+        }
         return _this;
     }
-    JQLTableInMemory.prototype.isRemote = function () {
+    JQLTableStorageEngineInMemory.prototype.isRemote = function () {
         return false;
     };
-    JQLTableInMemory.prototype.getStorageEngine = function () {
+    JQLTableStorageEngineInMemory.prototype.getStorageEngine = function () {
         return EJQLTableStorageEngine.IN_MEMORY;
     };
-    JQLTableInMemory.prototype.getRowAt = function (rowIndex) {
+    JQLTableStorageEngineInMemory.prototype.getRowAt = function (rowIndex) {
         return this.rows[rowIndex] || null;
     };
-    JQLTableInMemory.prototype.createIterator = function () {
+    JQLTableStorageEngineInMemory.prototype.createIterator = function () {
         return new JQLTableUtilsIterator(this);
     };
-    JQLTableInMemory.prototype.replace = function (index, newRow) {
+    JQLTableStorageEngineInMemory.prototype.replace = function (index, newRow) {
         if (this.rows[index]) {
             for (var i = 0, len = this.rows[index].length; i < len; i++) {
                 this.rows[index][i] = newRow[i];
@@ -1035,12 +1134,12 @@ var JQLTableInMemory = (function (_super) {
             throw new Error('Undefined table index: ' + JSON.stringify(index));
         }
     };
-    JQLTableInMemory.prototype.deleteRow = function (rowIndex) {
+    JQLTableStorageEngineInMemory.prototype.deleteRow = function (rowIndex) {
         if (this.rows[rowIndex]) {
             this.rows[rowIndex] = null;
         }
     };
-    JQLTableInMemory.prototype.insertRow = function (row) {
+    JQLTableStorageEngineInMemory.prototype.insertRow = function (row) {
         if (!row || undefined === row.length) {
             throw new Error('Invalid argument row: array expected!');
         }
@@ -1049,14 +1148,36 @@ var JQLTableInMemory = (function (_super) {
         }
         this.rows.push(row);
     };
-    JQLTableInMemory.prototype.compact = function () {
+    JQLTableStorageEngineInMemory.prototype.compact = function () {
         for (var i = this.rows.length - 1; i >= 0; i--) {
             if (null === this.rows[i]) {
                 this.rows.splice(i, 1);
             }
         }
     };
-    return JQLTableInMemory;
+    JQLTableStorageEngineInMemory.prototype.isTransactional = function () {
+        return true;
+    };
+    JQLTableStorageEngineInMemory.prototype.startTransaction = function () {
+        this.lastTransactionSnapshot = JSON.stringify(this.rows);
+    };
+    JQLTableStorageEngineInMemory.prototype.commitTransaction = function () {
+        if (this.lastTransactionSnapshot !== undefined) {
+            this.lastTransactionSnapshot = undefined;
+        }
+        else {
+            throw new Error('No transaction started before!"');
+        }
+    };
+    JQLTableStorageEngineInMemory.prototype.rollbackTransaction = function () {
+        if (this.lastTransactionSnapshot !== undefined) {
+            this.rows = JSON.parse(this.lastTransactionSnapshot);
+        }
+        else {
+            throw new Error('Failed to rollback transaction: No transaction started before!');
+        }
+    };
+    return JQLTableStorageEngineInMemory;
 }(JQLTable));
 var JQLTableUtilsIterator = (function () {
     function JQLTableUtilsIterator(table) {

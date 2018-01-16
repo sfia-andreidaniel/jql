@@ -4,6 +4,8 @@ abstract class JQLTable implements IJQLTable {
 
     private emptyRow: JQLPrimitive[] = [];
 
+    protected indexes: JQLTableIndex[] = [];
+
     constructor(identifiers: IJQLTableColumn[]) {
 
         for (let i = 0, idtf = identifiers || [], len = idtf.length; i < len; i++) {
@@ -21,15 +23,19 @@ abstract class JQLTable implements IJQLTable {
                     case EJQLTableColumnType.NULL:
                         this.emptyRow.push(null);
                         break;
+
                     case EJQLTableColumnType.NUMBER:
                         this.emptyRow.push(0);
                         break;
+
                     case EJQLTableColumnType.STRING:
                         this.emptyRow.push('');
                         break;
+
                     case EJQLTableColumnType.BOOLEAN:
                         this.emptyRow.push(false);
                         break;
+
                     default:
                         this.emptyRow.push(null);
 
@@ -96,12 +102,32 @@ abstract class JQLTable implements IJQLTable {
 
         }
 
-        return new JQLTableInMemory(identifiers, result);
+        return new JQLTableStorageEngineInMemory(identifiers, result);
 
     }
 
     public createEmptyRow(): JQLPrimitive[] {
         return this.emptyRow.slice(0);
     }
+
+    public getIndexes(): JQLTableIndex[] {
+        return this.indexes;
+    }
+
+    public reIndex() {
+
+        for ( let i=0, len = this.indexes.length; i<len; i++ ) {
+            this.indexes[i].index();
+        }
+
+    }
+
+    public abstract isTransactional(): boolean;
+
+    public abstract startTransaction();
+
+    public abstract commitTransaction();
+
+    public abstract rollbackTransaction();
 
 }

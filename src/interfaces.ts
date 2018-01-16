@@ -312,6 +312,7 @@ interface IJQLTableColumn {
     name: string;
     type: EJQLTableColumnType;
     default?: JQLPrimitive;
+    unique?: boolean;
 }
 
 interface IJQLTableIndex {

@@ -17,15 +17,20 @@ class JQLDatabaseStatementExecutorUpdate implements IDatabaseStatementExecutor {
 
             return <any>this.db.getJQuery().Deferred((defer) => {
 
+                let table: JQLTableStorageEngineInMemory = <JQLTableStorageEngineInMemory>this.db.getTable(this.statement.getTable().getName());
+
+                if ( table.isTransactional() ) {
+                    table.startTransaction();
+                }
+
                 try {
 
                     this.markedRowsForUpdate = [];
 
-                    let table: JQLTableInMemory = <JQLTableInMemory>this.db.getTable(this.statement.getTable().getName()),
-                        iterator = table.createIterator(),
+                    let iterator                             = table.createIterator(),
                         row: JQLRow,
                         addRow: boolean,
-                        where = this.statement.getFilter();
+                        where                                = this.statement.getFilter();
 
                     while (row = iterator.next()) {
 
@@ -52,6 +57,10 @@ class JQLDatabaseStatementExecutorUpdate implements IDatabaseStatementExecutor {
 
                     if (!this.markedRowsForUpdate.length) {
 
+                        if ( table.isTransactional() ) {
+                            table.commitTransaction();
+                        }
+
                         defer.resolve(new JQLStatementResult().withAffectedRows(0));
 
                         return;
@@ -67,6 +76,10 @@ class JQLDatabaseStatementExecutorUpdate implements IDatabaseStatementExecutor {
                     this.applyLimits();
 
                     if (!this.markedRowsForUpdate.length) {
+
+                        if ( table.isTransactional() ) {
+                            table.commitTransaction();
+                        }
 
                         defer.resolve(new JQLStatementResult().withAffectedRows(0));
 
@@ -103,11 +116,19 @@ class JQLDatabaseStatementExecutorUpdate implements IDatabaseStatementExecutor {
 
                     }
 
+                    if ( table.isTransactional() ) {
+                        table.commitTransaction();
+                    }
+
                     defer.resolve(result);
 
                 } catch (e) {
 
                     console.error(e);
+
+                    if ( table.isTransactional() ) {
+                        table.rollbackTransaction();
+                    }
 
                     defer.reject('Failed to execute UPDATE statement!' );
 
@@ -120,7 +141,7 @@ class JQLDatabaseStatementExecutorUpdate implements IDatabaseStatementExecutor {
     private applySorting() {
 
         let sorter = this.statement.getSorter(),
-            table = <JQLTableInMemory>this.db.getTable(this.statement.getTable().getName());
+            table = <JQLTableStorageEngineInMemory>this.db.getTable(this.statement.getTable().getName());
 
         if (!sorter || this.markedRowsForUpdate.length < 2) {
             return;
