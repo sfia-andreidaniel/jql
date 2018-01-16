@@ -311,6 +311,11 @@ enum EJQLTableColumnType {
 interface IJQLTableColumn {
     name: string;
     type: EJQLTableColumnType;
+    default?: JQLPrimitive;
+}
+
+interface IJQLTableIndex {
+    columns: string[];
 }
 
 enum EJQLTableStorageEngine {

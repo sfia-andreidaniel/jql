@@ -48,6 +48,20 @@ class JQLTableInMemory extends JQLTable {
         }
     }
 
+    public insertRow( row: JQLPrimitive[] ) {
+
+        if ( !row || undefined === row.length ) {
+            throw new Error('Invalid argument row: array expected!' );
+        }
+
+        if ( row.length !== this.identifiers.length ) {
+            throw new Error('Row mismatch: Expected ' + this.identifiers.length + ' values, got ' + row.length + ' values!' );
+        }
+
+        this.rows.push( row );
+
+    }
+
     public compact() {
         for ( let i = this.rows.length - 1; i>=0; i-- ) {
             if ( null === this.rows[i] ) {

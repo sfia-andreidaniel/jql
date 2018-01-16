@@ -87,7 +87,7 @@ class JQLRow implements IJQLTableRow {
 
     public static createFromTable(table: JQLTableInMemory): JQLRow {
 
-        return new JQLRow(table.describe(), table.getRowAt(0), undefined);
+        return new JQLRow(table.describe(), table.createEmptyRow(), undefined);
 
     }
 

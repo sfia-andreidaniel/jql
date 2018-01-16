@@ -777,7 +777,17 @@ var JQLDatabaseStatementExecutorInsert = (function () {
         var _this = this;
         return function () {
             return _this.db.getJQuery().Deferred(function (defer) {
-                defer.reject(new Error('INSERT statements not implemented!'));
+                try {
+                    var table = _this.db.getTable(_this.statement.getTable().getName()), row = JQLRow.createFromTable(table);
+                    for (var i = 0, fields = _this.statement.getFields(), len = fields.length; i < len; i++) {
+                        row.setColumnValue(fields[i].getFieldName(), fields[i].getExpression().compute(row));
+                    }
+                    table.insertRow(row.getDataAsArray());
+                    defer.resolve((new JQLStatementResult()).withAffectedRows(1));
+                }
+                catch (e) {
+                    defer.reject('Failed to INSERT: ' + e);
+                }
             }).promise();
         };
     };
@@ -903,8 +913,30 @@ var JQLDatabaseStatementExecutorRemoteStatement = (function () {
 var JQLTable = (function () {
     function JQLTable(identifiers) {
         this.identifiers = [];
+        this.emptyRow = [];
         for (var i = 0, idtf = identifiers || [], len = idtf.length; i < len; i++) {
             this.identifiers.push(idtf[i]);
+            if (undefined !== idtf[i].default) {
+                this.emptyRow.push(idtf[i].default);
+            }
+            else {
+                switch (identifiers[i].type) {
+                    case EJQLTableColumnType.NULL:
+                        this.emptyRow.push(null);
+                        break;
+                    case EJQLTableColumnType.NUMBER:
+                        this.emptyRow.push(0);
+                        break;
+                    case EJQLTableColumnType.STRING:
+                        this.emptyRow.push('');
+                        break;
+                    case EJQLTableColumnType.BOOLEAN:
+                        this.emptyRow.push(false);
+                        break;
+                    default:
+                        this.emptyRow.push(null);
+                }
+            }
         }
     }
     JQLTable.prototype.describe = function () {
@@ -936,6 +968,9 @@ var JQLTable = (function () {
             result.push(row);
         }
         return new JQLTableInMemory(identifiers, result);
+    };
+    JQLTable.prototype.createEmptyRow = function () {
+        return this.emptyRow.slice(0);
     };
     return JQLTable;
 }());
@@ -985,6 +1020,15 @@ var JQLTableInMemory = (function (_super) {
         if (this.rows[rowIndex]) {
             this.rows[rowIndex] = null;
         }
+    };
+    JQLTableInMemory.prototype.insertRow = function (row) {
+        if (!row || undefined === row.length) {
+            throw new Error('Invalid argument row: array expected!');
+        }
+        if (row.length !== this.identifiers.length) {
+            throw new Error('Row mismatch: Expected ' + this.identifiers.length + ' values, got ' + row.length + ' values!');
+        }
+        this.rows.push(row);
     };
     JQLTableInMemory.prototype.compact = function () {
         for (var i = this.rows.length - 1; i >= 0; i--) {
@@ -1067,7 +1111,7 @@ var JQLRow = (function () {
         return new JQLRow(columns, values, 0);
     };
     JQLRow.createFromTable = function (table) {
-        return new JQLRow(table.describe(), table.getRowAt(0), undefined);
+        return new JQLRow(table.describe(), table.createEmptyRow(), undefined);
     };
     return JQLRow;
 }());

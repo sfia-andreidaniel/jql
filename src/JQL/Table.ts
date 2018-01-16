@@ -1,10 +1,42 @@
 abstract class JQLTable implements IJQLTable {
 
-    private identifiers: IJQLTableColumn[] = [];
+    protected identifiers: IJQLTableColumn[] = [];
 
-    constructor( identifiers: IJQLTableColumn[] ) {
-        for ( let i=0, idtf = identifiers || [], len = idtf.length; i<len; i++ ) {
-            this.identifiers.push( idtf[i] );
+    private emptyRow: JQLPrimitive[] = [];
+
+    constructor(identifiers: IJQLTableColumn[]) {
+
+        for (let i = 0, idtf = identifiers || [], len = idtf.length; i < len; i++) {
+
+            this.identifiers.push(idtf[i]);
+
+            if (undefined !== idtf[i].default) {
+
+                this.emptyRow.push(idtf[i].default);
+
+            } else {
+
+                switch (identifiers[i].type) {
+
+                    case EJQLTableColumnType.NULL:
+                        this.emptyRow.push(null);
+                        break;
+                    case EJQLTableColumnType.NUMBER:
+                        this.emptyRow.push(0);
+                        break;
+                    case EJQLTableColumnType.STRING:
+                        this.emptyRow.push('');
+                        break;
+                    case EJQLTableColumnType.BOOLEAN:
+                        this.emptyRow.push(false);
+                        break;
+                    default:
+                        this.emptyRow.push(null);
+
+                }
+
+            }
+
         }
     }
 
@@ -14,8 +46,8 @@ abstract class JQLTable implements IJQLTable {
 
     public hasIdentifier(identifierName: string): boolean {
 
-        for ( let i=0, len = this.identifiers.length; i<len; i++ ) {
-            if ( this.identifiers[i].name === identifierName ) {
+        for (let i = 0, len = this.identifiers.length; i < len; i++) {
+            if (this.identifiers[i].name === identifierName) {
                 return true;
             }
         }
@@ -27,7 +59,7 @@ abstract class JQLTable implements IJQLTable {
 
     public abstract getStorageEngine(): EJQLTableStorageEngine;
 
-    public static createFromInMemoryArrayOfObjects( rows: object[] ): JQLTable {
+    public static createFromInMemoryArrayOfObjects(rows: object[]): JQLTable {
 
         let identifiers = JQLUtils.getIdentifiers(rows),
             result: JQLPrimitive[][] = [],
@@ -36,36 +68,40 @@ abstract class JQLTable implements IJQLTable {
             v: JQLPrimitive,
             vType: EJQLTableColumnType;
 
-        if ( !identifiers.length ) {
+        if (!identifiers.length) {
 
             throw new Error('No valid columns were detected in "in-memory" array!');
 
         }
 
-        for ( let i=0, len = rows.length; i<len; i++ ) {
+        for (let i = 0, len = rows.length; i < len; i++) {
 
             row = [];
 
-            for ( let col=0; col < ncols; col++ ) {
+            for (let col = 0; col < ncols; col++) {
 
-                v = rows[i][ identifiers[col].name ];
+                v = rows[i][identifiers[col].name];
 
                 vType = JQLUtils.getType(v);
 
-                if ( vType === null || vType !== identifiers[col].type ) {
+                if (vType === null || vType !== identifiers[col].type) {
                     v = null;
                 }
 
-                row.push( v );
+                row.push(v);
 
             }
 
-            result.push( row );
+            result.push(row);
 
         }
 
         return new JQLTableInMemory(identifiers, result);
 
+    }
+
+    public createEmptyRow(): JQLPrimitive[] {
+        return this.emptyRow.slice(0);
     }
 
 }
