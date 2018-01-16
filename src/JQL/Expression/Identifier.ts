@@ -35,4 +35,8 @@ class JQLExpressionIdentifier extends JQLExpression {
         return context.getColumnValue(this.identifierName);
     }
 
+    public toString(): string {
+        return this.identifierName;
+    }
+
 }

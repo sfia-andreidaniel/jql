@@ -33,4 +33,8 @@ class JQLExpressionString extends JQLExpression {
     public compute( context: IJQLTableRow ): JQLPrimitive {
         return this.value;
     }
+
+    public toString(): string {
+        return JSON.stringify(this.value);
+    }
 }

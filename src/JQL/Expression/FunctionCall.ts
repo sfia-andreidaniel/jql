@@ -108,4 +108,15 @@ class JQLExpressionFunctionCall extends JQLExpression {
         }
 
     }
+
+    public toString(): string {
+
+        let result: string = this.functionName + '(';
+
+        for ( let i=0, len = this.arguments.length; i<len; i++ ) {
+            result += ( i === 0 ? '' : ', ' ) + this.arguments[i].toString();
+        }
+
+        return result + ')';
+    }
 }

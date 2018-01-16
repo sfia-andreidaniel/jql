@@ -533,7 +533,6 @@ var JQLDatabase = (function () {
 }());
 var JQLDatabaseStatementExecutorSelect = (function () {
     function JQLDatabaseStatementExecutorSelect(statement, db) {
-        this.nullAliasIndex = 0;
         this.statement = statement;
         this.db = db;
     }
@@ -568,13 +567,11 @@ var JQLDatabaseStatementExecutorSelect = (function () {
         if (fields.isSelectingAllFields()) {
             return result;
         }
-        this.nullAliasIndex = 0;
         for (var i = 0, fieldsList = fields, specificFields = fieldsList.getFields(), len = specificFields.length; i < len; i++) {
             fieldName = specificFields[i].getLiteral();
             exprResult = specificFields[i].getExpression().compute(context);
             if (null === fieldName) {
-                this.nullAliasIndex++;
-                fieldName = 'col_' + this.nullAliasIndex;
+                fieldName = specificFields[i].getExpression().getLiteral();
             }
             result[fieldName] = exprResult;
         }
@@ -597,14 +594,12 @@ var JQLDatabaseStatementExecutorSelect = (function () {
                     result.push(row.toObject());
                 }
                 else {
-                    this.nullAliasIndex = 0;
                     o = Object.create(null);
                     for (var i = 0, len = specificFieldsListCollection.length; i < len; i++) {
                         fieldName = specificFieldsListCollection[i].getLiteral();
                         exprResult = specificFieldsListCollection[i].getExpression().compute(row);
                         if (null === fieldName) {
-                            this.nullAliasIndex++;
-                            fieldName = 'col_' + this.nullAliasIndex;
+                            fieldName = specificFieldsListCollection[i].getExpression().getLiteral();
                         }
                         o[fieldName] = exprResult;
                     }
@@ -1186,6 +1181,13 @@ var JQLExpression = (function (_super) {
     JQLExpression.prototype.getOpcodeType = function () {
         return EJQL_LEXER_OPCODE_TYPES.EXPRESSION;
     };
+    JQLExpression.prototype.getLiteral = function () {
+        if (undefined !== this.literal) {
+            return this.literal;
+        }
+        this.literal = this.toString().replace(/["']+/g, '').trim();
+        return this.literal;
+    };
     return JQLExpression;
 }(JQLOpcode));
 var JQLExpressionBinding = (function (_super) {
@@ -1229,6 +1231,9 @@ var JQLExpressionBinding = (function (_super) {
             throw new Error('Failed to compute binding: Binding ' + this.bindingName + ' is not binded!');
         }
     };
+    JQLExpressionBinding.prototype.toString = function () {
+        return ':' + this.bindingName;
+    };
     return JQLExpressionBinding;
 }(JQLExpression));
 var JQLExpressionBoolean = (function (_super) {
@@ -1255,6 +1260,9 @@ var JQLExpressionBoolean = (function (_super) {
     };
     JQLExpressionBoolean.prototype.compute = function (context) {
         return this.value;
+    };
+    JQLExpressionBoolean.prototype.toString = function () {
+        return String(this.value);
     };
     return JQLExpressionBoolean;
 }(JQLExpression));
@@ -1325,6 +1333,13 @@ var JQLExpressionFunctionCall = (function (_super) {
             throw new Error("Failed to call function " + JSON.stringify(this.functionName) + ": Database not binded to function!");
         }
     };
+    JQLExpressionFunctionCall.prototype.toString = function () {
+        var result = this.functionName + '(';
+        for (var i = 0, len = this.arguments.length; i < len; i++) {
+            result += (i === 0 ? '' : ', ') + this.arguments[i].toString();
+        }
+        return result + ')';
+    };
     return JQLExpressionFunctionCall;
 }(JQLExpression));
 var JQLExpressionGroup = (function (_super) {
@@ -1351,6 +1366,9 @@ var JQLExpressionGroup = (function (_super) {
     };
     JQLExpressionGroup.prototype.compute = function (context) {
         return this.expression.compute(context);
+    };
+    JQLExpressionGroup.prototype.toString = function () {
+        return '(' + this.expression.toString() + ')';
     };
     return JQLExpressionGroup;
 }(JQLExpression));
@@ -1381,6 +1399,9 @@ var JQLExpressionIdentifier = (function (_super) {
     };
     JQLExpressionIdentifier.prototype.compute = function (context) {
         return context.getColumnValue(this.identifierName);
+    };
+    JQLExpressionIdentifier.prototype.toString = function () {
+        return this.identifierName;
     };
     return JQLExpressionIdentifier;
 }(JQLExpression));
@@ -1448,6 +1469,9 @@ var JQLExpressionLogicalOr = (function (_super) {
         console.warn('TODO: Properly implement "Logical ||" operator');
         return this.left.compute(context) || this.right.compute(context);
     };
+    JQLExpressionLogicalOr.prototype.toString = function () {
+        return this.left.toString() + " or " + this.right.toString();
+    };
     return JQLExpressionLogicalOr;
 }(JQLExpressionLogical));
 var JQLExpressionLogicalAnd = (function (_super) {
@@ -1462,6 +1486,9 @@ var JQLExpressionLogicalAnd = (function (_super) {
         console.warn('TODO: Properly implement "Logical &&" operator');
         return this.left.compute(context) || this.right.compute(context);
     };
+    JQLExpressionLogicalAnd.prototype.toString = function () {
+        return this.left.toString() + " and " + this.right.toString();
+    };
     return JQLExpressionLogicalAnd;
 }(JQLExpressionLogical));
 var JQLExpressionLogicalEquals = (function (_super) {
@@ -1475,6 +1502,9 @@ var JQLExpressionLogicalEquals = (function (_super) {
     JQLExpressionLogicalEquals.prototype.compute = function (context) {
         console.warn('TODO: Properly implement "Logical ==" operator');
         return this.left.compute(context) == this.right.compute(context);
+    };
+    JQLExpressionLogicalEquals.prototype.toString = function () {
+        return this.left.toString() + " == " + this.right.toString();
     };
     return JQLExpressionLogicalEquals;
 }(JQLExpressionLogical));
@@ -1494,6 +1524,9 @@ var JQLExpressionLogicalLike = (function (_super) {
         console.warn("TODO: JQLExpressionLogicalLike.like(left, right): implement");
         return true;
     };
+    JQLExpressionLogicalLike.prototype.toString = function () {
+        return this.left.toString() + " ~= " + this.right.toString();
+    };
     return JQLExpressionLogicalLike;
 }(JQLExpressionLogical));
 var JQLExpressionLogicalLowerThen = (function (_super) {
@@ -1507,6 +1540,9 @@ var JQLExpressionLogicalLowerThen = (function (_super) {
     JQLExpressionLogicalLowerThen.prototype.compute = function (context) {
         console.warn('TODO: Properly implement "Logical <" operator');
         return this.left.compute(context) < this.right.compute(context);
+    };
+    JQLExpressionLogicalLowerThen.prototype.toString = function () {
+        return this.left.toString() + " < " + this.right.toString();
     };
     return JQLExpressionLogicalLowerThen;
 }(JQLExpressionLogical));
@@ -1522,6 +1558,9 @@ var JQLExpressionLogicalLowerThenEquals = (function (_super) {
         console.warn('TODO: Properly implement "Logical <=" operator');
         return this.left.compute(context) <= this.right.compute(context);
     };
+    JQLExpressionLogicalLowerThenEquals.prototype.toString = function () {
+        return this.left.toString() + " <= " + this.right.toString();
+    };
     return JQLExpressionLogicalLowerThenEquals;
 }(JQLExpressionLogical));
 var JQLExpressionLogicalGreaterThen = (function (_super) {
@@ -1536,6 +1575,9 @@ var JQLExpressionLogicalGreaterThen = (function (_super) {
         console.warn('TODO: Properly implement "Logical >" operator');
         return this.left.compute(context) > this.right.compute(context);
     };
+    JQLExpressionLogicalGreaterThen.prototype.toString = function () {
+        return this.left.toString() + " >= " + this.right.toString();
+    };
     return JQLExpressionLogicalGreaterThen;
 }(JQLExpressionLogical));
 var JQLExpressionLogicalGreaterThenEquals = (function (_super) {
@@ -1549,6 +1591,9 @@ var JQLExpressionLogicalGreaterThenEquals = (function (_super) {
     JQLExpressionLogicalGreaterThenEquals.prototype.compute = function (context) {
         console.warn('TODO: Properly implement "Logical >=" operator');
         return this.left.compute(context) >= this.right.compute(context);
+    };
+    JQLExpressionLogicalGreaterThenEquals.prototype.toString = function () {
+        return this.left.toString() + " >= " + this.right.toString();
     };
     return JQLExpressionLogicalGreaterThenEquals;
 }(JQLExpressionLogical));
@@ -1616,6 +1661,9 @@ var JQLExpressionMathAddition = (function (_super) {
         console.warn('TODO: Properly implement "+" operator');
         return Number(this.left.compute(context)) + Number(this.right.compute(context));
     };
+    JQLExpressionMathAddition.prototype.toString = function () {
+        return this.left.toString() + " + " + this.right.toString();
+    };
     return JQLExpressionMathAddition;
 }(JQLExpressionMath));
 var JQLExpressionMathDifference = (function (_super) {
@@ -1629,6 +1677,9 @@ var JQLExpressionMathDifference = (function (_super) {
     JQLExpressionMathDifference.prototype.compute = function (context) {
         console.warn('TODO: Properly implement "-" operator');
         return Number(this.left.compute(context)) - Number(this.right.compute(context));
+    };
+    JQLExpressionMathDifference.prototype.toString = function () {
+        return this.left.toString() + " - " + this.right.toString();
     };
     return JQLExpressionMathDifference;
 }(JQLExpressionMath));
@@ -1644,6 +1695,9 @@ var JQLExpressionMathDivision = (function (_super) {
         console.warn('TODO: properly implement "/" operator');
         return Number(this.left.compute(context)) / Number(this.right.compute(context));
     };
+    JQLExpressionMathDivision.prototype.toString = function () {
+        return this.left.toString() + " / " + this.right.toString();
+    };
     return JQLExpressionMathDivision;
 }(JQLExpressionMath));
 var JQLExpressionMathMultiply = (function (_super) {
@@ -1657,6 +1711,9 @@ var JQLExpressionMathMultiply = (function (_super) {
     JQLExpressionMathMultiply.prototype.compute = function (context) {
         console.warn('TODO: Properly implement "*" operator');
         return Number(this.left.compute(context)) * Number(this.right.compute(context));
+    };
+    JQLExpressionMathMultiply.prototype.toString = function () {
+        return this.left.toString() + " * " + this.right.toString();
     };
     return JQLExpressionMathMultiply;
 }(JQLExpressionMath));
@@ -1682,6 +1739,9 @@ var JQLExpressionNull = (function (_super) {
     };
     JQLExpressionNull.prototype.compute = function (context) {
         return null;
+    };
+    JQLExpressionNull.prototype.toString = function () {
+        return 'null';
     };
     return JQLExpressionNull;
 }(JQLExpression));
@@ -1710,6 +1770,9 @@ var JQLExpressionNumber = (function (_super) {
     JQLExpressionNumber.prototype.compute = function (context) {
         return this.value;
     };
+    JQLExpressionNumber.prototype.toString = function () {
+        return String(this.value);
+    };
     return JQLExpressionNumber;
 }(JQLExpression));
 var JQLExpressionString = (function (_super) {
@@ -1736,6 +1799,9 @@ var JQLExpressionString = (function (_super) {
     };
     JQLExpressionString.prototype.compute = function (context) {
         return this.value;
+    };
+    JQLExpressionString.prototype.toString = function () {
+        return JSON.stringify(this.value);
     };
     return JQLExpressionString;
 }(JQLExpression));
@@ -1779,6 +1845,9 @@ var JQLExpressionUnaryInvert = (function (_super) {
         console.warn('TODO: Properly implement "Unary -" operator');
         return -this.operand.compute(context);
     };
+    JQLExpressionUnaryInvert.prototype.toString = function () {
+        return '-' + this.operand.toString();
+    };
     return JQLExpressionUnaryInvert;
 }(JQLExpressionUnary));
 var JQLExpressionUnaryNot = (function (_super) {
@@ -1792,6 +1861,9 @@ var JQLExpressionUnaryNot = (function (_super) {
     JQLExpressionUnaryNot.prototype.compute = function (context) {
         console.warn('TODO: Properly implement "Unary !" operator');
         return !this.operand.compute(context);
+    };
+    JQLExpressionUnaryNot.prototype.toString = function () {
+        return '!' + this.operand.toString();
     };
     return JQLExpressionUnaryNot;
 }(JQLExpressionUnary));

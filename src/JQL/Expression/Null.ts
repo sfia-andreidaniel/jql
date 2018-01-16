@@ -23,4 +23,8 @@ class JQLExpressionNull extends JQLExpression {
     public compute( context: IJQLTableRow ): JQLPrimitive {
         return null;
     }
+
+    public toString(): string {
+        return 'null';
+    }
 }

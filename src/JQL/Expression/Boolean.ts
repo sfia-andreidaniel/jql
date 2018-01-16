@@ -33,4 +33,8 @@ class JQLExpressionBoolean extends JQLExpression {
     public compute( context: IJQLTableRow ) {
         return this.value;
     }
+
+    public toString(): string {
+        return String(this.value);
+    }
 }

@@ -4,8 +4,6 @@ class JQLDatabaseStatementExecutorSelect implements IDatabaseStatementExecutor {
 
     private db: JQLDatabase;
 
-    private nullAliasIndex: number = 0;
-
     constructor(statement: JQLStatementSelect, db: JQLDatabase) {
         this.statement = statement;
         this.db = db;
@@ -73,8 +71,6 @@ class JQLDatabaseStatementExecutorSelect implements IDatabaseStatementExecutor {
             return result;
         }
 
-        this.nullAliasIndex = 0;
-
         for (let i = 0, fieldsList = <JQLStatementSelectFieldsListSpecific>fields, specificFields = fieldsList.getFields(), len = specificFields.length; i < len; i++) {
 
             fieldName = specificFields[i].getLiteral();
@@ -82,8 +78,7 @@ class JQLDatabaseStatementExecutorSelect implements IDatabaseStatementExecutor {
             exprResult = specificFields[i].getExpression().compute(context);
 
             if (null === fieldName) {
-                this.nullAliasIndex++;
-                fieldName = 'col_' + this.nullAliasIndex;
+                fieldName = specificFields[i].getExpression().getLiteral();
             }
 
             result[fieldName] = exprResult;
@@ -131,8 +126,6 @@ class JQLDatabaseStatementExecutorSelect implements IDatabaseStatementExecutor {
 
                 } else {
 
-                    this.nullAliasIndex = 0;
-
                     o = Object.create(null);
 
                     for (let i = 0, len = specificFieldsListCollection.length; i < len; i++) {
@@ -142,8 +135,7 @@ class JQLDatabaseStatementExecutorSelect implements IDatabaseStatementExecutor {
                         exprResult = specificFieldsListCollection[i].getExpression().compute(row);
 
                         if (null === fieldName) {
-                            this.nullAliasIndex++;
-                            fieldName = 'col_' + this.nullAliasIndex;
+                            fieldName = specificFieldsListCollection[i].getExpression().getLiteral();
                         }
 
                         o[fieldName] = exprResult;

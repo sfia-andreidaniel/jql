@@ -12,4 +12,8 @@ class JQLExpressionUnaryNot extends JQLExpressionUnary {
 
     }
 
+    public toString(): string {
+        return '!' + this.operand.toString();
+    }
+
 }

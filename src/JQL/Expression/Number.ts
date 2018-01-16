@@ -33,4 +33,8 @@ class JQLExpressionNumber extends JQLExpression {
     public compute( context: IJQLTableRow ): JQLPrimitive {
         return this.value;
     }
+
+    public toString(): string {
+        return String(this.value);
+    }
 }

@@ -58,4 +58,8 @@ class JQLExpressionBinding extends JQLExpression {
 
         }
     }
+
+    public toString(): string {
+        return ':' + this.bindingName;
+    }
 }

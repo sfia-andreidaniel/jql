@@ -11,5 +11,11 @@ class JQLExpressionMathAddition extends JQLExpressionMath {
         return Number(this.left.compute(context)) + Number(this.right.compute(context));
 
     }
+
+    public toString(): string {
+
+        return this.left.toString() + " + " + this.right.toString();
+
+    }
     
 }

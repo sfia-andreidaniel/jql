@@ -15,4 +15,8 @@ class JQLExpressionUnaryInvert extends JQLExpressionUnary {
 
     }
 
+    public toString(): string {
+        return '-' + this.operand.toString();
+    }
+
 }

@@ -19,4 +19,8 @@ class JQLExpressionLogicalLike extends JQLExpressionLogical {
 
     }
 
+    public toString(): string {
+        return this.left.toString() + " ~= " + this.right.toString();
+    }
+
 }

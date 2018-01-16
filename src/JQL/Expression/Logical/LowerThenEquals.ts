@@ -11,4 +11,7 @@ class JQLExpressionLogicalLowerThenEquals extends JQLExpressionLogical {
         return this.left.compute(context) <= this.right.compute(context);
     }
 
+    public toString(): string {
+        return this.left.toString() + " <= " + this.right.toString();
+    }
 }

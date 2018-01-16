@@ -1,5 +1,7 @@
 abstract class JQLExpression extends JQLOpcode {
 
+    private literal: string;
+
     public getOpcodeType(): EJQL_LEXER_OPCODE_TYPES {
         return EJQL_LEXER_OPCODE_TYPES.EXPRESSION;
     }
@@ -13,5 +15,19 @@ abstract class JQLExpression extends JQLOpcode {
     public abstract getIdentifiers(): JQLExpressionIdentifier[];
 
     public abstract compute( context: IJQLTableRow ): JQLPrimitive;
+
+    public abstract toString(): string;
+
+    public getLiteral(): string {
+
+        if ( undefined !== this.literal ) {
+            return this.literal;
+        }
+
+        this.literal = this.toString().replace(/["']+/g, '').trim();
+
+        return this.literal;
+
+    }
 
 }

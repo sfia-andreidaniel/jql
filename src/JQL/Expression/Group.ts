@@ -31,4 +31,10 @@ class JQLExpressionGroup extends JQLExpression {
         return this.expression.compute( context );
     }
 
+    public toString(): string {
+
+        return '(' + this.expression.toString() + ')';
+
+    }
+
 }
