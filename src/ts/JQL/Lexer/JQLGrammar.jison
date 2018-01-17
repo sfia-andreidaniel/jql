@@ -253,8 +253,8 @@ null                                return 'NULL';
 \`[A-Za-z_\$][A-Za-z0-9_]*\`        return 'ESCAPED_IDENTIFIER';
 \:[A-Za-z_\$][A-Za-z0-9_]*          return 'BINDING';
 
-<<EOF>>                             return 'EOF'
-.                                   return 'INVALID'
+<<EOF>>                             return 'EOF';
+.                                   return 'INVALID';
 
 /lex
 
@@ -295,391 +295,505 @@ null                                return 'NULL';
 
 JQL
     : "REMOTE" Statement EOF                                   {
+                                                                    //js
                                                                     $$ = $2;
                                                                     $$.remote = true;
                                                                     return $$;
+                                                                    //php JQL_AST::trace(302);
                                                                }
     | Statement EOF                                            {
+                                                                    //js
                                                                     $$ = $1;
                                                                     $$.remote = false;
                                                                     return $$;
+                                                                    //php JQL_AST::trace(309);
                                                                }
     ;
 
 Statement
     : SelectStatement                                          {
+                                                                    //js
                                                                     $$ = $1;
+                                                                    //php JQL_AST::trace(317);
                                                                }
     | UpdateStatement                                          {
+                                                                    //js
                                                                     $$ = $1;
+                                                                    //php JQL_AST::trace(322);
                                                                }
     | InsertStatement                                          {
+                                                                    //js
                                                                     $$ = $1;
+                                                                    //php JQL_AST::trace(327);
                                                                }
     | DeleteStatement                                          {
+                                                                    //js
                                                                     $$ = $1;
+                                                                    //php JQL_AST::trace(332);
                                                                }
     ;
 
 SelectSingleRowStatement
     : "SELECT" SelectFieldsList                                {
+                                                                    //js
                                                                     $$ = {
                                                                         op:           JQL_AST.TOKEN_TYPES.STATEMENT,
                                                                         type:         JQL_AST.STATEMENT_TYPES.SELECT,
                                                                         fields:       $2
                                                                     };
+                                                                    //php JQL_AST::trace(344);
                                                                }
     ;
 
 SelectFromTableStatement
     : SelectSingleRowStatement 
       "FROM" TableReference                                    {
+                                                                    //js
                                                                     $$ = $1;
                                                                     $$.table = $3
+                                                                    //php JQL_AST::trace(354);
                                                                }
     ;
 
 SelectWithOptionalWHEREClause
     : SelectFromTableStatement "WHERE" Expression              {
+                                                                    //js
                                                                     $$ = $1;
                                                                     $$.where = $3;
+                                                                    //php JQL_AST::trace(363);
                                                                }
     | SelectFromTableStatement                                 {
                                                                     $$ = $1;
+                                                                    //php JQL_AST::trace(367);
                                                                }
     ;
 
 SelectWithOptionalORDERClause
     : SelectWithOptionalWHEREClause "ORDER" "BY" OrderByClause {
+                                                                    //js
                                                                     $$ = $1;
                                                                     $$.orderBy = $4;
+                                                                    //php JQL_AST::trace(376);
                                                                }
     | SelectWithOptionalWHEREClause                            {
+                                                                    //js
                                                                     $$ = $1;
+                                                                    //php JQL_AST::trace(381);
                                                                }
     ;
 
 SelectWithOptionalLIMITClause
     : SelectWithOptionalORDERClause "LIMIT" LimitClause        {
+                                                                    //js
                                                                     $$ = $1;
                                                                     $$.limit = $3;
+                                                                    //php JQL_AST::trace(390);
                                                                }
     | SelectWithOptionalORDERClause                            {
+                                                                    //js
                                                                     $$ = $1;
+                                                                    //php JQL_AST::trace(395);
                                                                }
     ;
 
 SelectStatementWithoutUnion
     : SelectWithOptionalLIMITClause                            {
+                                                                    //js
                                                                     $$ = $1;
+                                                                    //php JQL_AST::trace(403);
                                                                }
     | SelectSingleRowStatement                                 {
+                                                                    //js
                                                                     $$ = $1;
+                                                                    //php JQL_AST::trace(408);
                                                                }
     ;
 
 SelectStatement
     : SelectStatementWithoutUnion                              {
+                                                                    //js
                                                                     $$ = $1;
+                                                                    //php JQL_AST::trace(416);
                                                                }
     | SelectStatement "UNION" SelectStatementWithoutUnion      {
+                                                                    //js
                                                                     $$ = $1;
                                                                     $$.union = $3;
+                                                                    //php JQL_AST::trace(422);
                                                                }
     ;
 
 
 UpdateStatementBegin
     : "UPDATE" DelayedClause                                   {
+                                                                    //js
                                                                     $$ = {
                                                                         op:           JQL_AST.TOKEN_TYPES.STATEMENT,
                                                                         type:         JQL_AST.STATEMENT_TYPES.UPDATE,
                                                                         delayed: $2
                                                                     };
+                                                                    //php JQL_AST::trace(435);
                                                                }
     | "UPDATE"                                                 {
+                                                                    //js
                                                                     $$ = {
                                                                         op:           JQL_AST.TOKEN_TYPES.STATEMENT,
                                                                         type:         JQL_AST.STATEMENT_TYPES.UPDATE
-                                                                    };
+                                                                    };//php JQL_AST::trace(442);
                                                                }
     ;
 
 DelayedClause
     : "DELAYED" "NUMBER"                                       {
+                                                                    //js
                                                                     $$ = {
                                                                         op:           JQL_AST.TOKEN_TYPES.OPTION_DELAYED,
                                                                         timer:        JQL_AST.parseNumber($2)
                                                                     };
+                                                                    //php JQL_AST::trace(453);
                                                                }
     | "DELAYED"                                                {
+                                                                    //js
                                                                     $$ = {
                                                                         op:           JQL_AST.TOKEN_TYPES.OPTION_DELAYED,
                                                                         timer:        null
                                                                     };
+                                                                    //php JQL_AST::trace(461);
                                                                }
     ;
 
 UpdateAllRowsStatement
     : UpdateStatementBegin TableReference 
       "SET" UpdateFieldsList                                   {
+                                                                    //js
                                                                     $$ = $1;
                                                                     $$.table = $2;
                                                                     $$.fields = $4;
+                                                                    //php JQL_AST::trace(472);
                                                                }
     ;
 
 UpdateWithOptionalWHEREStatement
     : UpdateAllRowsStatement "WHERE" Expression                {
+                                                                    //js
                                                                     $$ = $1;
                                                                     $$.where = $3;
+                                                                    //php JQL_AST::trace(481);
                                                                }
     | UpdateAllRowsStatement                                   {
+                                                                    //js
                                                                     $$ = $1;
+                                                                    //php JQL_AST::trace(486);
                                                                }
     ;
 
 UpdateWithOptionalORDERStatement
     : UpdateWithOptionalWHEREStatement 
       "ORDER" "BY" OrderByClause                               {
+                                                                    //js
                                                                     $$ = $1;
                                                                     $$.orderBy = $4;
+                                                                    //php JQL_AST::trace(496);
                                                                }
     | UpdateWithOptionalWHEREStatement
     ;
 
 UpdateWithOptionalLIMITStatement
     : UpdateWithOptionalORDERStatement "LIMIT" LimitClause     {
+                                                                    //js
                                                                     $$ = $1;
                                                                     $$.limit = $3;
+                                                                    //php JQL_AST::trace(506);
                                                                }
     | UpdateWithOptionalORDERStatement                         {
+                                                                    //js
                                                                     $$ = $1;
+                                                                    //php JQL_AST::trace(511);
                                                                }
     ;
 
 UpdateStatement
     : UpdateWithOptionalLIMITStatement                         {
+                                                                    //js
                                                                     $$ = $1;
+                                                                    //php JQL_AST::trace(519);
                                                                }
     ;
 
 InsertStatementBegin
     : "INSERT" "IGNORE"                                        {
+                                                                    //js
                                                                     $$ = {
                                                                         op:           JQL_AST.TOKEN_TYPES.STATEMENT,
                                                                         type:         JQL_AST.STATEMENT_TYPES.INSERT,
                                                                         ignoreDuplicates: true
                                                                     };
+                                                                    //php JQL_AST::trace(531);
                                                                }
     | "INSERT"                                                 {
+                                                                    //js
                                                                     $$ = {
                                                                         op:           JQL_AST.TOKEN_TYPES.STATEMENT,
                                                                         type:         JQL_AST.STATEMENT_TYPES.INSERT
                                                                     };
+                                                                    //php JQL_AST::trace(539);
                                                                }
     ;
 
 InsertStatement
     : InsertStatementBegin "INTO" TableReference
       "SET" UpdateFieldsList                                   {
+                                                                    //js
                                                                     $$ = $1;
                                                                     $$.table = $3;
                                                                     $$.fields = $5;
+                                                                    //php JQL_AST::trace(550);
                                                                }
     ;
 
 DeleteAllRowsStatement
     : "DELETE" "FROM" TableReference                           {
+                                                                    //js
                                                                     $$ = {
                                                                         op:           JQL_AST.TOKEN_TYPES.STATEMENT,
                                                                         type:         JQL_AST.STATEMENT_TYPES.DELETE,
                                                                         table:        $3
                                                                     };
+                                                                    //php JQL_AST::trace(562);
                                                                }
     ;
 
 DeleteWithOptionalWHEREClauseStatement
     : DeleteAllRowsStatement "WHERE" Expression                {
+                                                                    //js
                                                                     $$ = $1;
                                                                     $$.where = $3;
+                                                                    //php JQL_AST::trace(571);
                                                                }
     | DeleteAllRowsStatement                                   {
                                                                     $$ = $1;
+                                                                    //php JQL_AST::trace(575);
                                                                }
     ;
 
 DeleteWithOptionalORDERClauseStatement
     : DeleteWithOptionalWHEREClauseStatement
       "ORDER" "BY" OrderByClause                               {
+                                                                    //js
                                                                     $$ = $1;
                                                                     $$.orderBy = $4;
+                                                                    //php JQL_AST::trace(585);
                                                                }
     | DeleteWithOptionalWHEREClauseStatement                   {
+                                                                    //js
                                                                     $$ = $1;
+                                                                    //php JQL_AST::trace(590);
                                                                }
     ;
 
 DeleteWithOptionalLIMITClauseStatement
     : DeleteWithOptionalORDERClauseStatement
       "LIMIT" LimitClause                                      {
+                                                                    //js
                                                                     $$ = $1;
                                                                     $$.limit = $3;
+                                                                    //php JQL_AST::trace(600);
                                                                }
     | DeleteWithOptionalORDERClauseStatement                   {
+                                                                    //js
                                                                     $$ = $1;
+                                                                    //php JQL_AST::trace(605);
                                                                }
     ;
 
 DeleteStatement
     : DeleteWithOptionalLIMITClauseStatement                   {
+                                                                    //js
                                                                     $$ = $1;
+                                                                    //php JQL_AST::trace(613);
                                                                }
     ;
 
 TableReference
     : "IDENTIFIER"                                             {
+                                                                    //js
                                                                     $$ = {
                                                                         op:           JQL_AST.TOKEN_TYPES.TABLE_REFERENCE,
                                                                         name:         $1
                                                                     };
+                                                                    //php JQL_AST::trace(624);
                                                                }
     | "ESCAPED_IDENTIFIER"                                     {
+                                                                    //js
                                                                     $$ = {
                                                                         op:           JQL_AST.TOKEN_TYPES.TABLE_REFERENCE,
                                                                         name:         JQL_AST.unescapeIdentifier( $1 )
                                                                     };
+                                                                    //php JQL_AST::trace(632);
                                                                }
     ;
 
 SelectFieldsList
     : "*"                                                      {
+                                                                    //js
                                                                     $$ = {
                                                                          op:          JQL_AST.TOKEN_TYPES.FIELDS_LIST,
                                                                          type:        JQL_AST.FIELD_TYPES.ALL_FIELDS
                                                                     };
+                                                                    //php JQL_AST::trace(643);
                                                                }
     | SelectFieldEnumeration                                   {
+                                                                    //js
                                                                     $$ = { op:        JQL_AST.TOKEN_TYPES.FIELDS_LIST,
                                                                         type:         JQL_AST.FIELD_TYPES.SPECIFIC_FIELDS,
                                                                         fields:       $1
                                                                     };
+                                                                    //php JQL_AST::trace(651);
                                                                }
     ;
 
 SelectFieldEnumeration
     : SelectField                                              {
-                                                                    $$ = [
-                                                                        $1
-                                                                    ];
+                                                                    //js
+                                                                    $$ = [ $1 ];
+                                                                    //php JQL_AST::trace(659);
                                                                }
     | SelectFieldEnumeration "," SelectField                   {
+                                                                    //js
                                                                     $$ = $1.concat($3);
+                                                                    //php JQL_AST::trace(664);
                                                                }
     ;
 
 SelectField
     : Expression                                               {
+                                                                    //js
                                                                     $$ = {
                                                                          op:          JQL_AST.TOKEN_TYPES.FIELD,
                                                                          literal:     JQL_AST.createFieldAliasFromExpression($1),
                                                                          expression:  $1
                                                                      };
+                                                                    //php JQL_AST::trace(676);
                                                                }
     | Expression "AS" "IDENTIFIER"                             {
+                                                                    //js
                                                                     $$ = {
                                                                         op:           JQL_AST.TOKEN_TYPES.FIELD,
                                                                         literal:      $3,
                                                                         expression:   $1
                                                                     };
+                                                                    //php JQL_AST::trace(685);
                                                                }
     | Expression "AS" "ESCAPED_IDENTIFIER"                     {
+                                                                    //js
                                                                     $$ = {
                                                                         op:           JQL_AST.TOKEN_TYPES.FIELD,
                                                                         literal:      JQL_AST.unescapeIdentifier($3),
                                                                         expression:   $1
                                                                     };
+                                                                    //php JQL_AST::trace(694);
                                                                }
     ;
 
 UpdateFieldsList
     : UpdateField                                              {
-                                                                    $$ = [
-                                                                        $1
-                                                                    ];
+                                                                    //js
+                                                                    $$ = [ $1 ];
+                                                                    //php JQL_AST::trace(702);
                                                                }
     | UpdateFieldsList "SET" UpdateField                       {
+                                                                    //js
                                                                     $$ = $1.concat($3);
+                                                                    //php JQL_AST::trace(707);
                                                                }
     | UpdateFieldsList "," UpdateField                         {
+                                                                    //js
                                                                     $$ = $1.concat($3);
+                                                                    //php JQL_AST::trace(712);
                                                                }
     ;
 
 UpdateField
     : "IDENTIFIER" "=" Expression                              {
+                                                                    //js
                                                                     $$ = {
                                                                         op:           JQL_AST.TOKEN_TYPES.UPDATE_FIELD,
                                                                         name:         $1,
                                                                         expression:   $3
                                                                     };
+                                                                    //php JQL_AST::trace(724);
                                                                }
     | "ESCAPED_IDENTIFIER" "=" Expression                      {
+                                                                    //js
                                                                     $$ = {
                                                                         op:           JQL_AST.TOKEN_TYPES.UPDATE_FIELD,
                                                                         name:         JQL_AST.unescapeIdentifier($1),
                                                                         expression:   $3
                                                                     };
+                                                                    //php JQL_AST::trace(733);
                                                                }
     ;
 
 Expression
     : "NUMBER"                                                 {
+                                                                    //js
                                                                     $$ = {
                                                                         op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
                                                                         type:         JQL_AST.EXPRESSION.NUMBER,
                                                                         value:        JQL_AST.parseNumber( $1 )
                                                                     };
+                                                                    //php JQL_AST::trace(745);
                                                                }
     | "BOOLEAN"                                                {
+                                                                    //js
                                                                     $$ = {
                                                                         op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
                                                                         type:         JQL_AST.EXPRESSION.BOOLEAN,
                                                                         value:        JQL_AST.parseBoolean( $1 )
                                                                     };
+                                                                    //php JQL_AST::trace(754);
                                                                }
     | "NULL"                                                   {
+                                                                    //js
                                                                     $$ = {
                                                                         op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
                                                                         type:         JQL_AST.EXPRESSION.NULL
                                                                     };
+                                                                    //php JQL_AST::trace(762);
                                                                }
     | "STRING"                                                 {
+                                                                    //js
                                                                     $$ = {
                                                                         op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
                                                                         type:         JQL_AST.EXPRESSION.STRING,
                                                                         value:        JQL_AST.parseString( $1 )
                                                                     };
+                                                                    //php JQL_AST::trace(771);
                                                                }
     
     | "!" Expression                                           {
+                                                                    //js
                                                                     $$ = {
                                                                         op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
                                                                         type:         JQL_AST.EXPRESSION.UNARY,
                                                                         operator:     JQL_AST.OPERATOR.NOT,
                                                                         left:         $2
                                                                     };
+                                                                    //php JQL_AST::trace(782);
                                                                }
     | "-" Expression                                           {
+                                                                    //js
                                                                     $$ = {
                                                                         op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
                                                                         type:         JQL_AST.EXPRESSION.UNARY,
                                                                         operator:     JQL_AST.OPERATOR.INVERT,
                                                                         left:         $2
                                                                     };
+                                                                    //php JQL_AST::trace(792);
                                                                }
     
     | Expression "||" Expression                               {
+                                                                    //js
                                                                     $$ = {
                                                                         op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
                                                                         type:         JQL_AST.EXPRESSION.LOGICAL,
@@ -687,8 +801,10 @@ Expression
                                                                         left:         $1,
                                                                         right:        $3
                                                                     };
+                                                                    //php JQL_AST::trace(804);
                                                                }
     | Expression "&&" Expression                               {
+                                                                    //js
                                                                     $$ = {
                                                                         op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
                                                                         type:         JQL_AST.EXPRESSION.LOGICAL,
@@ -696,9 +812,11 @@ Expression
                                                                         left:         $1,
                                                                         right:        $3
                                                                     };
+                                                                    //php JQL_AST::trace(815);
                                                                }
 
     | Expression "==" Expression                               {
+                                                                    //js
                                                                     $$ = {
                                                                         op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
                                                                         type:         JQL_AST.EXPRESSION.LOGICAL,
@@ -706,8 +824,10 @@ Expression
                                                                         left:         $1,
                                                                         right:        $3
                                                                     };
+                                                                    //php JQL_AST::trace(827);
                                                                }
     | Expression "~=" Expression                               {
+                                                                    //js
                                                                     $$ = {
                                                                         op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
                                                                         type:         JQL_AST.EXPRESSION.LOGICAL,
@@ -715,8 +835,10 @@ Expression
                                                                         left:         $1,
                                                                         right:        $3
                                                                     };
+                                                                    //php JQL_AST::trace(838);
                                                                }
     | Expression "<=" Expression                               {
+                                                                    //js
                                                                     $$ = {
                                                                         op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
                                                                         type:         JQL_AST.EXPRESSION.LOGICAL,
@@ -724,8 +846,10 @@ Expression
                                                                         left:         $1,
                                                                         right:        $3
                                                                     };
+                                                                    //php JQL_AST::trace(849);
                                                                }
     | Expression "<"  Expression                               {
+                                                                    //js
                                                                     $$ = {
                                                                         op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
                                                                         type:         JQL_AST.EXPRESSION.LOGICAL,
@@ -733,8 +857,10 @@ Expression
                                                                         left:         $1,
                                                                         right:        $3
                                                                     };
+                                                                    //php JQL_AST::trace(860);
                                                                }
     | Expression ">=" Expression                               {
+                                                                    //js
                                                                     $$ = {
                                                                         op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
                                                                         type:         JQL_AST.EXPRESSION.LOGICAL,
@@ -742,8 +868,10 @@ Expression
                                                                         left:         $1,
                                                                         right:        $3
                                                                     };
+                                                                    //php JQL_AST::trace(871);
                                                                }
     | Expression ">"  Expression                               {
+                                                                    //js
                                                                     $$ = {
                                                                         op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
                                                                         type:         JQL_AST.EXPRESSION.LOGICAL,
@@ -751,9 +879,11 @@ Expression
                                                                         left:         $1,
                                                                         right:        $3
                                                                     };
+                                                                    //php JQL_AST::trace(882);
                                                                }
 
     | Expression "*"  Expression                               {
+                                                                    //js
                                                                     $$ = {
                                                                         op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
                                                                         type:         JQL_AST.EXPRESSION.MATH,
@@ -761,8 +891,10 @@ Expression
                                                                         left:         $1,
                                                                         right:        $3
                                                                     };
+                                                                    //php JQL_AST::trace(894);
                                                                }
     | Expression "/"  Expression                               {
+                                                                    //js
                                                                     $$ = {
                                                                         op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
                                                                         type:         JQL_AST.EXPRESSION.MATH,
@@ -770,8 +902,10 @@ Expression
                                                                         left:         $1,
                                                                         right:        $3
                                                                     };
+                                                                    //php JQL_AST::trace(905);
                                                                }
     | Expression "+"  Expression                               {
+                                                                    //js
                                                                     $$ = {
                                                                         op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
                                                                         type:         JQL_AST.EXPRESSION.MATH,
@@ -779,8 +913,10 @@ Expression
                                                                         left:         $1,
                                                                         right:        $3
                                                                     };
+                                                                    //php JQL_AST::trace(916);
                                                                }
     | Expression "-"  Expression                               {
+                                                                    //js
                                                                     $$ = {
                                                                         op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
                                                                         type:         JQL_AST.EXPRESSION.MATH,
@@ -788,135 +924,168 @@ Expression
                                                                         left:         $1,
                                                                         right:        $3
                                                                     };
+                                                                    //php JQL_AST::trace(927);
                                                                }
     | FunctionCall                                             {
+                                                                    //js
                                                                     $$ = $1;
+                                                                    //php JQL_AST::trace(932);
                                                                }
     | "(" Expression ")"                                       {
+                                                                    //js
                                                                     $$ = {
                                                                         op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
                                                                         type:         JQL_AST.EXPRESSION.GROUP,
                                                                         expression:   $2
                                                                     };
+                                                                    //php JQL_AST::trace(941);
                                                                }
     | "IDENTIFIER"                                             {
+                                                                    //js
                                                                     $$ = {
                                                                         op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
                                                                         type:         JQL_AST.EXPRESSION.IDENTIFIER,
                                                                         name:         $1
                                                                     };
+                                                                    //php JQL_AST::trace(950);
                                                                }
     | "ESCAPED_IDENTIFIER"                                     {
+                                                                    //js
                                                                     $$ = {
                                                                         op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
                                                                         type:         JQL_AST.EXPRESSION.IDENTIFIER,
                                                                         name:         JQL_AST.unescapeIdentifier($1)
                                                                     };
+                                                                    //php JQL_AST::trace(959);
                                                                }
     | "BINDING"                                                {
+                                                                    //js
                                                                     $$ = {
                                                                         op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
                                                                         type:         JQL_AST.EXPRESSION.BINDING,
                                                                         name:         JQL_AST.unescapeBindingName($1)
                                                                     };
+                                                                    //php JQL_AST::trace(968);
                                                                }
     ;
 
 FunctionCall
     : "IDENTIFIER" "(" ")"                                     {
+                                                                    //js
                                                                     $$ = {
                                                                         op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
                                                                         type:         JQL_AST.EXPRESSION.FUNCTION_CALL,
                                                                         function_name: $1,
                                                                         arguments:    []
                                                                     };
+                                                                    //php JQL_AST::trace(981);
                                                                }
     | "IDENTIFIER" "(" FunctionCallArgumentsList ")"           {
+                                                                    //js
                                                                     $$ = {
                                                                         op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
                                                                         type:         JQL_AST.EXPRESSION.FUNCTION_CALL,
                                                                         function_name: $1,
                                                                         arguments:    $3
                                                                     };
+                                                                    //php JQL_AST::trace(991);
                                                                }
     ;
 
 FunctionCallArgumentsList
     : Expression                                               {
-                                                                    $$ = [
-                                                                        $1
-                                                                    ];
+                                                                    //js
+                                                                    $$ = [ $1 ];
+                                                                    //php JQL_AST::trace(999);
                                                                }
     | FunctionCallArgumentsList "," Expression                 {
+                                                                    //js
                                                                     $$ = $1.concat($3);
+                                                                    //php JQL_AST::trace(1004);
                                                                }
     ;
 
 OrderByClause
     : "RANDOM"                                                 {
+                                                                    //js
                                                                     $$ = {
                                                                         op:           JQL_AST.TOKEN_TYPES.OPTION_ORDERING,
                                                                         type:         JQL_AST.ORDERING_STRATEGY.RANDOM
                                                                     };
+                                                                    //php JQL_AST::trace(1015);
                                                                }
     | OrderByClauseFieldsList                                  {
+                                                                    //js
                                                                     $$ = {
                                                                         op:           JQL_AST.TOKEN_TYPES.OPTION_ORDERING,
                                                                         type:         JQL_AST.ORDERING_STRATEGY.ORDERED,
                                                                         fields:       $1
                                                                     };
+                                                                    //php JQL_AST::trace(1024);
                                                                }
     ;
 
 OrderByClauseFieldsList
     : OrderByField                                             {
-                                                                    $$ = [
-                                                                        $1
-                                                                    ];
+                                                                    //js
+                                                                    $$ = [ $1 ];
+                                                                    //php JQL_AST::trace(1032);
                                                                }
     | OrderByClauseFieldsList "," OrderByField                 {
+                                                                    //js
                                                                     $$ = $1.concat($3);
+                                                                    //php JQL_AST::trace(1037);
                                                                }
     ;
 
 OrderByField
     : Expression "ASC"                                         {
+                                                                    //js
                                                                     $$ = {
                                                                         op:           JQL_AST.TOKEN_TYPES.ORDER_EXPRESSION,
                                                                         expression:   $1,
                                                                         direction:    JQL_AST.ORDER_DIRECTION.ASCENDING
                                                                     };
+                                                                    //php JQL_AST::trace(1049);
                                                                }
     }
     | Expression "DESC"                                        {
+                                                                    //js
                                                                     $$ = {
                                                                         op:           JQL_AST.TOKEN_TYPES.ORDER_EXPRESSION,
                                                                         expression:   $1,
                                                                         direction:    JQL_AST.ORDER_DIRECTION.DESCENDING
                                                                     };
+                                                                    //php JQL_AST::trace(1059);
                                                                }
     | Expression                                               {
+                                                                    //js
                                                                     $$ = {
                                                                         op:           JQL_AST.TOKEN_TYPES.ORDER_EXPRESSION,
                                                                         expression:   $1,
                                                                         direction:    JQL_AST.ORDER_DIRECTION.ASCENDING
                                                                     };
+                                                                    //php JQL_AST::trace(1068);
                                                                }
     ;
 
 LimitClause
     : "NUMBER"                                                 {
+                                                                    //js
                                                                     $$ = {
                                                                         op:           JQL_AST.TOKEN_TYPES.OPTION_LIMIT,
                                                                         limit:        JQL_AST.parseNumber( $1 ),
                                                                         skip:         0
                                                                     };
+                                                                    //php JQL_AST::trace(1080);
                                                                }
     | "NUMBER" "," "NUMBER"                                    {
+                                                                    //js
                                                                     $$ = {
                                                                         op:           JQL_AST.TOKEN_TYPES.OPTION_LIMIT,
                                                                         limit:        JQL_AST.parseNumber( $3 ),
                                                                         skip:         JQL_AST.parseNumber( $1 )
                                                                     };
+                                                                    //php JQL_AST::trace(1089);
                                                                }
     ;

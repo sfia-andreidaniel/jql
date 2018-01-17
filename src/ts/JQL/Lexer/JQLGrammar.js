@@ -89,7 +89,7 @@ case 1:
                                                                     this.$ = $$[$0-1];
                                                                     this.$.remote = true;
                                                                     return this.$;
-                                                                    //php JQL_AST::trace(302); this.$ = ParserValue::cast($$[$0-1]); this.$->setKey('remote', true); return this.$;
+                                                                    //php JQL_AST::trace(302);
                                                                
 break;
 case 2:
@@ -98,35 +98,35 @@ case 2:
                                                                     this.$ = $$[$0-1];
                                                                     this.$.remote = false;
                                                                     return this.$;
-                                                                    //php JQL_AST::trace(309); this.$ = ParserValue::cast($$[$0]); this.$->setKey('remote', false); return this.$;
+                                                                    //php JQL_AST::trace(309);
                                                                
 break;
 case 3:
 
                                                                     //js
                                                                     this.$ = $$[$0];
-                                                                    //php JQL_AST::trace(317); this.$ = ParserValue::cast($$[$0]);
+                                                                    //php JQL_AST::trace(317);
                                                                
 break;
 case 4:
 
                                                                     //js
                                                                     this.$ = $$[$0];
-                                                                    //php JQL_AST::trace(322); this.$ = ParserValue::cast($$[$0]);
+                                                                    //php JQL_AST::trace(322);
                                                                
 break;
 case 5:
 
                                                                     //js
                                                                     this.$ = $$[$0];
-                                                                    //php JQL_AST::trace(327); this.$ = ParserValue::cast($$[$0]);
+                                                                    //php JQL_AST::trace(327);
                                                                
 break;
 case 6:
 
                                                                     //js
                                                                     this.$ = $$[$0];
-                                                                    //php JQL_AST::trace(332); this.$ = ParserValue::cast($$[$0]);
+                                                                    //php JQL_AST::trace(332);
                                                                
 break;
 case 7:
@@ -137,7 +137,7 @@ case 7:
                                                                         type:         JQL_AST.STATEMENT_TYPES.SELECT,
                                                                         fields:       $$[$0]
                                                                     };
-                                                                    //php JQL_AST::trace(344); this.$ = ParserValue::cast([ 'op' => JQL_AST::$TOKEN_TYPES['STATEMENT'], 'type' => JQL_AST::$STATEMENT_TYPES['SELECT'], 'fields' => $$[$0], ]);
+                                                                    //php JQL_AST::trace(344);
                                                                
 break;
 case 8:
@@ -145,7 +145,7 @@ case 8:
                                                                     //js
                                                                     this.$ = $$[$0-2];
                                                                     this.$.table = $$[$0]
-                                                                    //php JQL_AST::trace(354); this.$ = ParserValue::cast($$[$0-2]); this.$->setKey('table',$$[$0]);
+                                                                    //php JQL_AST::trace(354);
                                                                
 break;
 case 9:
@@ -153,14 +153,13 @@ case 9:
                                                                     //js
                                                                     this.$ = $$[$0-2];
                                                                     this.$.where = $$[$0];
-                                                                    //php JQL_AST::trace(363); this.$ = ParserValue::cast($$[$0-2]); this.$->setKey('where', $$[$0]);
+                                                                    //php JQL_AST::trace(363);
                                                                
 break;
 case 10:
 
-                                                                    //js
                                                                     this.$ = $$[$0];
-                                                                    //php JQL_AST::trace(368); this.$ = ParserValue::cast($$[$0]);
+                                                                    //php JQL_AST::trace(367);
                                                                
 break;
 case 11:
@@ -168,14 +167,14 @@ case 11:
                                                                     //js
                                                                     this.$ = $$[$0-3];
                                                                     this.$.orderBy = $$[$0];
-                                                                    //php JQL_AST::trace(377); this.$ = ParserValue::cast($$[$0-3]); this.$->setKey('orderBy', $$[$0]);
+                                                                    //php JQL_AST::trace(376);
                                                                
 break;
 case 12:
 
                                                                     //js
                                                                     this.$ = $$[$0];
-                                                                    //php JQL_AST::trace(382); this.$ = ParserValue::cast($$[$0]);
+                                                                    //php JQL_AST::trace(381);
                                                                
 break;
 case 13:
@@ -183,35 +182,35 @@ case 13:
                                                                     //js
                                                                     this.$ = $$[$0-2];
                                                                     this.$.limit = $$[$0];
-                                                                    //php JQL_AST::trace(391); this.$ = ParserValue::cast($$[$0-2]); this.$->setKey('limit', $$[$0]);
+                                                                    //php JQL_AST::trace(390);
                                                                
 break;
 case 14:
 
                                                                     //js
                                                                     this.$ = $$[$0];
-                                                                    //php JQL_AST::trace(396); this.$ = ParserValue::cast($$[$0]);
+                                                                    //php JQL_AST::trace(395);
                                                                
 break;
 case 15:
 
                                                                     //js
                                                                     this.$ = $$[$0];
-                                                                    //php JQL_AST::trace(404); this.$ = ParserValue::cast($$[$0]);
+                                                                    //php JQL_AST::trace(403);
                                                                
 break;
 case 16:
 
                                                                     //js
                                                                     this.$ = $$[$0];
-                                                                    //php JQL_AST::trace(409); this.$ = ParserValue::cast($$[$0]);
+                                                                    //php JQL_AST::trace(408);
                                                                
 break;
 case 17:
 
                                                                     //js
                                                                     this.$ = $$[$0];
-                                                                    //php JQL_AST::trace(417); this.$ = ParserValue::cast($$[$0]);
+                                                                    //php JQL_AST::trace(416);
                                                                
 break;
 case 18:
@@ -219,7 +218,7 @@ case 18:
                                                                     //js
                                                                     this.$ = $$[$0-2];
                                                                     this.$.union = $$[$0];
-                                                                    //php JQL_AST::trace(423); this.$ = ParserValue::cast($$[$0-2]); this.$->setKey('union', $$[$0]);
+                                                                    //php JQL_AST::trace(422);
                                                                
 break;
 case 19:
@@ -230,7 +229,7 @@ case 19:
                                                                         type:         JQL_AST.STATEMENT_TYPES.UPDATE,
                                                                         delayed: $$[$0]
                                                                     };
-                                                                    //php JQL_AST::trace(436); this.$ = ParserValue::cast([ 'op' => JQL_AST::$TOKEN_TYPES['STATEMENT'], 'type' => JQL_AST::$STATEMENT_TYPES['UPDATE'], 'delayed' => $$[$0] ]);
+                                                                    //php JQL_AST::trace(435);
                                                                
 break;
 case 20:
@@ -239,8 +238,7 @@ case 20:
                                                                     this.$ = {
                                                                         op:           JQL_AST.TOKEN_TYPES.STATEMENT,
                                                                         type:         JQL_AST.STATEMENT_TYPES.UPDATE
-                                                                    };
-                                                                    //php JQL_AST::trace(444); this.$ = ParserValue::cast([ 'op' => JQL_AST::$TOKEN_TYPES['STATEMENT'], 'type' => JQL_AST::$STATEMENT_TYPES['UPDATE'] ]);
+                                                                    };//php JQL_AST::trace(442);
                                                                
 break;
 case 21:
@@ -250,7 +248,7 @@ case 21:
                                                                         op:           JQL_AST.TOKEN_TYPES.OPTION_DELAYED,
                                                                         timer:        JQL_AST.parseNumber($$[$0])
                                                                     };
-                                                                    //php JQL_AST::trace(455); this.$ = ParserValue::cast([ 'op' => JQL_AST::$TOKEN_TYPES['OPTION_DELAYED'], 'timer' => JQL_AST::parseNumber($$[$0]) ]);
+                                                                    //php JQL_AST::trace(453);
                                                                
 break;
 case 22:
@@ -260,7 +258,7 @@ case 22:
                                                                         op:           JQL_AST.TOKEN_TYPES.OPTION_DELAYED,
                                                                         timer:        null
                                                                     };
-                                                                    //php JQL_AST::trace(463); this.$ = ParserValue::cast([ 'op' => JQL_AST::$TOKEN_TYPES['OPTION_DELAYED'], 'timer' => null ]);
+                                                                    //php JQL_AST::trace(461);
                                                                
 break;
 case 23:
@@ -269,7 +267,7 @@ case 23:
                                                                     this.$ = $$[$0-3];
                                                                     this.$.table = $$[$0-2];
                                                                     this.$.fields = $$[$0];
-                                                                    //php JQL_AST::trace(474); this.$ = ParserValue::cast($$[$0-3]); this.$->setKey('table', $$[$0-2]); this.$->setKey('fields', $$[$0]);
+                                                                    //php JQL_AST::trace(472);
                                                                
 break;
 case 24:
@@ -277,14 +275,14 @@ case 24:
                                                                     //js
                                                                     this.$ = $$[$0-2];
                                                                     this.$.where = $$[$0];
-                                                                    //php JQL_AST::trace(483); this.$ = ParserValue::cast($$[$0-2]); this.$->setKey('where', $$[$0]);
+                                                                    //php JQL_AST::trace(481);
                                                                
 break;
 case 25:
 
                                                                     //js
                                                                     this.$ = $$[$0];
-                                                                    //php JQL_AST::trace(488); this.$ = ParserValue::cast($$[$0]);
+                                                                    //php JQL_AST::trace(486);
                                                                
 break;
 case 26:
@@ -292,7 +290,7 @@ case 26:
                                                                     //js
                                                                     this.$ = $$[$0-3];
                                                                     this.$.orderBy = $$[$0];
-                                                                    //php JQL_AST::trace(498); this.$ = ParserValue::cast($$[$0-3]); this.$->setKey('orderBy', $$[$0]);
+                                                                    //php JQL_AST::trace(496);
                                                                
 break;
 case 28:
@@ -300,21 +298,21 @@ case 28:
                                                                     //js
                                                                     this.$ = $$[$0-2];
                                                                     this.$.limit = $$[$0];
-                                                                    //php JQL_AST::trace(508); this.$ = ParserValue::cast($$[$0-2]); this.$->setKey('limit', $$[$0]);
+                                                                    //php JQL_AST::trace(506);
                                                                
 break;
 case 29:
 
                                                                     //js
                                                                     this.$ = $$[$0];
-                                                                    //php JQL_AST::trace(513); this.$ = ParserValue::cast($$[$0]);
+                                                                    //php JQL_AST::trace(511);
                                                                
 break;
 case 30:
 
                                                                     //js
                                                                     this.$ = $$[$0];
-                                                                    //php JQL_AST::trace(521); this.$ = ParserValue::cast($$[$0]);
+                                                                    //php JQL_AST::trace(519);
                                                                
 break;
 case 31:
@@ -325,7 +323,7 @@ case 31:
                                                                         type:         JQL_AST.STATEMENT_TYPES.INSERT,
                                                                         ignoreDuplicates: true
                                                                     };
-                                                                    //php JQL_AST::trace(533); this.$ = ParserValue::cast([ 'op' => JQL_AST::$TOKEN_TYPES['STATEMENT'], 'type' => JQL_AST::$STATEMENT_TYPES['INSERT'], 'ignoreDuplicates' => true ]);
+                                                                    //php JQL_AST::trace(531);
                                                                
 break;
 case 32:
@@ -335,7 +333,7 @@ case 32:
                                                                         op:           JQL_AST.TOKEN_TYPES.STATEMENT,
                                                                         type:         JQL_AST.STATEMENT_TYPES.INSERT
                                                                     };
-                                                                    //php JQL_AST::trace(541); this.$ = ParserValue::cast([ 'op' => JQL_AST::$TOKEN_TYPES['STATEMENT'], 'type' => JQL_AST::$STATEMENT_TYPES['INSERT'] ]);
+                                                                    //php JQL_AST::trace(539);
                                                                
 break;
 case 33:
@@ -344,7 +342,7 @@ case 33:
                                                                     this.$ = $$[$0-4];
                                                                     this.$.table = $$[$0-2];
                                                                     this.$.fields = $$[$0];
-                                                                    //php JQL_AST::trace(552); this.$ = ParserValue::cast($$[$0-4]); this.$->setKey('table', $$[$0-2]); this.$->setKey('fields', $$[$0]);
+                                                                    //php JQL_AST::trace(550);
                                                                
 break;
 case 34:
@@ -355,7 +353,7 @@ case 34:
                                                                         type:         JQL_AST.STATEMENT_TYPES.DELETE,
                                                                         table:        $$[$0]
                                                                     };
-                                                                    //php JQL_AST::trace(564); this.$ = ParserValue::cast([ 'op' => JQL_AST::$TOKEN_TYPES['STATEMENT'], 'type' => JQL_AST::$STATEMENT_TYPES['DELETE'], 'table' => $$[$0] ]);
+                                                                    //php JQL_AST::trace(562);
                                                                
 break;
 case 35:
@@ -363,14 +361,13 @@ case 35:
                                                                     //js
                                                                     this.$ = $$[$0-2];
                                                                     this.$.where = $$[$0];
-                                                                    //php JQL_AST::trace(573); this.$ = ParserValue::cast($$[$0-2]); this.$->setKey('where', $$[$0]);
+                                                                    //php JQL_AST::trace(571);
                                                                
 break;
 case 36:
 
-                                                                    //js
                                                                     this.$ = $$[$0];
-                                                                    //php JQL_AST::trace(578); this.$ = ParserValue::cast($$[$0]);
+                                                                    //php JQL_AST::trace(575);
                                                                
 break;
 case 37:
@@ -378,14 +375,14 @@ case 37:
                                                                     //js
                                                                     this.$ = $$[$0-3];
                                                                     this.$.orderBy = $$[$0];
-                                                                    //php JQL_AST::trace(588); this.$ = ParserValue::cast($$[$0-3]); this.$->setKey('orderBy', $$[$0]);
+                                                                    //php JQL_AST::trace(585);
                                                                
 break;
 case 38:
 
                                                                     //js
                                                                     this.$ = $$[$0];
-                                                                    //php JQL_AST::trace(593); this.$ = ParserValue::cast($$[$0]);
+                                                                    //php JQL_AST::trace(590);
                                                                
 break;
 case 39:
@@ -393,21 +390,21 @@ case 39:
                                                                     //js
                                                                     this.$ = $$[$0-2];
                                                                     this.$.limit = $$[$0];
-                                                                    //php JQL_AST::trace(603); this.$ = ParserValue::cast($$[$0-2]); this.$->setKey('limit', $$[$0]);
+                                                                    //php JQL_AST::trace(600);
                                                                
 break;
 case 40:
 
                                                                     //js
                                                                     this.$ = $$[$0];
-                                                                    //php JQL_AST::trace(608); this.$ = ParserValue::cast($$[$0]);
+                                                                    //php JQL_AST::trace(605);
                                                                
 break;
 case 41:
 
                                                                     //js
                                                                     this.$ = $$[$0];
-                                                                    //php JQL_AST::trace(616); this.$ = ParserValue::cast($$[$0]);
+                                                                    //php JQL_AST::trace(613);
                                                                
 break;
 case 42:
@@ -417,7 +414,7 @@ case 42:
                                                                         op:           JQL_AST.TOKEN_TYPES.TABLE_REFERENCE,
                                                                         name:         $$[$0]
                                                                     };
-                                                                    //php JQL_AST::trace(627); this.$ = ParserValue::cast([ 'op' => JQL_AST::$TOKEN_TYPES['TABLE_REFERENCE'], 'name' => $$[$0] ]);
+                                                                    //php JQL_AST::trace(624);
                                                                
 break;
 case 43:
@@ -427,7 +424,7 @@ case 43:
                                                                         op:           JQL_AST.TOKEN_TYPES.TABLE_REFERENCE,
                                                                         name:         JQL_AST.unescapeIdentifier( $$[$0] )
                                                                     };
-                                                                    //php JQL_AST::trace(635); this.$ = ParserValue::cast([ 'op' => JQL_AST::$TOKEN_TYPES['TABLE_REFERENCE'], 'name' => JQL_AST::unescapeIdentifier($$[$0]) ]);
+                                                                    //php JQL_AST::trace(632);
                                                                
 break;
 case 44:
@@ -437,7 +434,7 @@ case 44:
                                                                          op:          JQL_AST.TOKEN_TYPES.FIELDS_LIST,
                                                                          type:        JQL_AST.FIELD_TYPES.ALL_FIELDS
                                                                     };
-                                                                    //php JQL_AST::trace(646); this.$ = ParserValue::cast([ 'op' => JQL_AST::$TOKEN_TYPES['FIELDS_LIST'], 'type' => JQL_AST::$FIELD_TYPES['ALL_FIELDS'] ]);
+                                                                    //php JQL_AST::trace(643);
                                                                
 break;
 case 45:
@@ -447,23 +444,21 @@ case 45:
                                                                         type:         JQL_AST.FIELD_TYPES.SPECIFIC_FIELDS,
                                                                         fields:       $$[$0]
                                                                     };
-                                                                    //php JQL_AST::trace(654); this.$ = ParserValue::cast([ 'op' => JQL_AST::$TOKEN_TYPES['FIELDS_LIST'], 'type' => JQL_AST::$FIELD_TYPES['SPECIFIC_FIELDS'], 'fields' => $$[$0] ]);
+                                                                    //php JQL_AST::trace(651);
                                                                
 break;
 case 46:
 
                                                                     //js
-                                                                    this.$ = [
-                                                                        $$[$0]
-                                                                    ];
-                                                                    //php JQL_AST::trace(664); this.$ = ParserValue::cast([ ParserValue::cast($$[$0]) ]);
+                                                                    this.$ = [ $$[$0] ];
+                                                                    //php JQL_AST::trace(659);
                                                                
 break;
 case 47:
 
                                                                     //js
                                                                     this.$ = $$[$0-2].concat($$[$0]);
-                                                                    //php JQL_AST::trace(669); $$[$0-2]->push(ParserValue::cast($$[$0])); this.$ = ParserValue::cast($$[$0-2]);
+                                                                    //php JQL_AST::trace(664);
                                                                
 break;
 case 48:
@@ -474,7 +469,7 @@ case 48:
                                                                          literal:     JQL_AST.createFieldAliasFromExpression($$[$0]),
                                                                          expression:  $$[$0]
                                                                      };
-                                                                     //php JQL_AST::trace(681); this.$ = ParserValue::cast([ 'op' => JQL_AST::$TOKEN_TYPES['FIELD'], 'literal' => JQL_AST::castFieldAliasFromExpression($$[$0]), 'expression' => $$[$0] ]);
+                                                                    //php JQL_AST::trace(676);
                                                                
 break;
 case 49:
@@ -485,7 +480,7 @@ case 49:
                                                                         literal:      $$[$0],
                                                                         expression:   $$[$0-2]
                                                                     };
-                                                                    //php JQL_AST::trace(690); this.$ = ParserValue::cast([ 'op' => JQL_AST::$TOKEN_TYPES['FIELD'], 'literal' => $$[$0], 'expression' => $$[$0-2] ]);
+                                                                    //php JQL_AST::trace(685);
                                                                
 break;
 case 50:
@@ -496,30 +491,28 @@ case 50:
                                                                         literal:      JQL_AST.unescapeIdentifier($$[$0]),
                                                                         expression:   $$[$0-2]
                                                                     };
-                                                                    //php JQL_AST::trace(699); this.$ = ParserValue::cast([ 'op' => JQL_AST::$TOKEN_TYPES['FIELD'], 'literal' => JQL_AST::unescapeIdentifier($$[$0]), 'expression' => $$[$0-2] ]);
+                                                                    //php JQL_AST::trace(694);
                                                                
 break;
 case 51:
 
                                                                     //js
-                                                                    this.$ = [
-                                                                        $$[$0]
-                                                                    ];
-                                                                    //php JQL_AST::trace(709); this.$ = ParserValue::cast([ $$[$0] ]);
+                                                                    this.$ = [ $$[$0] ];
+                                                                    //php JQL_AST::trace(702);
                                                                
 break;
 case 52:
 
                                                                     //js
                                                                     this.$ = $$[$0-2].concat($$[$0]);
-                                                                    //php JQL_AST::trace(714); $$[$0-2]->push($$[$0]); this.$ = ParserValue::cast(ParserValue::cast($$[$0-2]));
+                                                                    //php JQL_AST::trace(707);
                                                                
 break;
 case 53:
 
                                                                     //js
                                                                     this.$ = $$[$0-2].concat($$[$0]);
-                                                                    //php JQL_AST::trace(719); $$[$0-2]->push($$[$0]); this.$ = ParserValue::cast($$[$0-2]);
+                                                                    //php JQL_AST::trace(712);
                                                                
 break;
 case 54:
@@ -530,7 +523,7 @@ case 54:
                                                                         name:         $$[$0-2],
                                                                         expression:   $$[$0]
                                                                     };
-                                                                    //php JQL_AST::trace(731); this.$ = ParserValue::cast([ 'op' => JQL_AST::$TOKEN_TYPES['UPDATE_FIELD'], 'name' => $$[$0-2], 'expression' => $$[$0] ]);
+                                                                    //php JQL_AST::trace(724);
                                                                
 break;
 case 55:
@@ -541,7 +534,7 @@ case 55:
                                                                         name:         JQL_AST.unescapeIdentifier($$[$0-2]),
                                                                         expression:   $$[$0]
                                                                     };
-                                                                    //php JQL_AST::trace(740); this.$ = ParserValue::cast([ 'op' => JQL_AST::$TOKEN_TYPES['UPDATE_FIELD'], 'name' => JQL_AST::unescapeIdentifier($$[$0-2]), 'expression' => $$[$0] ]);
+                                                                    //php JQL_AST::trace(733);
                                                                
 break;
 case 56:
@@ -552,7 +545,7 @@ case 56:
                                                                         type:         JQL_AST.EXPRESSION.NUMBER,
                                                                         value:        JQL_AST.parseNumber( $$[$0] )
                                                                     };
-                                                                    //php JQL_AST::trace(752); this.$ = ParserValue::cast([ 'op' => JQL_AST::$TOKEN_TYPES['EXPRESSION'], 'type' => JQL_AST::$EXPRESSION['NUMBER'], 'value' => JQL_AST::parseNumber($$[$0]) ]);
+                                                                    //php JQL_AST::trace(745);
                                                                
 break;
 case 57:
@@ -563,7 +556,7 @@ case 57:
                                                                         type:         JQL_AST.EXPRESSION.BOOLEAN,
                                                                         value:        JQL_AST.parseBoolean( $$[$0] )
                                                                     };
-                                                                    //php JQL_AST::trace(761); this.$ = ParserValue::cast([ 'op' => JQL_AST::$TOKEN_TYPES['EXPRESSION'], 'type' => JQL_AST::$EXPRESSION['BOOLEAN'], 'value' => JQL_AST::parseBoolean( $$[$0] ) ]);
+                                                                    //php JQL_AST::trace(754);
                                                                
 break;
 case 58:
@@ -573,7 +566,7 @@ case 58:
                                                                         op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
                                                                         type:         JQL_AST.EXPRESSION.NULL
                                                                     };
-                                                                    //php JQL_AST::trace(769); this.$ = ParserValue::cast([ 'op' => JQL_AST::$TOKEN_TYPES['EXPRESSION'], 'type' => JQL_AST::$EXPRESSION['NULL'] ]);
+                                                                    //php JQL_AST::trace(762);
                                                                
 break;
 case 59:
@@ -584,7 +577,7 @@ case 59:
                                                                         type:         JQL_AST.EXPRESSION.STRING,
                                                                         value:        JQL_AST.parseString( $$[$0] )
                                                                     };
-                                                                    //php JQL_AST::trace(778); this.$ = ParserValue::cast([ 'op' => JQL_AST::$TOKEN_TYPES['EXPRESSION'], 'type' => JQL_AST::$EXPRESSION['STRING'], 'value' => JQL_AST::parseString($$[$0]) ]);
+                                                                    //php JQL_AST::trace(771);
                                                                
 break;
 case 60:
@@ -596,7 +589,7 @@ case 60:
                                                                         operator:     JQL_AST.OPERATOR.NOT,
                                                                         left:         $$[$0]
                                                                     };
-                                                                    //php JQL_AST::trace(789); this.$ = ParserValue::cast([ 'op' => JQL_AST::$TOKEN_TYPES['EXPRESSION'], 'type' => JQL_AST::$EXPRESSION['UNARY'], 'operator' => JQL_AST::$OPERATOR['NOT'] ]);
+                                                                    //php JQL_AST::trace(782);
                                                                
 break;
 case 61:
@@ -608,7 +601,7 @@ case 61:
                                                                         operator:     JQL_AST.OPERATOR.INVERT,
                                                                         left:         $$[$0]
                                                                     };
-                                                                    //php JQL_AST::trace(799); this.$ = ParserValue::cast([ 'op' => JQL_AST::$TOKEN_TYPES['EXPRESSION'], 'type' => JQL_AST::$EXPRESSION['UNARY'], 'operator' => JQL_AST::$OPERATOR['INVERT'], 'left' => $$[$0] ]);
+                                                                    //php JQL_AST::trace(792);
                                                                
 break;
 case 62:
@@ -621,7 +614,7 @@ case 62:
                                                                         left:         $$[$0-2],
                                                                         right:        $$[$0]
                                                                     };
-                                                                    //php JQL_AST::trace(811); this.$ = ParserValue::cast([ 'op' => JQL_AST::$TOKEN_TYPES['EXPRESSION'], 'type' => JQL_AST::$EXPRESSION['LOGICAL'], 'operator' => JQL_AST::$OPERATOR['OR'], 'left' => $$[$0-2], 'right' => $$[$0] ]);
+                                                                    //php JQL_AST::trace(804);
                                                                
 break;
 case 63:
@@ -634,7 +627,7 @@ case 63:
                                                                         left:         $$[$0-2],
                                                                         right:        $$[$0]
                                                                     };
-                                                                    //php JQL_AST::trace(822); this.$ = ParserValue::cast([ 'op' => JQL_AST::$TOKEN_TYPES['EXPRESSION'], 'type' => JQL_AST::$EXPRESSION['LOGICAL'], 'operator' => JQL_AST::$OPERATOR['AND'], 'left' => $$[$0-2], 'right' => $$[$0] ]);
+                                                                    //php JQL_AST::trace(815);
                                                                
 break;
 case 64:
@@ -647,7 +640,7 @@ case 64:
                                                                         left:         $$[$0-2],
                                                                         right:        $$[$0]
                                                                     };
-                                                                    //php JQL_AST::trace(834); this.$ = ParserValue::cast([ 'op' => JQL_AST::$TOKEN_TYPES['EXPRESSION'], 'type' => JQL_AST::$EXPRESSION['LOGICAL'], 'operator' => JQL_AST::$OPERATOR['EQUALS'], 'left' => $$[$0-2], 'right' => $$[$0] ]);
+                                                                    //php JQL_AST::trace(827);
                                                                
 break;
 case 65:
@@ -660,7 +653,7 @@ case 65:
                                                                         left:         $$[$0-2],
                                                                         right:        $$[$0]
                                                                     };
-                                                                    //php JQL_AST::trace(845); this.$ = ParserValue::cast([ 'op' => JQL_AST::$TOKEN_TYPES['EXPRESSION'], 'type' => JQL_AST::$EXPRESSION['LOGICAL'], 'operator' => JQL_AST::$OPERATOR['LIKE'], 'left' => $$[$0-2], 'right' => $$[$0] ]);
+                                                                    //php JQL_AST::trace(838);
                                                                
 break;
 case 66:
@@ -673,7 +666,7 @@ case 66:
                                                                         left:         $$[$0-2],
                                                                         right:        $$[$0]
                                                                     };
-                                                                    //php JQL_AST::trace(856); this.$ = ParserValue::cast([ 'op' => JQL_AST::$TOKEN_TYPES['EXPRESSION'], 'type' => JQL_AST::$EXPRESSION['LOGICAL'], 'operator' => JQL_AST::$OPERATOR['LTE'], 'left' => $$[$0-2], 'right' => $$[$0] ]);
+                                                                    //php JQL_AST::trace(849);
                                                                
 break;
 case 67:
@@ -686,7 +679,7 @@ case 67:
                                                                         left:         $$[$0-2],
                                                                         right:        $$[$0]
                                                                     };
-                                                                    //php JQL_AST::trace(867); this.$ = ParserValue::cast([ 'op' => JQL_AST::$TOKEN_TYPES['EXPRESSION'], 'type' => JQL_AST::$EXPRESSION['LOGICAL'], 'operator' => JQL_AST::$OPERATOR['LT'], 'left' => $$[$0-2], 'right' => $$[$0] ]);
+                                                                    //php JQL_AST::trace(860);
                                                                
 break;
 case 68:
@@ -699,7 +692,7 @@ case 68:
                                                                         left:         $$[$0-2],
                                                                         right:        $$[$0]
                                                                     };
-                                                                    //php JQL_AST::trace(878); this.$ = ParserValue::cast([ 'op' => JQL_AST::$TOKEN_TYPES['EXPRESSION'], 'type' => JQL_AST::$EXPRESSION['LOGICAL'], 'operator' => JQL_AST::$OPERATOR['GTE'], 'left' => $$[$0-2], 'right' => $$[$0] ]);
+                                                                    //php JQL_AST::trace(871);
                                                                
 break;
 case 69:
@@ -712,7 +705,7 @@ case 69:
                                                                         left:         $$[$0-2],
                                                                         right:        $$[$0]
                                                                     };
-                                                                    //php JQL_AST::trace(889); this.$ = ParserValue::cast([ 'op' => JQL_AST::$TOKEN_TYPES['EXPRESSION'], 'type' => JQL_AST::$EXPRESSION['LOGICAL'], 'operator' => JQL_AST::$OPERATOR['GT'], 'left' => $$[$0-2], 'right' => $$[$0] ]);
+                                                                    //php JQL_AST::trace(882);
                                                                
 break;
 case 70:
@@ -725,7 +718,7 @@ case 70:
                                                                         left:         $$[$0-2],
                                                                         right:        $$[$0]
                                                                     };
-                                                                    //php JQL_AST::trace(901); this.$ = ParserValue::cast([ 'op' => JQL_AST::$TOKEN_TYPES['EXPRESSION'], 'type' => JQL_AST::$EXPRESSION['MATH'], 'operator' => JQL_AST::$OPERATOR['MULTIPLY'], 'left' => $$[$0-2], 'right' => $$[$0] ]);
+                                                                    //php JQL_AST::trace(894);
                                                                
 break;
 case 71:
@@ -738,7 +731,7 @@ case 71:
                                                                         left:         $$[$0-2],
                                                                         right:        $$[$0]
                                                                     };
-                                                                    //php JQL_AST::trace(912); this.$ = ParserValue::cast([ 'op' => JQL_AST::$TOKEN_TYPES['EXPRESSION'], 'type' => JQL_AST::$EXPRESSION['MATH'], 'operand' => JQL_AST::$OPERATOR['DIVISION'], 'left' => $$[$0-2], 'right' => $$[$0] ]);
+                                                                    //php JQL_AST::trace(905);
                                                                
 break;
 case 72:
@@ -751,7 +744,7 @@ case 72:
                                                                         left:         $$[$0-2],
                                                                         right:        $$[$0]
                                                                     };
-                                                                    //php JQL_AST::trace(923); this.$ = ParserValue::cast([ 'op' => JQL_AST::$TOKEN_TYPES['EXPRESSION'], 'type' => JQL_AST::$EXPRESSION['MATH'], 'operator' => JQL_AST::$OPERATOR['ADDITION'], 'left' => $$[$0-2], 'right' => $$[$0] ]);
+                                                                    //php JQL_AST::trace(916);
                                                                
 break;
 case 73:
@@ -764,14 +757,14 @@ case 73:
                                                                         left:         $$[$0-2],
                                                                         right:        $$[$0]
                                                                     };
-                                                                    //php JQL_AST::trace(934); this.$ = ParserValue::cast([ 'op' => JQL_AST::$TOKEN_TYPES['EXPRESSION'], 'type' => JQL_AST::$EXPRESSION['MATH'], 'operator' => JQL_AST::$OPERATOR['DIFFERENCE'], 'left' => $$[$0-2], 'right' => $$[$0] ]);
+                                                                    //php JQL_AST::trace(927);
                                                                
 break;
 case 74:
 
                                                                     //js
                                                                     this.$ = $$[$0];
-                                                                    //php JQL_AST::trace(939); this.$ = ParserValue::cast($$[$0]);
+                                                                    //php JQL_AST::trace(932);
                                                                
 break;
 case 75:
@@ -782,7 +775,7 @@ case 75:
                                                                         type:         JQL_AST.EXPRESSION.GROUP,
                                                                         expression:   $$[$0-1]
                                                                     };
-                                                                    //php JQL_AST::trace(948); this.$ = ParserValue::cast([ 'op' => JQL_AST::$TOKEN_TYPES['EXPRESSION'], 'type' => JQL_AST::$EXPRESSION['GROUP'], 'expression' => $$[$0-1] ]);
+                                                                    //php JQL_AST::trace(941);
                                                                
 break;
 case 76:
@@ -793,7 +786,7 @@ case 76:
                                                                         type:         JQL_AST.EXPRESSION.IDENTIFIER,
                                                                         name:         $$[$0]
                                                                     };
-                                                                    //php JQL_AST::trace(957); this.$ = ParserValue::cast([ 'op' => JQL_AST::$TOKEN_TYPES['EXPRESSION'], 'type' => JQL_AST::$EXPRESSION['IDENTIFIER'], 'name' => $$[$0] ]);
+                                                                    //php JQL_AST::trace(950);
                                                                
 break;
 case 77:
@@ -804,7 +797,7 @@ case 77:
                                                                         type:         JQL_AST.EXPRESSION.IDENTIFIER,
                                                                         name:         JQL_AST.unescapeIdentifier($$[$0])
                                                                     };
-                                                                    //php JQL_AST::trace(966); this.$ = ParserValue::cast([ 'op' => JQL_AST::$TOKEN_TYPES['EXPRESSION'], 'type' => JQL_AST::$EXPRESSION['IDENTIFIER'], 'name' => JQL_AST::unescapeIdentifier($$[$0]) ]);
+                                                                    //php JQL_AST::trace(959);
                                                                
 break;
 case 78:
@@ -815,7 +808,7 @@ case 78:
                                                                         type:         JQL_AST.EXPRESSION.BINDING,
                                                                         name:         JQL_AST.unescapeBindingName($$[$0])
                                                                     };
-                                                                    //php JQL_AST::trace(975); this.$ = ParserValue::cast([ 'op' => JQL_AST::$TOKEN_TYPES['EXPRESSION'], 'type' => JQL_AST::$EXPRESSION['BINDING'], 'name' => JQL_AST::unescapeBindingName( $$[$0] ) ]);
+                                                                    //php JQL_AST::trace(968);
                                                                
 break;
 case 79:
@@ -827,7 +820,7 @@ case 79:
                                                                         function_name: $$[$0-2],
                                                                         arguments:    []
                                                                     };
-                                                                    //php JQL_AST::trace(988); this.$ = ParserValue::cast([ 'op' => JQL_AST::$TOKEN_TYPES['EXPRESSION'], 'type' => JQL_AST::$EXPRESSION['FUNCTION_CALL'], 'function_name' => $$[$0-2], 'arguments' => $$[$0-2] ]);
+                                                                    //php JQL_AST::trace(981);
                                                                
 break;
 case 80:
@@ -839,23 +832,21 @@ case 80:
                                                                         function_name: $$[$0-3],
                                                                         arguments:    $$[$0-1]
                                                                     };
-                                                                    //php JQL_AST::trace(998); this.$ = ParserValue::cast([ 'op' => JQL_AST::$TOKEN_TYPES['EXPRESSION'], 'type' => JQL_AST::$EXPRESSION['FUNCTION_CALL'], 'function_name' => $$[$0-3], 'arguments' => $$[$0-1] ]);
+                                                                    //php JQL_AST::trace(991);
                                                                
 break;
 case 81:
 
                                                                     //js
-                                                                    this.$ = [
-                                                                        $$[$0]
-                                                                    ];
-                                                                    //php JQL_AST::trace(1008); this.$ = ParserValue::cast([ ParserValue::cast($$[$0]) ]);
+                                                                    this.$ = [ $$[$0] ];
+                                                                    //php JQL_AST::trace(999);
                                                                
 break;
 case 82:
 
                                                                     //js
                                                                     this.$ = $$[$0-2].concat($$[$0]);
-                                                                    //php JQL_AST::trace(1013); $$[$0-2]->push($$[$0]); this.$ = ParserValue::cast($$[$0-2]);
+                                                                    //php JQL_AST::trace(1004);
                                                                
 break;
 case 83:
@@ -865,7 +856,7 @@ case 83:
                                                                         op:           JQL_AST.TOKEN_TYPES.OPTION_ORDERING,
                                                                         type:         JQL_AST.ORDERING_STRATEGY.RANDOM
                                                                     };
-                                                                    //php JQL_AST::trace(1024); this.$ = ParserValue::cast([ 'op' => JQL_AST::$TOKEN_TYPES['OPTION_ORDERING'], 'type' => JQL_AST::$ORDERING_STRATEGY['RANDOM'] ]);
+                                                                    //php JQL_AST::trace(1015);
                                                                
 break;
 case 84:
@@ -876,23 +867,21 @@ case 84:
                                                                         type:         JQL_AST.ORDERING_STRATEGY.ORDERED,
                                                                         fields:       $$[$0]
                                                                     };
-                                                                    //php JQL_AST::trace(1033); this.$ = ParserValue::cast([ 'op' => JQL_AST::$TOKEN_TYPES['OPTION_ORDERING'], 'type' => JQL_AST::$ORDERING_STRATEGY['ORDERED'], 'fields' => $$[$0] ]);
+                                                                    //php JQL_AST::trace(1024);
                                                                
 break;
 case 85:
 
                                                                     //js
-                                                                    this.$ = [
-                                                                        $$[$0]
-                                                                    ];
-                                                                    //php JQL_AST::trace(1043); this.$ = ParserValue::cast([ ParserValue::cast($$[$0]) ]);
+                                                                    this.$ = [ $$[$0] ];
+                                                                    //php JQL_AST::trace(1032);
                                                                
 break;
 case 86:
 
                                                                     //js
                                                                     this.$ = $$[$0-2].concat($$[$0]);
-                                                                    //php JQL_AST::trace(1048); $$[$0-2]->push($$[$0]); this.$ = ParserValue::cast($$[$0-2]);
+                                                                    //php JQL_AST::trace(1037);
                                                                
 break;
 case 87:
@@ -903,7 +892,7 @@ case 87:
                                                                         expression:   $$[$0-1],
                                                                         direction:    JQL_AST.ORDER_DIRECTION.ASCENDING
                                                                     };
-                                                                    //php JQL_AST::trace(1060); this.$ = ParserValue::cast([ 'op' => JQL_AST::$TOKEN_TYPES['ORDER_EXPRESSION'], 'expression' => $$[$0-1], 'direction' => JQL_AST::$ORDER_DIRECTION['ASCENDING'] ]);
+                                                                    //php JQL_AST::trace(1049);
                                                                
 break;
 case 88:
@@ -914,7 +903,7 @@ case 88:
                                                                         expression:   $$[$0-1],
                                                                         direction:    JQL_AST.ORDER_DIRECTION.DESCENDING
                                                                     };
-                                                                    //php JQL_AST::trace(1070); this.$ = ParserValue::cast([ 'op' => JQL_AST::$TOKEN_TYPES['ORDER_EXPRESSION'], 'expression' => $$[$0-1], 'direction' => JQL_AST::$ORDER_DIRECTION['DESCENDING'] ]);
+                                                                    //php JQL_AST::trace(1059);
                                                                
 break;
 case 89:
@@ -925,7 +914,7 @@ case 89:
                                                                         expression:   $$[$0],
                                                                         direction:    JQL_AST.ORDER_DIRECTION.ASCENDING
                                                                     };
-                                                                    //php JQL_AST::trace(1079); this.$ = ParserValue::cast([ 'op' => JQL_AST::$TOKEN_TYPES['ORDER_EXPRESSION'], 'expression' => $$[$0], 'direction' => JQL_AST::$ORDER_DIRECTION['ASCENDING'] ]);
+                                                                    //php JQL_AST::trace(1068);
                                                                
 break;
 case 90:
@@ -936,7 +925,7 @@ case 90:
                                                                         limit:        JQL_AST.parseNumber( $$[$0] ),
                                                                         skip:         0
                                                                     };
-                                                                    //php JQL_AST::trace(1091); this.$ = ParserValue::cast([ 'op' => JQL_AST::$TOKEN_TYPES['OPTION_LIMIT'], 'limit' => JQL_AST::parseNumber( $$[$0] ), 'skip' => 0 ]);
+                                                                    //php JQL_AST::trace(1080);
                                                                
 break;
 case 91:
@@ -947,7 +936,7 @@ case 91:
                                                                         limit:        JQL_AST.parseNumber( $$[$0] ),
                                                                         skip:         JQL_AST.parseNumber( $$[$0-2] )
                                                                     };
-                                                                    //php JQL_AST::trace(1100); this.$ = ParserValue::cast([ 'op' => JQL_AST::$TOKEN_TYPES['OPTION_LIMIT'], 'limit' => JQL_AST::parseNumber( $$[$0] ), 'skip' => JQL_AST::parseNumber( $$[$0-2] ) ]);
+                                                                    //php JQL_AST::trace(1089);
                                                                
 break;
 }
