@@ -34,6 +34,10 @@ abstract class JQLTableIndex {
 
     public abstract isUnique(): boolean;
 
+    public abstract isAutoIncrement(): boolean;
+
+    public abstract getNextAutoIncrementValue(): number;
+
     /**
      * @throws Error if index cannot be performed.
      */

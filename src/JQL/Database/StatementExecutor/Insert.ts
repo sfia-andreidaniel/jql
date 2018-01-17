@@ -29,6 +29,8 @@ class JQLDatabaseStatementExecutorInsert implements IDatabaseStatementExecutor {
 
                     table.insertRow(row.getDataAsArray());
 
+                    table.reIndex();
+
                     table.commitTransaction();
 
                     defer.resolve( (new JQLStatementResult()).withAffectedRows(1) );

@@ -96,7 +96,7 @@ class JQLUtils {
 
     }
 
-    public static getIdentifiers(o: object[]): IJQLTableColumn[] {
+    public static getColumnDefinitions(o: object[]): IJQLTableColumn[] {
 
         let mappings: any = Object.create(null),
             type: EJQLTableColumnType;

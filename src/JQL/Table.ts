@@ -65,9 +65,12 @@ abstract class JQLTable implements IJQLTable {
 
     public abstract getStorageEngine(): EJQLTableStorageEngine;
 
-    public static createFromInMemoryArrayOfObjects(rows: object[]): JQLTable {
+    public static createFromInMemoryArrayOfObjects(rows: object[], columnDefinitions?: IJQLTableColumn[]): JQLTable {
 
-        let identifiers = JQLUtils.getIdentifiers(rows),
+        let identifiers = undefined === columnDefinitions
+            ? JQLUtils.getColumnDefinitions(rows)
+            : columnDefinitions,
+
             result: JQLPrimitive[][] = [],
             ncols: number = identifiers.length,
             row: JQLPrimitive[],
@@ -116,8 +119,15 @@ abstract class JQLTable implements IJQLTable {
 
     public reIndex() {
 
-        for ( let i=0, len = this.indexes.length; i<len; i++ ) {
+        for (let i = 0, len = this.indexes.length; i < len; i++) {
+
             this.indexes[i].index();
+
+            if (this.indexes[i].isAutoIncrement()) {
+
+                this.setNextAutoIncrementValue(this.indexes[i].getNextAutoIncrementValue());
+
+            }
         }
 
     }
@@ -129,5 +139,9 @@ abstract class JQLTable implements IJQLTable {
     public abstract commitTransaction();
 
     public abstract rollbackTransaction();
+
+    public abstract getNextAutoIncrementValue(): number;
+
+    public abstract setNextAutoIncrementValue(nextAutoIncrementValue: number);
 
 }

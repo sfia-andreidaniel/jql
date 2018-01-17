@@ -313,6 +313,7 @@ interface IJQLTableColumn {
     type: EJQLTableColumnType;
     default?: JQLPrimitive;
     unique?: boolean;
+    autoIncrement?: boolean;
 }
 
 interface IJQLTableIndex {

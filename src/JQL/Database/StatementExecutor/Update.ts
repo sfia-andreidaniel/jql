@@ -19,7 +19,7 @@ class JQLDatabaseStatementExecutorUpdate implements IDatabaseStatementExecutor {
 
                 let table: JQLTableStorageEngineInMemory = <JQLTableStorageEngineInMemory>this.db.getTable(this.statement.getTable().getName());
 
-                if ( table.isTransactional() ) {
+                if (table.isTransactional()) {
                     table.startTransaction();
                 }
 
@@ -27,10 +27,10 @@ class JQLDatabaseStatementExecutorUpdate implements IDatabaseStatementExecutor {
 
                     this.markedRowsForUpdate = [];
 
-                    let iterator                             = table.createIterator(),
+                    let iterator = table.createIterator(),
                         row: JQLRow,
                         addRow: boolean,
-                        where                                = this.statement.getFilter();
+                        where = this.statement.getFilter();
 
                     while (row = iterator.next()) {
 
@@ -57,7 +57,7 @@ class JQLDatabaseStatementExecutorUpdate implements IDatabaseStatementExecutor {
 
                     if (!this.markedRowsForUpdate.length) {
 
-                        if ( table.isTransactional() ) {
+                        if (table.isTransactional()) {
                             table.commitTransaction();
                         }
 
@@ -77,7 +77,7 @@ class JQLDatabaseStatementExecutorUpdate implements IDatabaseStatementExecutor {
 
                     if (!this.markedRowsForUpdate.length) {
 
-                        if ( table.isTransactional() ) {
+                        if (table.isTransactional()) {
                             table.commitTransaction();
                         }
 
@@ -116,7 +116,9 @@ class JQLDatabaseStatementExecutorUpdate implements IDatabaseStatementExecutor {
 
                     }
 
-                    if ( table.isTransactional() ) {
+                    table.reIndex();
+
+                    if (table.isTransactional()) {
                         table.commitTransaction();
                     }
 
@@ -126,11 +128,11 @@ class JQLDatabaseStatementExecutorUpdate implements IDatabaseStatementExecutor {
 
                     console.error(e);
 
-                    if ( table.isTransactional() ) {
+                    if (table.isTransactional()) {
                         table.rollbackTransaction();
                     }
 
-                    defer.reject('Failed to execute UPDATE statement!' );
+                    defer.reject('Failed to execute UPDATE statement!');
 
                 }
 

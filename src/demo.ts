@@ -19,6 +19,27 @@ db.withTable(
                 name: "Betty",
                 age: 32
             },
+        ],
+        [
+            {
+                name: "id",
+                type: EJQLTableColumnType.NUMBER,
+                default: null,
+                unique: true,
+                autoIncrement: true,
+            },
+            {
+                name: "name",
+                type: EJQLTableColumnType.STRING,
+                default: "",
+                unique: false,
+            },
+            {
+                name: "age",
+                type: EJQLTableColumnType.NUMBER,
+                default: 0,
+                unique: false,
+            }
         ]
     )
 );
@@ -46,6 +67,6 @@ db.withTable(
     )
 );
 
-db.withFunction('sum', function( a: number, b: number ): number {
+db.withFunction('sum', function (a: number, b: number): number {
     return a + b;
 });
