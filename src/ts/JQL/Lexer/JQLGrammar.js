@@ -89,7 +89,7 @@ case 1:
                                                                     this.$ = $$[$0-1];
                                                                     this.$.remote = true;
                                                                     return this.$;
-                                                                    //php JQL_AST::trace(302);
+                                                                    //php AST::trace(302);
                                                                
 break;
 case 2:
@@ -98,46 +98,46 @@ case 2:
                                                                     this.$ = $$[$0-1];
                                                                     this.$.remote = false;
                                                                     return this.$;
-                                                                    //php JQL_AST::trace(309);
+                                                                    //php AST::trace(309);
                                                                
 break;
 case 3:
 
                                                                     //js
                                                                     this.$ = $$[$0];
-                                                                    //php JQL_AST::trace(317);
+                                                                    //php AST::trace(317);
                                                                
 break;
 case 4:
 
                                                                     //js
                                                                     this.$ = $$[$0];
-                                                                    //php JQL_AST::trace(322);
+                                                                    //php AST::trace(322);
                                                                
 break;
 case 5:
 
                                                                     //js
                                                                     this.$ = $$[$0];
-                                                                    //php JQL_AST::trace(327);
+                                                                    //php AST::trace(327);
                                                                
 break;
 case 6:
 
                                                                     //js
                                                                     this.$ = $$[$0];
-                                                                    //php JQL_AST::trace(332);
+                                                                    //php AST::trace(332);
                                                                
 break;
 case 7:
 
                                                                     //js
                                                                     this.$ = {
-                                                                        op:           JQL_AST.TOKEN_TYPES.STATEMENT,
-                                                                        type:         JQL_AST.STATEMENT_TYPES.SELECT,
+                                                                        op:           AST.TOKEN_TYPES.STATEMENT,
+                                                                        type:         AST.STATEMENT_TYPES.SELECT,
                                                                         fields:       $$[$0]
                                                                     };
-                                                                    //php JQL_AST::trace(344);
+                                                                    //php AST::trace(344);
                                                                
 break;
 case 8:
@@ -145,7 +145,7 @@ case 8:
                                                                     //js
                                                                     this.$ = $$[$0-2];
                                                                     this.$.table = $$[$0]
-                                                                    //php JQL_AST::trace(354);
+                                                                    //php AST::trace(354);
                                                                
 break;
 case 9:
@@ -153,13 +153,13 @@ case 9:
                                                                     //js
                                                                     this.$ = $$[$0-2];
                                                                     this.$.where = $$[$0];
-                                                                    //php JQL_AST::trace(363);
+                                                                    //php AST::trace(363);
                                                                
 break;
 case 10:
 
                                                                     this.$ = $$[$0];
-                                                                    //php JQL_AST::trace(367);
+                                                                    //php AST::trace(367);
                                                                
 break;
 case 11:
@@ -167,14 +167,14 @@ case 11:
                                                                     //js
                                                                     this.$ = $$[$0-3];
                                                                     this.$.orderBy = $$[$0];
-                                                                    //php JQL_AST::trace(376);
+                                                                    //php AST::trace(376);
                                                                
 break;
 case 12:
 
                                                                     //js
                                                                     this.$ = $$[$0];
-                                                                    //php JQL_AST::trace(381);
+                                                                    //php AST::trace(381);
                                                                
 break;
 case 13:
@@ -182,35 +182,35 @@ case 13:
                                                                     //js
                                                                     this.$ = $$[$0-2];
                                                                     this.$.limit = $$[$0];
-                                                                    //php JQL_AST::trace(390);
+                                                                    //php AST::trace(390);
                                                                
 break;
 case 14:
 
                                                                     //js
                                                                     this.$ = $$[$0];
-                                                                    //php JQL_AST::trace(395);
+                                                                    //php AST::trace(395);
                                                                
 break;
 case 15:
 
                                                                     //js
                                                                     this.$ = $$[$0];
-                                                                    //php JQL_AST::trace(403);
+                                                                    //php AST::trace(403);
                                                                
 break;
 case 16:
 
                                                                     //js
                                                                     this.$ = $$[$0];
-                                                                    //php JQL_AST::trace(408);
+                                                                    //php AST::trace(408);
                                                                
 break;
 case 17:
 
                                                                     //js
                                                                     this.$ = $$[$0];
-                                                                    //php JQL_AST::trace(416);
+                                                                    //php AST::trace(416);
                                                                
 break;
 case 18:
@@ -218,47 +218,47 @@ case 18:
                                                                     //js
                                                                     this.$ = $$[$0-2];
                                                                     this.$.union = $$[$0];
-                                                                    //php JQL_AST::trace(422);
+                                                                    //php AST::trace(422);
                                                                
 break;
 case 19:
 
                                                                     //js
                                                                     this.$ = {
-                                                                        op:           JQL_AST.TOKEN_TYPES.STATEMENT,
-                                                                        type:         JQL_AST.STATEMENT_TYPES.UPDATE,
+                                                                        op:           AST.TOKEN_TYPES.STATEMENT,
+                                                                        type:         AST.STATEMENT_TYPES.UPDATE,
                                                                         delayed: $$[$0]
                                                                     };
-                                                                    //php JQL_AST::trace(435);
+                                                                    //php AST::trace(435);
                                                                
 break;
 case 20:
 
                                                                     //js
                                                                     this.$ = {
-                                                                        op:           JQL_AST.TOKEN_TYPES.STATEMENT,
-                                                                        type:         JQL_AST.STATEMENT_TYPES.UPDATE
-                                                                    };//php JQL_AST::trace(442);
+                                                                        op:           AST.TOKEN_TYPES.STATEMENT,
+                                                                        type:         AST.STATEMENT_TYPES.UPDATE
+                                                                    };//php AST::trace(442);
                                                                
 break;
 case 21:
 
                                                                     //js
                                                                     this.$ = {
-                                                                        op:           JQL_AST.TOKEN_TYPES.OPTION_DELAYED,
-                                                                        timer:        JQL_AST.parseNumber($$[$0])
+                                                                        op:           AST.TOKEN_TYPES.OPTION_DELAYED,
+                                                                        timer:        AST.parseNumber($$[$0])
                                                                     };
-                                                                    //php JQL_AST::trace(453);
+                                                                    //php AST::trace(453);
                                                                
 break;
 case 22:
 
                                                                     //js
                                                                     this.$ = {
-                                                                        op:           JQL_AST.TOKEN_TYPES.OPTION_DELAYED,
+                                                                        op:           AST.TOKEN_TYPES.OPTION_DELAYED,
                                                                         timer:        null
                                                                     };
-                                                                    //php JQL_AST::trace(461);
+                                                                    //php AST::trace(461);
                                                                
 break;
 case 23:
@@ -267,7 +267,7 @@ case 23:
                                                                     this.$ = $$[$0-3];
                                                                     this.$.table = $$[$0-2];
                                                                     this.$.fields = $$[$0];
-                                                                    //php JQL_AST::trace(472);
+                                                                    //php AST::trace(472);
                                                                
 break;
 case 24:
@@ -275,14 +275,14 @@ case 24:
                                                                     //js
                                                                     this.$ = $$[$0-2];
                                                                     this.$.where = $$[$0];
-                                                                    //php JQL_AST::trace(481);
+                                                                    //php AST::trace(481);
                                                                
 break;
 case 25:
 
                                                                     //js
                                                                     this.$ = $$[$0];
-                                                                    //php JQL_AST::trace(486);
+                                                                    //php AST::trace(486);
                                                                
 break;
 case 26:
@@ -290,7 +290,7 @@ case 26:
                                                                     //js
                                                                     this.$ = $$[$0-3];
                                                                     this.$.orderBy = $$[$0];
-                                                                    //php JQL_AST::trace(496);
+                                                                    //php AST::trace(496);
                                                                
 break;
 case 28:
@@ -298,42 +298,42 @@ case 28:
                                                                     //js
                                                                     this.$ = $$[$0-2];
                                                                     this.$.limit = $$[$0];
-                                                                    //php JQL_AST::trace(506);
+                                                                    //php AST::trace(506);
                                                                
 break;
 case 29:
 
                                                                     //js
                                                                     this.$ = $$[$0];
-                                                                    //php JQL_AST::trace(511);
+                                                                    //php AST::trace(511);
                                                                
 break;
 case 30:
 
                                                                     //js
                                                                     this.$ = $$[$0];
-                                                                    //php JQL_AST::trace(519);
+                                                                    //php AST::trace(519);
                                                                
 break;
 case 31:
 
                                                                     //js
                                                                     this.$ = {
-                                                                        op:           JQL_AST.TOKEN_TYPES.STATEMENT,
-                                                                        type:         JQL_AST.STATEMENT_TYPES.INSERT,
+                                                                        op:           AST.TOKEN_TYPES.STATEMENT,
+                                                                        type:         AST.STATEMENT_TYPES.INSERT,
                                                                         ignoreDuplicates: true
                                                                     };
-                                                                    //php JQL_AST::trace(531);
+                                                                    //php AST::trace(531);
                                                                
 break;
 case 32:
 
                                                                     //js
                                                                     this.$ = {
-                                                                        op:           JQL_AST.TOKEN_TYPES.STATEMENT,
-                                                                        type:         JQL_AST.STATEMENT_TYPES.INSERT
+                                                                        op:           AST.TOKEN_TYPES.STATEMENT,
+                                                                        type:         AST.STATEMENT_TYPES.INSERT
                                                                     };
-                                                                    //php JQL_AST::trace(539);
+                                                                    //php AST::trace(539);
                                                                
 break;
 case 33:
@@ -342,18 +342,18 @@ case 33:
                                                                     this.$ = $$[$0-4];
                                                                     this.$.table = $$[$0-2];
                                                                     this.$.fields = $$[$0];
-                                                                    //php JQL_AST::trace(550);
+                                                                    //php AST::trace(550);
                                                                
 break;
 case 34:
 
                                                                     //js
                                                                     this.$ = {
-                                                                        op:           JQL_AST.TOKEN_TYPES.STATEMENT,
-                                                                        type:         JQL_AST.STATEMENT_TYPES.DELETE,
+                                                                        op:           AST.TOKEN_TYPES.STATEMENT,
+                                                                        type:         AST.STATEMENT_TYPES.DELETE,
                                                                         table:        $$[$0]
                                                                     };
-                                                                    //php JQL_AST::trace(562);
+                                                                    //php AST::trace(562);
                                                                
 break;
 case 35:
@@ -361,13 +361,13 @@ case 35:
                                                                     //js
                                                                     this.$ = $$[$0-2];
                                                                     this.$.where = $$[$0];
-                                                                    //php JQL_AST::trace(571);
+                                                                    //php AST::trace(571);
                                                                
 break;
 case 36:
 
                                                                     this.$ = $$[$0];
-                                                                    //php JQL_AST::trace(575);
+                                                                    //php AST::trace(575);
                                                                
 break;
 case 37:
@@ -375,14 +375,14 @@ case 37:
                                                                     //js
                                                                     this.$ = $$[$0-3];
                                                                     this.$.orderBy = $$[$0];
-                                                                    //php JQL_AST::trace(585);
+                                                                    //php AST::trace(585);
                                                                
 break;
 case 38:
 
                                                                     //js
                                                                     this.$ = $$[$0];
-                                                                    //php JQL_AST::trace(590);
+                                                                    //php AST::trace(590);
                                                                
 break;
 case 39:
@@ -390,553 +390,553 @@ case 39:
                                                                     //js
                                                                     this.$ = $$[$0-2];
                                                                     this.$.limit = $$[$0];
-                                                                    //php JQL_AST::trace(600);
+                                                                    //php AST::trace(600);
                                                                
 break;
 case 40:
 
                                                                     //js
                                                                     this.$ = $$[$0];
-                                                                    //php JQL_AST::trace(605);
+                                                                    //php AST::trace(605);
                                                                
 break;
 case 41:
 
                                                                     //js
                                                                     this.$ = $$[$0];
-                                                                    //php JQL_AST::trace(613);
+                                                                    //php AST::trace(613);
                                                                
 break;
 case 42:
 
                                                                     //js
                                                                     this.$ = {
-                                                                        op:           JQL_AST.TOKEN_TYPES.TABLE_REFERENCE,
+                                                                        op:           AST.TOKEN_TYPES.TABLE_REFERENCE,
                                                                         name:         $$[$0]
                                                                     };
-                                                                    //php JQL_AST::trace(624);
+                                                                    //php AST::trace(624);
                                                                
 break;
 case 43:
 
                                                                     //js
                                                                     this.$ = {
-                                                                        op:           JQL_AST.TOKEN_TYPES.TABLE_REFERENCE,
-                                                                        name:         JQL_AST.unescapeIdentifier( $$[$0] )
+                                                                        op:           AST.TOKEN_TYPES.TABLE_REFERENCE,
+                                                                        name:         AST.unescapeIdentifier( $$[$0] )
                                                                     };
-                                                                    //php JQL_AST::trace(632);
+                                                                    //php AST::trace(632);
                                                                
 break;
 case 44:
 
                                                                     //js
                                                                     this.$ = {
-                                                                         op:          JQL_AST.TOKEN_TYPES.FIELDS_LIST,
-                                                                         type:        JQL_AST.FIELD_TYPES.ALL_FIELDS
+                                                                         op:          AST.TOKEN_TYPES.FIELDS_LIST,
+                                                                         type:        AST.FIELD_TYPES.ALL_FIELDS
                                                                     };
-                                                                    //php JQL_AST::trace(643);
+                                                                    //php AST::trace(643);
                                                                
 break;
 case 45:
 
                                                                     //js
-                                                                    this.$ = { op:        JQL_AST.TOKEN_TYPES.FIELDS_LIST,
-                                                                        type:         JQL_AST.FIELD_TYPES.SPECIFIC_FIELDS,
+                                                                    this.$ = { op:        AST.TOKEN_TYPES.FIELDS_LIST,
+                                                                        type:         AST.FIELD_TYPES.SPECIFIC_FIELDS,
                                                                         fields:       $$[$0]
                                                                     };
-                                                                    //php JQL_AST::trace(651);
+                                                                    //php AST::trace(651);
                                                                
 break;
 case 46:
 
                                                                     //js
                                                                     this.$ = [ $$[$0] ];
-                                                                    //php JQL_AST::trace(659);
+                                                                    //php AST::trace(659);
                                                                
 break;
 case 47:
 
                                                                     //js
                                                                     this.$ = $$[$0-2].concat($$[$0]);
-                                                                    //php JQL_AST::trace(664);
+                                                                    //php AST::trace(664);
                                                                
 break;
 case 48:
 
                                                                     //js
                                                                     this.$ = {
-                                                                         op:          JQL_AST.TOKEN_TYPES.FIELD,
-                                                                         literal:     JQL_AST.createFieldAliasFromExpression($$[$0]),
+                                                                         op:          AST.TOKEN_TYPES.FIELD,
+                                                                         literal:     AST.createFieldAliasFromExpression($$[$0]),
                                                                          expression:  $$[$0]
                                                                      };
-                                                                    //php JQL_AST::trace(676);
+                                                                    //php AST::trace(676);
                                                                
 break;
 case 49:
 
                                                                     //js
                                                                     this.$ = {
-                                                                        op:           JQL_AST.TOKEN_TYPES.FIELD,
+                                                                        op:           AST.TOKEN_TYPES.FIELD,
                                                                         literal:      $$[$0],
                                                                         expression:   $$[$0-2]
                                                                     };
-                                                                    //php JQL_AST::trace(685);
+                                                                    //php AST::trace(685);
                                                                
 break;
 case 50:
 
                                                                     //js
                                                                     this.$ = {
-                                                                        op:           JQL_AST.TOKEN_TYPES.FIELD,
-                                                                        literal:      JQL_AST.unescapeIdentifier($$[$0]),
+                                                                        op:           AST.TOKEN_TYPES.FIELD,
+                                                                        literal:      AST.unescapeIdentifier($$[$0]),
                                                                         expression:   $$[$0-2]
                                                                     };
-                                                                    //php JQL_AST::trace(694);
+                                                                    //php AST::trace(694);
                                                                
 break;
 case 51:
 
                                                                     //js
                                                                     this.$ = [ $$[$0] ];
-                                                                    //php JQL_AST::trace(702);
+                                                                    //php AST::trace(702);
                                                                
 break;
 case 52:
 
                                                                     //js
                                                                     this.$ = $$[$0-2].concat($$[$0]);
-                                                                    //php JQL_AST::trace(707);
+                                                                    //php AST::trace(707);
                                                                
 break;
 case 53:
 
                                                                     //js
                                                                     this.$ = $$[$0-2].concat($$[$0]);
-                                                                    //php JQL_AST::trace(712);
+                                                                    //php AST::trace(712);
                                                                
 break;
 case 54:
 
                                                                     //js
                                                                     this.$ = {
-                                                                        op:           JQL_AST.TOKEN_TYPES.UPDATE_FIELD,
+                                                                        op:           AST.TOKEN_TYPES.UPDATE_FIELD,
                                                                         name:         $$[$0-2],
                                                                         expression:   $$[$0]
                                                                     };
-                                                                    //php JQL_AST::trace(724);
+                                                                    //php AST::trace(724);
                                                                
 break;
 case 55:
 
                                                                     //js
                                                                     this.$ = {
-                                                                        op:           JQL_AST.TOKEN_TYPES.UPDATE_FIELD,
-                                                                        name:         JQL_AST.unescapeIdentifier($$[$0-2]),
+                                                                        op:           AST.TOKEN_TYPES.UPDATE_FIELD,
+                                                                        name:         AST.unescapeIdentifier($$[$0-2]),
                                                                         expression:   $$[$0]
                                                                     };
-                                                                    //php JQL_AST::trace(733);
+                                                                    //php AST::trace(733);
                                                                
 break;
 case 56:
 
                                                                     //js
                                                                     this.$ = {
-                                                                        op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
-                                                                        type:         JQL_AST.EXPRESSION.NUMBER,
-                                                                        value:        JQL_AST.parseNumber( $$[$0] )
+                                                                        op:           AST.TOKEN_TYPES.EXPRESSION,
+                                                                        type:         AST.EXPRESSION.NUMBER,
+                                                                        value:        AST.parseNumber( $$[$0] )
                                                                     };
-                                                                    //php JQL_AST::trace(745);
+                                                                    //php AST::trace(745);
                                                                
 break;
 case 57:
 
                                                                     //js
                                                                     this.$ = {
-                                                                        op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
-                                                                        type:         JQL_AST.EXPRESSION.BOOLEAN,
-                                                                        value:        JQL_AST.parseBoolean( $$[$0] )
+                                                                        op:           AST.TOKEN_TYPES.EXPRESSION,
+                                                                        type:         AST.EXPRESSION.BOOLEAN,
+                                                                        value:        AST.parseBoolean( $$[$0] )
                                                                     };
-                                                                    //php JQL_AST::trace(754);
+                                                                    //php AST::trace(754);
                                                                
 break;
 case 58:
 
                                                                     //js
                                                                     this.$ = {
-                                                                        op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
-                                                                        type:         JQL_AST.EXPRESSION.NULL
+                                                                        op:           AST.TOKEN_TYPES.EXPRESSION,
+                                                                        type:         AST.EXPRESSION.NULL
                                                                     };
-                                                                    //php JQL_AST::trace(762);
+                                                                    //php AST::trace(762);
                                                                
 break;
 case 59:
 
                                                                     //js
                                                                     this.$ = {
-                                                                        op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
-                                                                        type:         JQL_AST.EXPRESSION.STRING,
-                                                                        value:        JQL_AST.parseString( $$[$0] )
+                                                                        op:           AST.TOKEN_TYPES.EXPRESSION,
+                                                                        type:         AST.EXPRESSION.STRING,
+                                                                        value:        AST.parseString( $$[$0] )
                                                                     };
-                                                                    //php JQL_AST::trace(771);
+                                                                    //php AST::trace(771);
                                                                
 break;
 case 60:
 
                                                                     //js
                                                                     this.$ = {
-                                                                        op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
-                                                                        type:         JQL_AST.EXPRESSION.UNARY,
-                                                                        operator:     JQL_AST.OPERATOR.NOT,
+                                                                        op:           AST.TOKEN_TYPES.EXPRESSION,
+                                                                        type:         AST.EXPRESSION.UNARY,
+                                                                        operator:     AST.OPERATOR.NOT,
                                                                         left:         $$[$0]
                                                                     };
-                                                                    //php JQL_AST::trace(782);
+                                                                    //php AST::trace(782);
                                                                
 break;
 case 61:
 
                                                                     //js
                                                                     this.$ = {
-                                                                        op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
-                                                                        type:         JQL_AST.EXPRESSION.UNARY,
-                                                                        operator:     JQL_AST.OPERATOR.INVERT,
+                                                                        op:           AST.TOKEN_TYPES.EXPRESSION,
+                                                                        type:         AST.EXPRESSION.UNARY,
+                                                                        operator:     AST.OPERATOR.INVERT,
                                                                         left:         $$[$0]
                                                                     };
-                                                                    //php JQL_AST::trace(792);
+                                                                    //php AST::trace(792);
                                                                
 break;
 case 62:
 
                                                                     //js
                                                                     this.$ = {
-                                                                        op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
-                                                                        type:         JQL_AST.EXPRESSION.LOGICAL,
-                                                                        operator:     JQL_AST.OPERATOR.OR,
+                                                                        op:           AST.TOKEN_TYPES.EXPRESSION,
+                                                                        type:         AST.EXPRESSION.LOGICAL,
+                                                                        operator:     AST.OPERATOR.OR,
                                                                         left:         $$[$0-2],
                                                                         right:        $$[$0]
                                                                     };
-                                                                    //php JQL_AST::trace(804);
+                                                                    //php AST::trace(804);
                                                                
 break;
 case 63:
 
                                                                     //js
                                                                     this.$ = {
-                                                                        op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
-                                                                        type:         JQL_AST.EXPRESSION.LOGICAL,
-                                                                        operator:     JQL_AST.OPERATOR.AND,
+                                                                        op:           AST.TOKEN_TYPES.EXPRESSION,
+                                                                        type:         AST.EXPRESSION.LOGICAL,
+                                                                        operator:     AST.OPERATOR.AND,
                                                                         left:         $$[$0-2],
                                                                         right:        $$[$0]
                                                                     };
-                                                                    //php JQL_AST::trace(815);
+                                                                    //php AST::trace(815);
                                                                
 break;
 case 64:
 
                                                                     //js
                                                                     this.$ = {
-                                                                        op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
-                                                                        type:         JQL_AST.EXPRESSION.LOGICAL,
-                                                                        operator:     JQL_AST.OPERATOR.EQUALS,
+                                                                        op:           AST.TOKEN_TYPES.EXPRESSION,
+                                                                        type:         AST.EXPRESSION.LOGICAL,
+                                                                        operator:     AST.OPERATOR.EQUALS,
                                                                         left:         $$[$0-2],
                                                                         right:        $$[$0]
                                                                     };
-                                                                    //php JQL_AST::trace(827);
+                                                                    //php AST::trace(827);
                                                                
 break;
 case 65:
 
                                                                     //js
                                                                     this.$ = {
-                                                                        op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
-                                                                        type:         JQL_AST.EXPRESSION.LOGICAL,
-                                                                        operator:     JQL_AST.OPERATOR.LIKE,
+                                                                        op:           AST.TOKEN_TYPES.EXPRESSION,
+                                                                        type:         AST.EXPRESSION.LOGICAL,
+                                                                        operator:     AST.OPERATOR.LIKE,
                                                                         left:         $$[$0-2],
                                                                         right:        $$[$0]
                                                                     };
-                                                                    //php JQL_AST::trace(838);
+                                                                    //php AST::trace(838);
                                                                
 break;
 case 66:
 
                                                                     //js
                                                                     this.$ = {
-                                                                        op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
-                                                                        type:         JQL_AST.EXPRESSION.LOGICAL,
-                                                                        operator:     JQL_AST.OPERATOR.LTE,
+                                                                        op:           AST.TOKEN_TYPES.EXPRESSION,
+                                                                        type:         AST.EXPRESSION.LOGICAL,
+                                                                        operator:     AST.OPERATOR.LTE,
                                                                         left:         $$[$0-2],
                                                                         right:        $$[$0]
                                                                     };
-                                                                    //php JQL_AST::trace(849);
+                                                                    //php AST::trace(849);
                                                                
 break;
 case 67:
 
                                                                     //js
                                                                     this.$ = {
-                                                                        op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
-                                                                        type:         JQL_AST.EXPRESSION.LOGICAL,
-                                                                        operator:     JQL_AST.OPERATOR.LT,
+                                                                        op:           AST.TOKEN_TYPES.EXPRESSION,
+                                                                        type:         AST.EXPRESSION.LOGICAL,
+                                                                        operator:     AST.OPERATOR.LT,
                                                                         left:         $$[$0-2],
                                                                         right:        $$[$0]
                                                                     };
-                                                                    //php JQL_AST::trace(860);
+                                                                    //php AST::trace(860);
                                                                
 break;
 case 68:
 
                                                                     //js
                                                                     this.$ = {
-                                                                        op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
-                                                                        type:         JQL_AST.EXPRESSION.LOGICAL,
-                                                                        operator:     JQL_AST.OPERATOR.GTE,
+                                                                        op:           AST.TOKEN_TYPES.EXPRESSION,
+                                                                        type:         AST.EXPRESSION.LOGICAL,
+                                                                        operator:     AST.OPERATOR.GTE,
                                                                         left:         $$[$0-2],
                                                                         right:        $$[$0]
                                                                     };
-                                                                    //php JQL_AST::trace(871);
+                                                                    //php AST::trace(871);
                                                                
 break;
 case 69:
 
                                                                     //js
                                                                     this.$ = {
-                                                                        op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
-                                                                        type:         JQL_AST.EXPRESSION.LOGICAL,
-                                                                        operator:     JQL_AST.OPERATOR.GT,
+                                                                        op:           AST.TOKEN_TYPES.EXPRESSION,
+                                                                        type:         AST.EXPRESSION.LOGICAL,
+                                                                        operator:     AST.OPERATOR.GT,
                                                                         left:         $$[$0-2],
                                                                         right:        $$[$0]
                                                                     };
-                                                                    //php JQL_AST::trace(882);
+                                                                    //php AST::trace(882);
                                                                
 break;
 case 70:
 
                                                                     //js
                                                                     this.$ = {
-                                                                        op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
-                                                                        type:         JQL_AST.EXPRESSION.MATH,
-                                                                        operator:     JQL_AST.OPERATOR.MULTIPLY,
+                                                                        op:           AST.TOKEN_TYPES.EXPRESSION,
+                                                                        type:         AST.EXPRESSION.MATH,
+                                                                        operator:     AST.OPERATOR.MULTIPLY,
                                                                         left:         $$[$0-2],
                                                                         right:        $$[$0]
                                                                     };
-                                                                    //php JQL_AST::trace(894);
+                                                                    //php AST::trace(894);
                                                                
 break;
 case 71:
 
                                                                     //js
                                                                     this.$ = {
-                                                                        op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
-                                                                        type:         JQL_AST.EXPRESSION.MATH,
-                                                                        operand:      JQL_AST.OPERATOR.DIVISION,
+                                                                        op:           AST.TOKEN_TYPES.EXPRESSION,
+                                                                        type:         AST.EXPRESSION.MATH,
+                                                                        operand:      AST.OPERATOR.DIVISION,
                                                                         left:         $$[$0-2],
                                                                         right:        $$[$0]
                                                                     };
-                                                                    //php JQL_AST::trace(905);
+                                                                    //php AST::trace(905);
                                                                
 break;
 case 72:
 
                                                                     //js
                                                                     this.$ = {
-                                                                        op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
-                                                                        type:         JQL_AST.EXPRESSION.MATH,
-                                                                        operator:     JQL_AST.OPERATOR.ADDITION,
+                                                                        op:           AST.TOKEN_TYPES.EXPRESSION,
+                                                                        type:         AST.EXPRESSION.MATH,
+                                                                        operator:     AST.OPERATOR.ADDITION,
                                                                         left:         $$[$0-2],
                                                                         right:        $$[$0]
                                                                     };
-                                                                    //php JQL_AST::trace(916);
+                                                                    //php AST::trace(916);
                                                                
 break;
 case 73:
 
                                                                     //js
                                                                     this.$ = {
-                                                                        op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
-                                                                        type:         JQL_AST.EXPRESSION.MATH,
-                                                                        operator:     JQL_AST.OPERATOR.DIFFERENCE,
+                                                                        op:           AST.TOKEN_TYPES.EXPRESSION,
+                                                                        type:         AST.EXPRESSION.MATH,
+                                                                        operator:     AST.OPERATOR.DIFFERENCE,
                                                                         left:         $$[$0-2],
                                                                         right:        $$[$0]
                                                                     };
-                                                                    //php JQL_AST::trace(927);
+                                                                    //php AST::trace(927);
                                                                
 break;
 case 74:
 
                                                                     //js
                                                                     this.$ = $$[$0];
-                                                                    //php JQL_AST::trace(932);
+                                                                    //php AST::trace(932);
                                                                
 break;
 case 75:
 
                                                                     //js
                                                                     this.$ = {
-                                                                        op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
-                                                                        type:         JQL_AST.EXPRESSION.GROUP,
+                                                                        op:           AST.TOKEN_TYPES.EXPRESSION,
+                                                                        type:         AST.EXPRESSION.GROUP,
                                                                         expression:   $$[$0-1]
                                                                     };
-                                                                    //php JQL_AST::trace(941);
+                                                                    //php AST::trace(941);
                                                                
 break;
 case 76:
 
                                                                     //js
                                                                     this.$ = {
-                                                                        op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
-                                                                        type:         JQL_AST.EXPRESSION.IDENTIFIER,
+                                                                        op:           AST.TOKEN_TYPES.EXPRESSION,
+                                                                        type:         AST.EXPRESSION.IDENTIFIER,
                                                                         name:         $$[$0]
                                                                     };
-                                                                    //php JQL_AST::trace(950);
+                                                                    //php AST::trace(950);
                                                                
 break;
 case 77:
 
                                                                     //js
                                                                     this.$ = {
-                                                                        op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
-                                                                        type:         JQL_AST.EXPRESSION.IDENTIFIER,
-                                                                        name:         JQL_AST.unescapeIdentifier($$[$0])
+                                                                        op:           AST.TOKEN_TYPES.EXPRESSION,
+                                                                        type:         AST.EXPRESSION.IDENTIFIER,
+                                                                        name:         AST.unescapeIdentifier($$[$0])
                                                                     };
-                                                                    //php JQL_AST::trace(959);
+                                                                    //php AST::trace(959);
                                                                
 break;
 case 78:
 
                                                                     //js
                                                                     this.$ = {
-                                                                        op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
-                                                                        type:         JQL_AST.EXPRESSION.BINDING,
-                                                                        name:         JQL_AST.unescapeBindingName($$[$0])
+                                                                        op:           AST.TOKEN_TYPES.EXPRESSION,
+                                                                        type:         AST.EXPRESSION.BINDING,
+                                                                        name:         AST.unescapeBindingName($$[$0])
                                                                     };
-                                                                    //php JQL_AST::trace(968);
+                                                                    //php AST::trace(968);
                                                                
 break;
 case 79:
 
                                                                     //js
                                                                     this.$ = {
-                                                                        op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
-                                                                        type:         JQL_AST.EXPRESSION.FUNCTION_CALL,
+                                                                        op:           AST.TOKEN_TYPES.EXPRESSION,
+                                                                        type:         AST.EXPRESSION.FUNCTION_CALL,
                                                                         function_name: $$[$0-2],
                                                                         arguments:    []
                                                                     };
-                                                                    //php JQL_AST::trace(981);
+                                                                    //php AST::trace(981);
                                                                
 break;
 case 80:
 
                                                                     //js
                                                                     this.$ = {
-                                                                        op:           JQL_AST.TOKEN_TYPES.EXPRESSION,
-                                                                        type:         JQL_AST.EXPRESSION.FUNCTION_CALL,
+                                                                        op:           AST.TOKEN_TYPES.EXPRESSION,
+                                                                        type:         AST.EXPRESSION.FUNCTION_CALL,
                                                                         function_name: $$[$0-3],
                                                                         arguments:    $$[$0-1]
                                                                     };
-                                                                    //php JQL_AST::trace(991);
+                                                                    //php AST::trace(991);
                                                                
 break;
 case 81:
 
                                                                     //js
                                                                     this.$ = [ $$[$0] ];
-                                                                    //php JQL_AST::trace(999);
+                                                                    //php AST::trace(999);
                                                                
 break;
 case 82:
 
                                                                     //js
                                                                     this.$ = $$[$0-2].concat($$[$0]);
-                                                                    //php JQL_AST::trace(1004);
+                                                                    //php AST::trace(1004);
                                                                
 break;
 case 83:
 
                                                                     //js
                                                                     this.$ = {
-                                                                        op:           JQL_AST.TOKEN_TYPES.OPTION_ORDERING,
-                                                                        type:         JQL_AST.ORDERING_STRATEGY.RANDOM
+                                                                        op:           AST.TOKEN_TYPES.OPTION_ORDERING,
+                                                                        type:         AST.ORDERING_STRATEGY.RANDOM
                                                                     };
-                                                                    //php JQL_AST::trace(1015);
+                                                                    //php AST::trace(1015);
                                                                
 break;
 case 84:
 
                                                                     //js
                                                                     this.$ = {
-                                                                        op:           JQL_AST.TOKEN_TYPES.OPTION_ORDERING,
-                                                                        type:         JQL_AST.ORDERING_STRATEGY.ORDERED,
+                                                                        op:           AST.TOKEN_TYPES.OPTION_ORDERING,
+                                                                        type:         AST.ORDERING_STRATEGY.ORDERED,
                                                                         fields:       $$[$0]
                                                                     };
-                                                                    //php JQL_AST::trace(1024);
+                                                                    //php AST::trace(1024);
                                                                
 break;
 case 85:
 
                                                                     //js
                                                                     this.$ = [ $$[$0] ];
-                                                                    //php JQL_AST::trace(1032);
+                                                                    //php AST::trace(1032);
                                                                
 break;
 case 86:
 
                                                                     //js
                                                                     this.$ = $$[$0-2].concat($$[$0]);
-                                                                    //php JQL_AST::trace(1037);
+                                                                    //php AST::trace(1037);
                                                                
 break;
 case 87:
 
                                                                     //js
                                                                     this.$ = {
-                                                                        op:           JQL_AST.TOKEN_TYPES.ORDER_EXPRESSION,
+                                                                        op:           AST.TOKEN_TYPES.ORDER_EXPRESSION,
                                                                         expression:   $$[$0-1],
-                                                                        direction:    JQL_AST.ORDER_DIRECTION.ASCENDING
+                                                                        direction:    AST.ORDER_DIRECTION.ASCENDING
                                                                     };
-                                                                    //php JQL_AST::trace(1049);
+                                                                    //php AST::trace(1049);
                                                                
 break;
 case 88:
 
                                                                     //js
                                                                     this.$ = {
-                                                                        op:           JQL_AST.TOKEN_TYPES.ORDER_EXPRESSION,
+                                                                        op:           AST.TOKEN_TYPES.ORDER_EXPRESSION,
                                                                         expression:   $$[$0-1],
-                                                                        direction:    JQL_AST.ORDER_DIRECTION.DESCENDING
+                                                                        direction:    AST.ORDER_DIRECTION.DESCENDING
                                                                     };
-                                                                    //php JQL_AST::trace(1059);
+                                                                    //php AST::trace(1059);
                                                                
 break;
 case 89:
 
                                                                     //js
                                                                     this.$ = {
-                                                                        op:           JQL_AST.TOKEN_TYPES.ORDER_EXPRESSION,
+                                                                        op:           AST.TOKEN_TYPES.ORDER_EXPRESSION,
                                                                         expression:   $$[$0],
-                                                                        direction:    JQL_AST.ORDER_DIRECTION.ASCENDING
+                                                                        direction:    AST.ORDER_DIRECTION.ASCENDING
                                                                     };
-                                                                    //php JQL_AST::trace(1068);
+                                                                    //php AST::trace(1068);
                                                                
 break;
 case 90:
 
                                                                     //js
                                                                     this.$ = {
-                                                                        op:           JQL_AST.TOKEN_TYPES.OPTION_LIMIT,
-                                                                        limit:        JQL_AST.parseNumber( $$[$0] ),
+                                                                        op:           AST.TOKEN_TYPES.OPTION_LIMIT,
+                                                                        limit:        AST.parseNumber( $$[$0] ),
                                                                         skip:         0
                                                                     };
-                                                                    //php JQL_AST::trace(1080);
+                                                                    //php AST::trace(1080);
                                                                
 break;
 case 91:
 
                                                                     //js
                                                                     this.$ = {
-                                                                        op:           JQL_AST.TOKEN_TYPES.OPTION_LIMIT,
-                                                                        limit:        JQL_AST.parseNumber( $$[$0] ),
-                                                                        skip:         JQL_AST.parseNumber( $$[$0-2] )
+                                                                        op:           AST.TOKEN_TYPES.OPTION_LIMIT,
+                                                                        limit:        AST.parseNumber( $$[$0] ),
+                                                                        skip:         AST.parseNumber( $$[$0-2] )
                                                                     };
-                                                                    //php JQL_AST::trace(1089);
+                                                                    //php AST::trace(1089);
                                                                
 break;
 }
@@ -1092,7 +1092,7 @@ parse: function parse(input) {
 
 
     // JQL Abstract Syntax Tree
-    var JQL_AST = {
+    var AST = {
 
         STATEMENT_TYPES: {
             SELECT:                'select',
@@ -1170,8 +1170,8 @@ parse: function parse(input) {
         id: 0,
 
         createAlias: function( prefix ) {
-            JQL_AST.id++;
-            return ( prefix || 'field_' ) + JQL_AST.id;
+            AST.id++;
+            return ( prefix || 'field_' ) + AST.id;
         },
 
         unescapeIdentifier: function( escapedIdentifier ) {
