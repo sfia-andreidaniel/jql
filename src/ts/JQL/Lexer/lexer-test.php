@@ -2,7 +2,7 @@
 
 use Jison\JQLGrammar;
 
-require_once __DIR__ . './JQL_AST.php';
+require_once __DIR__ . './AST.php';
 require_once __DIR__ . '/JQLGrammar.php';
 
 $grammar = new JQLGrammar();
