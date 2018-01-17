@@ -3,7 +3,7 @@
 namespace Jison;
 
 
-class JQL_AST
+class AST
 {
 
     public static $STATEMENT_TYPES = [

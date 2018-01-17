@@ -2964,454 +2964,454 @@ class JQLGrammar
 switch ($yystate) {
 case 1:
 
-                                                                     JQL_AST::trace(302);
+                                                                     AST::trace(302);
                                                                
 break;
 case 2:
 
-                                                                     JQL_AST::trace(309);
+                                                                     AST::trace(309);
                                                                
 break;
 case 3:
 
-                                                                     JQL_AST::trace(317);
+                                                                     AST::trace(317);
                                                                
 break;
 case 4:
 
-                                                                     JQL_AST::trace(322);
+                                                                     AST::trace(322);
                                                                
 break;
 case 5:
 
-                                                                     JQL_AST::trace(327);
+                                                                     AST::trace(327);
                                                                
 break;
 case 6:
 
-                                                                     JQL_AST::trace(332);
+                                                                     AST::trace(332);
                                                                
 break;
 case 7:
 
-                                                                     JQL_AST::trace(344);
+                                                                     AST::trace(344);
                                                                
 break;
 case 8:
 
-                                                                     JQL_AST::trace(354);
+                                                                     AST::trace(354);
                                                                
 break;
 case 9:
 
-                                                                     JQL_AST::trace(363);
+                                                                     AST::trace(363);
                                                                
 break;
 case 10:
 
                                                                     $thisS = $s[$o];
-                                                                     JQL_AST::trace(367);
+                                                                     AST::trace(367);
                                                                
 break;
 case 11:
 
-                                                                     JQL_AST::trace(376);
+                                                                     AST::trace(376);
                                                                
 break;
 case 12:
 
-                                                                     JQL_AST::trace(381);
+                                                                     AST::trace(381);
                                                                
 break;
 case 13:
 
-                                                                     JQL_AST::trace(390);
+                                                                     AST::trace(390);
                                                                
 break;
 case 14:
 
-                                                                     JQL_AST::trace(395);
+                                                                     AST::trace(395);
                                                                
 break;
 case 15:
 
-                                                                     JQL_AST::trace(403);
+                                                                     AST::trace(403);
                                                                
 break;
 case 16:
 
-                                                                     JQL_AST::trace(408);
+                                                                     AST::trace(408);
                                                                
 break;
 case 17:
 
-                                                                     JQL_AST::trace(416);
+                                                                     AST::trace(416);
                                                                
 break;
 case 18:
 
-                                                                     JQL_AST::trace(422);
+                                                                     AST::trace(422);
                                                                
 break;
 case 19:
 
-                                                                     JQL_AST::trace(435);
+                                                                     AST::trace(435);
                                                                
 break;
 case 20:
 
-                                                                     JQL_AST::trace(442);
+                                                                     AST::trace(442);
                                                                
 break;
 case 21:
 
-                                                                     JQL_AST::trace(453);
+                                                                     AST::trace(453);
                                                                
 break;
 case 22:
 
-                                                                     JQL_AST::trace(461);
+                                                                     AST::trace(461);
                                                                
 break;
 case 23:
 
-                                                                     JQL_AST::trace(472);
+                                                                     AST::trace(472);
                                                                
 break;
 case 24:
 
-                                                                     JQL_AST::trace(481);
+                                                                     AST::trace(481);
                                                                
 break;
 case 25:
 
-                                                                     JQL_AST::trace(486);
+                                                                     AST::trace(486);
                                                                
 break;
 case 26:
 
-                                                                     JQL_AST::trace(496);
+                                                                     AST::trace(496);
                                                                
 break;
 case 28:
 
-                                                                     JQL_AST::trace(506);
+                                                                     AST::trace(506);
                                                                
 break;
 case 29:
 
-                                                                     JQL_AST::trace(511);
+                                                                     AST::trace(511);
                                                                
 break;
 case 30:
 
-                                                                     JQL_AST::trace(519);
+                                                                     AST::trace(519);
                                                                
 break;
 case 31:
 
-                                                                     JQL_AST::trace(531);
+                                                                     AST::trace(531);
                                                                
 break;
 case 32:
 
-                                                                     JQL_AST::trace(539);
+                                                                     AST::trace(539);
                                                                
 break;
 case 33:
 
-                                                                     JQL_AST::trace(550);
+                                                                     AST::trace(550);
                                                                
 break;
 case 34:
 
-                                                                     JQL_AST::trace(562);
+                                                                     AST::trace(562);
                                                                
 break;
 case 35:
 
-                                                                     JQL_AST::trace(571);
+                                                                     AST::trace(571);
                                                                
 break;
 case 36:
 
                                                                     $thisS = $s[$o];
-                                                                     JQL_AST::trace(575);
+                                                                     AST::trace(575);
                                                                
 break;
 case 37:
 
-                                                                     JQL_AST::trace(585);
+                                                                     AST::trace(585);
                                                                
 break;
 case 38:
 
-                                                                     JQL_AST::trace(590);
+                                                                     AST::trace(590);
                                                                
 break;
 case 39:
 
-                                                                     JQL_AST::trace(600);
+                                                                     AST::trace(600);
                                                                
 break;
 case 40:
 
-                                                                     JQL_AST::trace(605);
+                                                                     AST::trace(605);
                                                                
 break;
 case 41:
 
-                                                                     JQL_AST::trace(613);
+                                                                     AST::trace(613);
                                                                
 break;
 case 42:
 
-                                                                     JQL_AST::trace(624);
+                                                                     AST::trace(624);
                                                                
 break;
 case 43:
 
-                                                                     JQL_AST::trace(632);
+                                                                     AST::trace(632);
                                                                
 break;
 case 44:
 
-                                                                     JQL_AST::trace(643);
+                                                                     AST::trace(643);
                                                                
 break;
 case 45:
 
-                                                                     JQL_AST::trace(651);
+                                                                     AST::trace(651);
                                                                
 break;
 case 46:
 
-                                                                     JQL_AST::trace(659);
+                                                                     AST::trace(659);
                                                                
 break;
 case 47:
 
-                                                                     JQL_AST::trace(664);
+                                                                     AST::trace(664);
                                                                
 break;
 case 48:
 
-                                                                     JQL_AST::trace(676);
+                                                                     AST::trace(676);
                                                                
 break;
 case 49:
 
-                                                                     JQL_AST::trace(685);
+                                                                     AST::trace(685);
                                                                
 break;
 case 50:
 
-                                                                     JQL_AST::trace(694);
+                                                                     AST::trace(694);
                                                                
 break;
 case 51:
 
-                                                                     JQL_AST::trace(702);
+                                                                     AST::trace(702);
                                                                
 break;
 case 52:
 
-                                                                     JQL_AST::trace(707);
+                                                                     AST::trace(707);
                                                                
 break;
 case 53:
 
-                                                                     JQL_AST::trace(712);
+                                                                     AST::trace(712);
                                                                
 break;
 case 54:
 
-                                                                     JQL_AST::trace(724);
+                                                                     AST::trace(724);
                                                                
 break;
 case 55:
 
-                                                                     JQL_AST::trace(733);
+                                                                     AST::trace(733);
                                                                
 break;
 case 56:
 
-                                                                     JQL_AST::trace(745);
+                                                                     AST::trace(745);
                                                                
 break;
 case 57:
 
-                                                                     JQL_AST::trace(754);
+                                                                     AST::trace(754);
                                                                
 break;
 case 58:
 
-                                                                     JQL_AST::trace(762);
+                                                                     AST::trace(762);
                                                                
 break;
 case 59:
 
-                                                                     JQL_AST::trace(771);
+                                                                     AST::trace(771);
                                                                
 break;
 case 60:
 
-                                                                     JQL_AST::trace(782);
+                                                                     AST::trace(782);
                                                                
 break;
 case 61:
 
-                                                                     JQL_AST::trace(792);
+                                                                     AST::trace(792);
                                                                
 break;
 case 62:
 
-                                                                     JQL_AST::trace(804);
+                                                                     AST::trace(804);
                                                                
 break;
 case 63:
 
-                                                                     JQL_AST::trace(815);
+                                                                     AST::trace(815);
                                                                
 break;
 case 64:
 
-                                                                     JQL_AST::trace(827);
+                                                                     AST::trace(827);
                                                                
 break;
 case 65:
 
-                                                                     JQL_AST::trace(838);
+                                                                     AST::trace(838);
                                                                
 break;
 case 66:
 
-                                                                     JQL_AST::trace(849);
+                                                                     AST::trace(849);
                                                                
 break;
 case 67:
 
-                                                                     JQL_AST::trace(860);
+                                                                     AST::trace(860);
                                                                
 break;
 case 68:
 
-                                                                     JQL_AST::trace(871);
+                                                                     AST::trace(871);
                                                                
 break;
 case 69:
 
-                                                                     JQL_AST::trace(882);
+                                                                     AST::trace(882);
                                                                
 break;
 case 70:
 
-                                                                     JQL_AST::trace(894);
+                                                                     AST::trace(894);
                                                                
 break;
 case 71:
 
-                                                                     JQL_AST::trace(905);
+                                                                     AST::trace(905);
                                                                
 break;
 case 72:
 
-                                                                     JQL_AST::trace(916);
+                                                                     AST::trace(916);
                                                                
 break;
 case 73:
 
-                                                                     JQL_AST::trace(927);
+                                                                     AST::trace(927);
                                                                
 break;
 case 74:
 
-                                                                     JQL_AST::trace(932);
+                                                                     AST::trace(932);
                                                                
 break;
 case 75:
 
-                                                                     JQL_AST::trace(941);
+                                                                     AST::trace(941);
                                                                
 break;
 case 76:
 
-                                                                     JQL_AST::trace(950);
+                                                                     AST::trace(950);
                                                                
 break;
 case 77:
 
-                                                                     JQL_AST::trace(959);
+                                                                     AST::trace(959);
                                                                
 break;
 case 78:
 
-                                                                     JQL_AST::trace(968);
+                                                                     AST::trace(968);
                                                                
 break;
 case 79:
 
-                                                                     JQL_AST::trace(981);
+                                                                     AST::trace(981);
                                                                
 break;
 case 80:
 
-                                                                     JQL_AST::trace(991);
+                                                                     AST::trace(991);
                                                                
 break;
 case 81:
 
-                                                                     JQL_AST::trace(999);
+                                                                     AST::trace(999);
                                                                
 break;
 case 82:
 
-                                                                     JQL_AST::trace(1004);
+                                                                     AST::trace(1004);
                                                                
 break;
 case 83:
 
-                                                                     JQL_AST::trace(1015);
+                                                                     AST::trace(1015);
                                                                
 break;
 case 84:
 
-                                                                     JQL_AST::trace(1024);
+                                                                     AST::trace(1024);
                                                                
 break;
 case 85:
 
-                                                                     JQL_AST::trace(1032);
+                                                                     AST::trace(1032);
                                                                
 break;
 case 86:
 
-                                                                     JQL_AST::trace(1037);
+                                                                     AST::trace(1037);
                                                                
 break;
 case 87:
 
-                                                                     JQL_AST::trace(1049);
+                                                                     AST::trace(1049);
                                                                
 break;
 case 88:
 
-                                                                     JQL_AST::trace(1059);
+                                                                     AST::trace(1059);
                                                                
 break;
 case 89:
 
-                                                                     JQL_AST::trace(1068);
+                                                                     AST::trace(1068);
                                                                
 break;
 case 90:
 
-                                                                     JQL_AST::trace(1080);
+                                                                     AST::trace(1080);
                                                                
 break;
 case 91:
 
-                                                                     JQL_AST::trace(1089);
+                                                                     AST::trace(1089);
                                                                
 break;
 }
