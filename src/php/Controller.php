@@ -5,6 +5,7 @@ namespace JQL;
 use JQL\Authorization\AuthorizationException;
 use JQL\Authorization\AuthorizationService;
 use JQL\Database\Database;
+use JQL\RemoteQuery\RemoteQueryService;
 
 class Controller
 {
@@ -37,6 +38,11 @@ class Controller
      * @var Database
      */
     private $database;
+
+    /**
+     * @var RemoteQueryService
+     */
+    private $remoteQueryService;
 
     public function __construct(array $get, array $post, array $config)
     {
@@ -124,10 +130,91 @@ class Controller
 
     /**
      * @return mixed
+     * @throws AuthorizationException
+     * @throws ControllerException
      */
     private function executeQueryAction()
     {
-        return null;
+
+        $auth = $this->getAuthorizationService()->getAuthenticationToken();
+
+        $queryBase64 = $this->requestParam('query');
+
+        if (!is_string($queryBase64) || empty($queryBase64)) {
+            throw new ControllerException(
+                'Invalid argument: $query. String non empty expected!',
+                ControllerException::ERR_INVALID_REQUEST_ARGUMENT
+            );
+        }
+
+        $tokenizedJSONQuery = @base64_decode($queryBase64);
+
+        if (!is_string($tokenizedJSONQuery) || empty($queryBase64)) {
+            throw new ControllerException(
+                'Invalid argument: $query. Failed to decode the query as base/64 string!',
+                ControllerException::ERR_INVALID_REQUEST_ARGUMENT
+            );
+        }
+
+        /**
+         * @var array $decodedQuery
+         */
+        $decodedQuery = @json_decode($tokenizedJSONQuery, true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new ControllerException(
+                'Invalid argument: $query. Failed to decode the query as JSON after decoding it from base/64 string!',
+                ControllerException::ERR_INVALID_REQUEST_ARGUMENT
+            );
+        }
+
+        if (!is_array($decodedQuery)) {
+            throw new ControllerException(
+                'Invalid argument: $query. The decoded JSON tokenized query is not a array!',
+                ControllerException::ERR_INVALID_REQUEST_ARGUMENT
+            );
+        }
+
+        $bindingsBase64 = $this->requestParam('bindings');
+
+        if (!is_string($bindingsBase64) || empty($bindingsBase64)) {
+            throw new ControllerException(
+                'Invalid argument: $bindings: String non empty expected!',
+                ControllerException::ERR_INVALID_REQUEST_ARGUMENT
+            );
+        }
+
+        $tokenizedJSONBindings = @json_decode($bindingsBase64);
+
+        if (!is_string($tokenizedJSONBindings) || empty($tokenizedJSONBindings)) {
+            throw new ControllerException(
+                'Invalid argument: $bindings. Failed to decode the bindings as base/64 string!' .
+                ControllerException::ERR_INVALID_REQUEST_ARGUMENT
+            );
+        }
+
+        /**
+         * @var array $decodedBindings
+         */
+        $decodedBindings = @json_decode($tokenizedJSONBindings, true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new ControllerException(
+                'Invalid argument: $bindings. Failed to decode the bindings as JSON after decoding them from base/64 string!',
+                ControllerException::ERR_INVALID_REQUEST_ARGUMENT
+            );
+        }
+
+        if (!is_array($decodedBindings)) {
+            throw new ControllerException(
+                'Invalid argument: $bindings. The decoded JSON bindings is not a array!',
+                ControllerException::ERR_INVALID_REQUEST_ARGUMENT
+            );
+        }
+
+        $result = $this->remoteQueryService->executeQuery($decodedQuery, $decodedBindings, $auth);
+
+        return $result;
     }
 
     /**
@@ -138,6 +225,16 @@ class Controller
         return null === $this->authorizationService
             ? $this->authorizationService = new AuthorizationService($this)
             : $this->authorizationService;
+    }
+
+    /**
+     * @return RemoteQueryService
+     */
+    public function getRemoteQueryService()
+    {
+        return null === $this->remoteQueryService
+            ? $this->remoteQueryService = new RemoteQueryService($this)
+            : $this->remoteQueryService;
     }
 
     /**
