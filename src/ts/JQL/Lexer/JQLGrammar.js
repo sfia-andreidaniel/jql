@@ -89,7 +89,9 @@ case 1:
                                                                     this.$ = $$[$0-1];
                                                                     this.$.remote = true;
                                                                     return this.$;
-                                                                    //php AST::trace(302);
+                                                                    //php AST::init(this.$, $$[$0-1]);
+                                                                    //php AST::setKey(this.$, 'remote', true);
+                                                                    //php return this.$;
                                                                
 break;
 case 2:
@@ -98,35 +100,16 @@ case 2:
                                                                     this.$ = $$[$0-1];
                                                                     this.$.remote = false;
                                                                     return this.$;
-                                                                    //php AST::trace(309);
+                                                                    //php AST::init(this.$, $$[$0-1]);
+                                                                    //php AST::setKey(this.$, 'remote', false);
+                                                                    //php return this.$;
                                                                
 break;
-case 3:
+case 3: case 4: case 5: case 6: case 12: case 14: case 15: case 16: case 17: case 25: case 29: case 30: case 38: case 40: case 41: case 74:
 
                                                                     //js
                                                                     this.$ = $$[$0];
-                                                                    //php AST::trace(317);
-                                                               
-break;
-case 4:
-
-                                                                    //js
-                                                                    this.$ = $$[$0];
-                                                                    //php AST::trace(322);
-                                                               
-break;
-case 5:
-
-                                                                    //js
-                                                                    this.$ = $$[$0];
-                                                                    //php AST::trace(327);
-                                                               
-break;
-case 6:
-
-                                                                    //js
-                                                                    this.$ = $$[$0];
-                                                                    //php AST::trace(332);
+                                                                    //php AST::init(this.$, $$[$0]);
                                                                
 break;
 case 7:
@@ -138,6 +121,10 @@ case 7:
                                                                         fields:       $$[$0]
                                                                     };
                                                                     //php AST::trace(344);
+                                                                    //php AST::init(this.$, []);
+                                                                    //php AST::setKey(this.$, 'op', AST::$TOKEN_TYPES['STATEMENT']);
+                                                                    //php AST::setKey(this.$, 'type', AST::$STATEMENT_TYPES['SELECT']);
+                                                                    //php AST::setKey(this.$, 'fields', $$[$0]);
                                                                
 break;
 case 8:
@@ -145,36 +132,32 @@ case 8:
                                                                     //js
                                                                     this.$ = $$[$0-2];
                                                                     this.$.table = $$[$0]
-                                                                    //php AST::trace(354);
+                                                                    //php AST::init(this.$, $$[$0-2]);
+                                                                    //php AST::setKey(this.$, 'table', $$[$0]);
                                                                
 break;
-case 9:
+case 9: case 24: case 35:
 
                                                                     //js
                                                                     this.$ = $$[$0-2];
                                                                     this.$.where = $$[$0];
-                                                                    //php AST::trace(363);
+                                                                    //php AST::init(this.$, $$[$0-2]);
+                                                                    //php AST::setKey(this.$, 'where', $$[$0]);
                                                                
 break;
-case 10:
+case 10: case 36:
 
                                                                     this.$ = $$[$0];
-                                                                    //php AST::trace(367);
+                                                                    //php AST::init(this.$, $$[$0]);
                                                                
 break;
-case 11:
+case 11: case 26: case 37:
 
                                                                     //js
                                                                     this.$ = $$[$0-3];
                                                                     this.$.orderBy = $$[$0];
-                                                                    //php AST::trace(376);
-                                                               
-break;
-case 12:
-
-                                                                    //js
-                                                                    this.$ = $$[$0];
-                                                                    //php AST::trace(381);
+                                                                    //php AST::init(this.$, $$[$0-3]);
+                                                                    //php AST::setKey(this.$, 'orderBy', $$[$0]);
                                                                
 break;
 case 13:
@@ -182,35 +165,8 @@ case 13:
                                                                     //js
                                                                     this.$ = $$[$0-2];
                                                                     this.$.limit = $$[$0];
-                                                                    //php AST::trace(390);
-                                                               
-break;
-case 14:
-
-                                                                    //js
-                                                                    this.$ = $$[$0];
-                                                                    //php AST::trace(395);
-                                                               
-break;
-case 15:
-
-                                                                    //js
-                                                                    this.$ = $$[$0];
-                                                                    //php AST::trace(403);
-                                                               
-break;
-case 16:
-
-                                                                    //js
-                                                                    this.$ = $$[$0];
-                                                                    //php AST::trace(408);
-                                                               
-break;
-case 17:
-
-                                                                    //js
-                                                                    this.$ = $$[$0];
-                                                                    //php AST::trace(416);
+                                                                    //php AST::init(this.$, $$[$0-2]);
+                                                                    //php AST::setKey(this.$, limit, $$[$0]);
                                                                
 break;
 case 18:
@@ -218,7 +174,8 @@ case 18:
                                                                     //js
                                                                     this.$ = $$[$0-2];
                                                                     this.$.union = $$[$0];
-                                                                    //php AST::trace(422);
+                                                                    //php AST::init(this.$, $$[$0-2]);
+                                                                    //php AST::setKey(this.$, 'union', $$[$0]);
                                                                
 break;
 case 19:
@@ -229,7 +186,10 @@ case 19:
                                                                         type:         AST.STATEMENT_TYPES.UPDATE,
                                                                         delayed: $$[$0]
                                                                     };
-                                                                    //php AST::trace(435);
+                                                                    //php AST::init(this.$, []);
+                                                                    //php AST::setKey(this.$, 'op', AST::$TOKEN_TYPES['STATEMENT']);
+                                                                    //php AST::setKey(this.$, 'type', AST::$STATEMENT_TYPES['UPDATE']);
+                                                                    //php AST::setKey(this.$, 'delayed', $$[$0]);
                                                                
 break;
 case 20:
@@ -238,7 +198,10 @@ case 20:
                                                                     this.$ = {
                                                                         op:           AST.TOKEN_TYPES.STATEMENT,
                                                                         type:         AST.STATEMENT_TYPES.UPDATE
-                                                                    };//php AST::trace(442);
+                                                                    };
+                                                                    //php AST::init(this.$, []);
+                                                                    //php AST::setKey(this.$, 'op', AST::$TOKEN_TYPES['STATEMENT']);
+                                                                    //php AST::setKey(this.$, 'type', AST::$STATEMENT_TYPES['UPDATE']);
                                                                
 break;
 case 21:
@@ -248,7 +211,9 @@ case 21:
                                                                         op:           AST.TOKEN_TYPES.OPTION_DELAYED,
                                                                         timer:        AST.parseNumber($$[$0])
                                                                     };
-                                                                    //php AST::trace(453);
+                                                                    //php AST::init(this.$, []);
+                                                                    //php AST::setKey(this.$, 'op',  AST::$TOKEN_TYPES['OPTION_DELAYED']);
+                                                                    //php AST::setKey(this.$, 'timer', AST::parseNumber($$[$0]));
                                                                
 break;
 case 22:
@@ -258,7 +223,9 @@ case 22:
                                                                         op:           AST.TOKEN_TYPES.OPTION_DELAYED,
                                                                         timer:        null
                                                                     };
-                                                                    //php AST::trace(461);
+                                                                    //php AST::init(this.$, []);
+                                                                    //php AST::setKey(this.$, 'op', AST::$TOKEN_TYPES['OPTION_DELAYED']);
+                                                                    //php AST::setKey(this.$, 'timer', null);
                                                                
 break;
 case 23:
@@ -267,52 +234,18 @@ case 23:
                                                                     this.$ = $$[$0-3];
                                                                     this.$.table = $$[$0-2];
                                                                     this.$.fields = $$[$0];
-                                                                    //php AST::trace(472);
+                                                                    //php AST::init(this.$, $$[$0-3]);
+                                                                    //php AST::setKey(this.$, 'table', $$[$0-2]);
+                                                                    //php AST::setKey(this.$, 'fields', $$[$0]);
                                                                
 break;
-case 24:
-
-                                                                    //js
-                                                                    this.$ = $$[$0-2];
-                                                                    this.$.where = $$[$0];
-                                                                    //php AST::trace(481);
-                                                               
-break;
-case 25:
-
-                                                                    //js
-                                                                    this.$ = $$[$0];
-                                                                    //php AST::trace(486);
-                                                               
-break;
-case 26:
-
-                                                                    //js
-                                                                    this.$ = $$[$0-3];
-                                                                    this.$.orderBy = $$[$0];
-                                                                    //php AST::trace(496);
-                                                               
-break;
-case 28:
+case 28: case 39:
 
                                                                     //js
                                                                     this.$ = $$[$0-2];
                                                                     this.$.limit = $$[$0];
-                                                                    //php AST::trace(506);
-                                                               
-break;
-case 29:
-
-                                                                    //js
-                                                                    this.$ = $$[$0];
-                                                                    //php AST::trace(511);
-                                                               
-break;
-case 30:
-
-                                                                    //js
-                                                                    this.$ = $$[$0];
-                                                                    //php AST::trace(519);
+                                                                    //php AST::init(this.$, $$[$0-2]);
+                                                                    //php AST::setKey(this.$, 'limit', $$[$0]);
                                                                
 break;
 case 31:
@@ -323,7 +256,10 @@ case 31:
                                                                         type:         AST.STATEMENT_TYPES.INSERT,
                                                                         ignoreDuplicates: true
                                                                     };
-                                                                    //php AST::trace(531);
+                                                                    //php AST::init(this.$, []);
+                                                                    //php AST::setKey(this.$, 'op', AST::$TOKEN_TYPES['STATEMENT']);
+                                                                    //php AST::setKey(this.$, 'type', AST::$STATEMENT_TYPES['INSERT']);
+                                                                    //php AST::setKey(this.$, 'ignoreDuplicates', true);
                                                                
 break;
 case 32:
@@ -333,7 +269,9 @@ case 32:
                                                                         op:           AST.TOKEN_TYPES.STATEMENT,
                                                                         type:         AST.STATEMENT_TYPES.INSERT
                                                                     };
-                                                                    //php AST::trace(539);
+                                                                    //php AST::init(this.$, []);
+                                                                    //php AST::setKey(this.$, 'op', AST::$TOKEN_TYPES['STATEMENT']);
+                                                                    //php AST::setKey(this.$, 'type', AST::$STATEMENT_TYPES['INSERT']);
                                                                
 break;
 case 33:
@@ -342,7 +280,9 @@ case 33:
                                                                     this.$ = $$[$0-4];
                                                                     this.$.table = $$[$0-2];
                                                                     this.$.fields = $$[$0];
-                                                                    //php AST::trace(550);
+                                                                    //php AST::init(this.$, $$[$0-4]);
+                                                                    //php AST::setKey(this.$, 'table', $$[$0-2]);
+                                                                    //php AST::setKey(this.$, 'fields', $$[$0]);
                                                                
 break;
 case 34:
@@ -353,58 +293,10 @@ case 34:
                                                                         type:         AST.STATEMENT_TYPES.DELETE,
                                                                         table:        $$[$0]
                                                                     };
-                                                                    //php AST::trace(562);
-                                                               
-break;
-case 35:
-
-                                                                    //js
-                                                                    this.$ = $$[$0-2];
-                                                                    this.$.where = $$[$0];
-                                                                    //php AST::trace(571);
-                                                               
-break;
-case 36:
-
-                                                                    this.$ = $$[$0];
-                                                                    //php AST::trace(575);
-                                                               
-break;
-case 37:
-
-                                                                    //js
-                                                                    this.$ = $$[$0-3];
-                                                                    this.$.orderBy = $$[$0];
-                                                                    //php AST::trace(585);
-                                                               
-break;
-case 38:
-
-                                                                    //js
-                                                                    this.$ = $$[$0];
-                                                                    //php AST::trace(590);
-                                                               
-break;
-case 39:
-
-                                                                    //js
-                                                                    this.$ = $$[$0-2];
-                                                                    this.$.limit = $$[$0];
-                                                                    //php AST::trace(600);
-                                                               
-break;
-case 40:
-
-                                                                    //js
-                                                                    this.$ = $$[$0];
-                                                                    //php AST::trace(605);
-                                                               
-break;
-case 41:
-
-                                                                    //js
-                                                                    this.$ = $$[$0];
-                                                                    //php AST::trace(613);
+                                                                    //php AST::init(this.$, []);
+                                                                    //php AST::setKey(this.$, 'op', AST::$TOKEN_TYPES['STATEMENT']);
+                                                                    //php AST::setKey(this.$, 'type', AST::$STATEMENT_TYPES['DELETE']);
+                                                                    //php AST::setKey(this.$, 'table', $$[$0]);
                                                                
 break;
 case 42:
@@ -414,7 +306,9 @@ case 42:
                                                                         op:           AST.TOKEN_TYPES.TABLE_REFERENCE,
                                                                         name:         $$[$0]
                                                                     };
-                                                                    //php AST::trace(624);
+                                                                    //php AST::init(this.$, []);
+                                                                    //php AST::setKey(this.$, 'op', AST::$TOKEN_TYPES['TABLE_REFERENCE']);
+                                                                    //php AST::setKey(this.$, 'name', $$[$0]);
                                                                
 break;
 case 43:
@@ -424,7 +318,9 @@ case 43:
                                                                         op:           AST.TOKEN_TYPES.TABLE_REFERENCE,
                                                                         name:         AST.unescapeIdentifier( $$[$0] )
                                                                     };
-                                                                    //php AST::trace(632);
+                                                                    //php AST::init(this.$, []);
+                                                                    //php AST::setKey(this.$, 'op', AST::$TOKEN_TYPES['TABLE_REFERENCE']);
+                                                                    //php AST::setKey(this.$, 'name', AST::unescapeIdentifier($$[$0]));
                                                                
 break;
 case 44:
@@ -434,7 +330,9 @@ case 44:
                                                                          op:          AST.TOKEN_TYPES.FIELDS_LIST,
                                                                          type:        AST.FIELD_TYPES.ALL_FIELDS
                                                                     };
-                                                                    //php AST::trace(643);
+                                                                    //php AST::init(this.$, []);
+                                                                    //php AST::setKey(this.$, 'op', AST::$TOKEN_TYPES['FIELDS_LIST']);
+                                                                    //php AST::setKey(this.$, 'type', AST::$FIELD_TYPES['ALL_FIELDS']);
                                                                
 break;
 case 45:
@@ -444,21 +342,25 @@ case 45:
                                                                         type:         AST.FIELD_TYPES.SPECIFIC_FIELDS,
                                                                         fields:       $$[$0]
                                                                     };
-                                                                    //php AST::trace(651);
+                                                                    //php AST::init(this.$, []);
+                                                                    //php AST::setKey(this.$, 'op', AST::$TOKEN_TYPES['FIELDS_LIST']);
+                                                                    //php AST::setKey(this.$, 'type', AST::$FIELD_TYPES['SPECIFIC_FIELDS']);
+                                                                    //php AST::setKey(this.$, 'fields', $$[$0]);
                                                                
 break;
-case 46:
+case 46: case 51: case 81:
 
                                                                     //js
                                                                     this.$ = [ $$[$0] ];
-                                                                    //php AST::trace(659);
+                                                                    //php AST::init(this.$, []);
+                                                                    //php AST::push(this.$, $$[$0]);
                                                                
 break;
 case 47:
 
                                                                     //js
                                                                     this.$ = $$[$0-2].concat($$[$0]);
-                                                                    //php AST::trace(664);
+                                                                    //php AST::push($$[$0-2], $$[$0]);
                                                                
 break;
 case 48:
@@ -469,7 +371,10 @@ case 48:
                                                                          literal:     AST.createFieldAliasFromExpression($$[$0]),
                                                                          expression:  $$[$0]
                                                                      };
-                                                                    //php AST::trace(676);
+                                                                    //php AST::init(this.$, []);
+                                                                    //php AST::setKey(this.$, 'op', AST::$TOKEN_TYPES['FIELD']);
+                                                                    //php AST::setKey(this.$, 'literal', AST::createFieldAliasFromExpression($$[$0]));
+                                                                    //php AST::setKey(this.$, 'expression', $$[$0]);
                                                                
 break;
 case 49:
@@ -480,7 +385,10 @@ case 49:
                                                                         literal:      $$[$0],
                                                                         expression:   $$[$0-2]
                                                                     };
-                                                                    //php AST::trace(685);
+                                                                    //php AST::init(this.$, []);
+                                                                    //php AST::setKey(this.$, 'op', AST::$TOKEN_TYPES['FIELD']);
+                                                                    //php AST::setKey(this.$, 'literal', $$[$0]);
+                                                                    //php AST::setKey(this.$, 'expression', $$[$0-2]);
                                                                
 break;
 case 50:
@@ -491,28 +399,18 @@ case 50:
                                                                         literal:      AST.unescapeIdentifier($$[$0]),
                                                                         expression:   $$[$0-2]
                                                                     };
-                                                                    //php AST::trace(694);
+                                                                    //php AST::init(this.$, []);
+                                                                    //php AST::setKey(this.$, 'op', AST::$TOKEN_TYPES['FIELD']);
+                                                                    //php AST::setKey(this.$, 'literal', AST::unescapeIdentifier($$[$0]));
+                                                                    //php AST::setKey(this.$, 'expression', $$[$0-2]);
                                                                
 break;
-case 51:
-
-                                                                    //js
-                                                                    this.$ = [ $$[$0] ];
-                                                                    //php AST::trace(702);
-                                                               
-break;
-case 52:
+case 52: case 53: case 86:
 
                                                                     //js
                                                                     this.$ = $$[$0-2].concat($$[$0]);
-                                                                    //php AST::trace(707);
-                                                               
-break;
-case 53:
-
-                                                                    //js
-                                                                    this.$ = $$[$0-2].concat($$[$0]);
-                                                                    //php AST::trace(712);
+                                                                    //php AST::push($$[$0-2], $$[$0]);
+                                                                    //php AST::init(this.$, $$[$0-2]);
                                                                
 break;
 case 54:
@@ -523,7 +421,10 @@ case 54:
                                                                         name:         $$[$0-2],
                                                                         expression:   $$[$0]
                                                                     };
-                                                                    //php AST::trace(724);
+                                                                    //php AST::init(this.$, []);
+                                                                    //php AST::setKey(this.$, 'op', AST::$TOKEN_TYPES['UPDATE_FIELD']);
+                                                                    //php AST::setKey(this.$, 'name', $$[$0-2]);
+                                                                    //php AST::setKey(this.$, 'expression', $$[$0]);
                                                                
 break;
 case 55:
@@ -534,7 +435,10 @@ case 55:
                                                                         name:         AST.unescapeIdentifier($$[$0-2]),
                                                                         expression:   $$[$0]
                                                                     };
-                                                                    //php AST::trace(733);
+                                                                    //php AST::init(this.$, []);
+                                                                    //php AST::setKey(this.$, 'op', AST::$TOKEN_TYPES['UPDATE_FIELD']);
+                                                                    //php AST::setKey(this.$, 'name', AST::unescapeIdentifier($$[$0-2]));
+                                                                    //php AST::setKey(this.$, 'expression', $$[$0]);
                                                                
 break;
 case 56:
@@ -545,7 +449,10 @@ case 56:
                                                                         type:         AST.EXPRESSION.NUMBER,
                                                                         value:        AST.parseNumber( $$[$0] )
                                                                     };
-                                                                    //php AST::trace(745);
+                                                                    //php AST::init(this.$, []);
+                                                                    //php AST::setKey(this.$, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                    //php AST::setKey(this.$, 'type', AST::$EXPRESSION['NUMBER']);
+                                                                    //php AST::setKey(this.$, 'value', AST::parseNumber($$[$0]));
                                                                
 break;
 case 57:
@@ -556,7 +463,10 @@ case 57:
                                                                         type:         AST.EXPRESSION.BOOLEAN,
                                                                         value:        AST.parseBoolean( $$[$0] )
                                                                     };
-                                                                    //php AST::trace(754);
+                                                                    //php AST::init(this.$, []);
+                                                                    //php AST::setKey(this.$, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                    //php AST::setKey(this.$, 'type', AST::$EXPRESSION['BOOLEAN']);
+                                                                    //php AST::setKey(this.$, 'value', AST::parseBoolean( $$[$0] ));
                                                                
 break;
 case 58:
@@ -566,7 +476,9 @@ case 58:
                                                                         op:           AST.TOKEN_TYPES.EXPRESSION,
                                                                         type:         AST.EXPRESSION.NULL
                                                                     };
-                                                                    //php AST::trace(762);
+                                                                    //php AST::init(this.$, []);
+                                                                    //php AST::setKey(this.$, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                    //php AST::setKey(this.$, 'type', AST::$EXPRESSION['NULL']);
                                                                
 break;
 case 59:
@@ -577,7 +489,10 @@ case 59:
                                                                         type:         AST.EXPRESSION.STRING,
                                                                         value:        AST.parseString( $$[$0] )
                                                                     };
-                                                                    //php AST::trace(771);
+                                                                    //php AST::init(this.$, []);
+                                                                    //php AST::setKey(this.$, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                    //php AST::setKey(this.$, 'type', AST::$EXPRESSION['STRING']);
+                                                                    //php AST::setKey(this.$, 'value', AST::parseString($$[$0]));
                                                                
 break;
 case 60:
@@ -589,7 +504,11 @@ case 60:
                                                                         operator:     AST.OPERATOR.NOT,
                                                                         left:         $$[$0]
                                                                     };
-                                                                    //php AST::trace(782);
+                                                                    //php AST::init(this.$, []);
+                                                                    //php AST::setKey(this.$, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                    //php AST::setKey(this.$, 'type', AST::$EXPRESSION['UNARY']);
+                                                                    //php AST::setKey(this.$, 'operator', AST::$OPERATOR['NOT']);
+                                                                    //php AST::setKey(this.$, 'left', $$[$0]);
                                                                
 break;
 case 61:
@@ -601,7 +520,11 @@ case 61:
                                                                         operator:     AST.OPERATOR.INVERT,
                                                                         left:         $$[$0]
                                                                     };
-                                                                    //php AST::trace(792);
+                                                                    //php AST::init(this.$, []);
+                                                                    //php AST::setKey(this.$, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                    //php AST::setKey(this.$, 'type', AST::$EXPRESSION['UNARY']);
+                                                                    //php AST::setKey(this.$, 'operator', AST::$OPERATOR['INVERT']);
+                                                                    //php AST::setKey(this.$, 'left', $$[$0]);
                                                                
 break;
 case 62:
@@ -614,7 +537,12 @@ case 62:
                                                                         left:         $$[$0-2],
                                                                         right:        $$[$0]
                                                                     };
-                                                                    //php AST::trace(804);
+                                                                    //php AST::init(this.$, []);
+                                                                    //php AST::setKey(this.$, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                    //php AST::setKey(this.$, 'type', AST::$EXPRESSION['LOGICAL']);
+                                                                    //php AST::setKey(this.$, 'operator', AST::$OPERATOR['OR']);
+                                                                    //php AST::setKey(this.$, 'left', $$[$0-2]);
+                                                                    //php AST::setKey(this.$, 'right', $$[$0]);
                                                                
 break;
 case 63:
@@ -627,7 +555,12 @@ case 63:
                                                                         left:         $$[$0-2],
                                                                         right:        $$[$0]
                                                                     };
-                                                                    //php AST::trace(815);
+                                                                    //php AST::init(this.$, []);
+                                                                    //php AST::setKey(this.$, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                    //php AST::setKey(this.$, 'type', AST::$EXPRESSION['LOGICAL']);
+                                                                    //php AST::setKey(this.$, 'operator', AST::$OPERATOR['AND']);
+                                                                    //php AST::setKey(this.$, 'left', $$[$0-2]);
+                                                                    //php AST::setKey(this.$, 'right', $$[$0]);
                                                                
 break;
 case 64:
@@ -640,7 +573,12 @@ case 64:
                                                                         left:         $$[$0-2],
                                                                         right:        $$[$0]
                                                                     };
-                                                                    //php AST::trace(827);
+                                                                    //php AST::init(this.$, []);
+                                                                    //php AST::setKey(this.$, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                    //php AST::setKey(this.$, 'type', AST::$EXPRESSION['LOGICAL']);
+                                                                    //php AST::setKey(this.$, 'operator', AST::$OPERATOR['EQUALS']);
+                                                                    //php AST::setKey(this.$, 'left', $$[$0-2]);
+                                                                    //php AST::setKey(this.$, 'right', $$[$0]);
                                                                
 break;
 case 65:
@@ -653,7 +591,12 @@ case 65:
                                                                         left:         $$[$0-2],
                                                                         right:        $$[$0]
                                                                     };
-                                                                    //php AST::trace(838);
+                                                                    //php AST::init(this.$, []);
+                                                                    //php AST::setKey(this.$, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                    //php AST::setKey(this.$, 'type', AST::$EXPRESSION['LOGICAL']);
+                                                                    //php AST::setKey(this.$, 'operator', AST::$OPERATOR['LIKE']);
+                                                                    //php AST::setKey(this.$, 'left', $$[$0-2]);
+                                                                    //php AST::setKey(this.$, 'right', $$[$0]);
                                                                
 break;
 case 66:
@@ -666,7 +609,12 @@ case 66:
                                                                         left:         $$[$0-2],
                                                                         right:        $$[$0]
                                                                     };
-                                                                    //php AST::trace(849);
+                                                                    //php AST::init(this.$, []);
+                                                                    //php AST::setKey(this.$, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                    //php AST::setKey(this.$, 'type', AST::$EXPRESSION['LOGICAL']);
+                                                                    //php AST::setKey(this.$, 'operator',  AST::$OPERATOR['type']);
+                                                                    //php AST::setKey(this.$, 'left', $$[$0-2]);
+                                                                    //php AST::setKey(this.$, 'right', $$[$0]);
                                                                
 break;
 case 67:
@@ -679,7 +627,12 @@ case 67:
                                                                         left:         $$[$0-2],
                                                                         right:        $$[$0]
                                                                     };
-                                                                    //php AST::trace(860);
+                                                                    //php AST::init(this.$, []);
+                                                                    //php AST::setKey(this.$, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                    //php AST::setKey(this.$, 'type', AST::$EXPRESSION['LOGICAL']);
+                                                                    //php AST::setKey(this.$, 'operator', AST::$OPERATOR['LT']);
+                                                                    //php AST::setKey(this.$, 'left', $$[$0-2]);
+                                                                    //php AST::setKey(this.$, 'right', $$[$0]);
                                                                
 break;
 case 68:
@@ -692,7 +645,12 @@ case 68:
                                                                         left:         $$[$0-2],
                                                                         right:        $$[$0]
                                                                     };
-                                                                    //php AST::trace(871);
+                                                                    //php AST::init(this.$, []);
+                                                                    //php AST::setKey(this.$, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                    //php AST::setKey(this.$, 'type', AST::$EXPRESSION['LOGICAL']);
+                                                                    //php AST::setKey(this.$, 'operator', AST::$OPERATOR['GTE']);
+                                                                    //php AST::setKey(this.$, 'left', $$[$0-2]);
+                                                                    //php AST::setKey(this.$, 'right', $$[$0]);
                                                                
 break;
 case 69:
@@ -705,7 +663,12 @@ case 69:
                                                                         left:         $$[$0-2],
                                                                         right:        $$[$0]
                                                                     };
-                                                                    //php AST::trace(882);
+                                                                    //php AST::init(this.$, []);
+                                                                    //php AST::setKey(this.$, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                    //php AST::setKey(this.$, 'type', AST::$EXPRESSION['LOGICAL']);
+                                                                    //php AST::setKey(this.$, 'operator', AST::$OPERATOR['GT']);
+                                                                    //php AST::setKey(this.$, 'left', $$[$0-2]);
+                                                                    //php AST::setKey(this.$, 'right', $$[$0]);
                                                                
 break;
 case 70:
@@ -718,7 +681,12 @@ case 70:
                                                                         left:         $$[$0-2],
                                                                         right:        $$[$0]
                                                                     };
-                                                                    //php AST::trace(894);
+                                                                    //php AST::init(this.$, []);
+                                                                    //php AST::setKey(this.$, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                    //php AST::setKey(this.$, 'type', AST::$EXPRESSION['MATH']);
+                                                                    //php AST::setKey(this.$, 'operator', AST::$OPERATOR['MULTIPLY']);
+                                                                    //php AST::setKey(this.$, 'left', $$[$0-2]);
+                                                                    //php AST::setKey(this.$, 'right', $$[$0]);
                                                                
 break;
 case 71:
@@ -731,7 +699,12 @@ case 71:
                                                                         left:         $$[$0-2],
                                                                         right:        $$[$0]
                                                                     };
-                                                                    //php AST::trace(905);
+                                                                    //php AST::init(this.$, []);
+                                                                    //php AST::setKey(this.$, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                    //php AST::setKey(this.$, 'type', AST::$EXPRESSION['MATH']);
+                                                                    //php AST::setKey(this.$, 'operator', AST::$OPERATOR['DIVISION']);
+                                                                    //php AST::setKey(this.$, 'left', $$[$0-2]);
+                                                                    //php AST::setKey(this.$, 'right', $$[$0]);
                                                                
 break;
 case 72:
@@ -744,7 +717,12 @@ case 72:
                                                                         left:         $$[$0-2],
                                                                         right:        $$[$0]
                                                                     };
-                                                                    //php AST::trace(916);
+                                                                    //php AST::init(this.$, []);
+                                                                    //php AST::setKey(this.$, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                    //php AST::setKey(this.$, 'type', AST::$EXPRESSION['MATH']);
+                                                                    //php AST::setKey(this.$, 'operator', AST::$OPERATOR['ADDITION']);
+                                                                    //php AST::setKey(this.$, 'left', $$[$0-2]);
+                                                                    //php AST::setKey(this.$, 'right', $$[$0]);
                                                                
 break;
 case 73:
@@ -757,14 +735,12 @@ case 73:
                                                                         left:         $$[$0-2],
                                                                         right:        $$[$0]
                                                                     };
-                                                                    //php AST::trace(927);
-                                                               
-break;
-case 74:
-
-                                                                    //js
-                                                                    this.$ = $$[$0];
-                                                                    //php AST::trace(932);
+                                                                    //php AST::init(this.$, []);
+                                                                    //php AST::setKey(this.$, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                    //php AST::setKey(this.$, 'type', AST::$EXPRESSION['MATH']);
+                                                                    //php AST::setKey(this.$, 'operator', AST::$OPERATOR['DIFFERENCE']);
+                                                                    //php AST::setKey(this.$, 'left', $$[$0-2]);
+                                                                    //php AST::setKey(this.$, 'right', $$[$0]);
                                                                
 break;
 case 75:
@@ -775,7 +751,10 @@ case 75:
                                                                         type:         AST.EXPRESSION.GROUP,
                                                                         expression:   $$[$0-1]
                                                                     };
-                                                                    //php AST::trace(941);
+                                                                    //php AST::init(this.$, []);
+                                                                    //php AST::setKey(this.$, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                    //php AST::setKey(this.$, 'type', AST::$EXPRESSION['GROUP']);
+                                                                    //php AST::setKey(this.$, 'expression', $$[$0-1]);
                                                                
 break;
 case 76:
@@ -786,7 +765,10 @@ case 76:
                                                                         type:         AST.EXPRESSION.IDENTIFIER,
                                                                         name:         $$[$0]
                                                                     };
-                                                                    //php AST::trace(950);
+                                                                    //php AST::init(this.$, []);
+                                                                    //php AST::setKey(this.$, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                    //php AST::setKey(this.$, 'type', AST::$EXPRESSION['IDENTIFIER']);
+                                                                    //php AST::setKey(this.$, 'name', $$[$0]);
                                                                
 break;
 case 77:
@@ -797,7 +779,10 @@ case 77:
                                                                         type:         AST.EXPRESSION.IDENTIFIER,
                                                                         name:         AST.unescapeIdentifier($$[$0])
                                                                     };
-                                                                    //php AST::trace(959);
+                                                                    //php AST::init(this.$, []);
+                                                                    //php AST::setKey(this.$, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                    //php AST::setKey(this.$, 'type', AST::$EXPRESSION['IDENTIFIER']);
+                                                                    //php AST::setKey(this.$, 'name', AST::unescapeIdentifier($$[$0]));
                                                                
 break;
 case 78:
@@ -808,7 +793,10 @@ case 78:
                                                                         type:         AST.EXPRESSION.BINDING,
                                                                         name:         AST.unescapeBindingName($$[$0])
                                                                     };
-                                                                    //php AST::trace(968);
+                                                                    //php AST::init(this.$, []);
+                                                                    //php AST::setKey(this.$, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                    //php AST::setKey(this.$, 'type', AST::$EXPRESSION['BINDING']);
+                                                                    //php AST::setKey(this.$, 'name', AST::unescapeBindingName($$[$0]));
                                                                
 break;
 case 79:
@@ -820,7 +808,11 @@ case 79:
                                                                         function_name: $$[$0-2],
                                                                         arguments:    []
                                                                     };
-                                                                    //php AST::trace(981);
+                                                                    //php AST::init(this.$, []);
+                                                                    //php AST::setKey(this.$, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                    //php AST::setKey(this.$, 'type', AST::$EXPRESSION['FUNCTION_CALL']);
+                                                                    //php AST::setKey(this.$, 'function_name', $$[$0-2]);
+                                                                    //php AST::setKey(this.$, 'arguments', []);
                                                                
 break;
 case 80:
@@ -832,21 +824,19 @@ case 80:
                                                                         function_name: $$[$0-3],
                                                                         arguments:    $$[$0-1]
                                                                     };
-                                                                    //php AST::trace(991);
-                                                               
-break;
-case 81:
-
-                                                                    //js
-                                                                    this.$ = [ $$[$0] ];
-                                                                    //php AST::trace(999);
+                                                                    //php AST::init(this.$, []);
+                                                                    //php AST::setKey(this.$, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                    //php AST::setKey(this.$, 'type', AST::$EXPRESSION['FUNCTION_CALL']);
+                                                                    //php AST::setKey(this.$, 'function_name', $$[$0-3]);
+                                                                    //php AST::setKey(this.$, 'arguments', $$[$0-1]);
                                                                
 break;
 case 82:
 
                                                                     //js
                                                                     this.$ = $$[$0-2].concat($$[$0]);
-                                                                    //php AST::trace(1004);
+                                                                    //php AST::push($$[$0-2], $$[$0] );
+                                                                    //php AST::init(this.$, $$[$0-2]);
                                                                
 break;
 case 83:
@@ -856,7 +846,9 @@ case 83:
                                                                         op:           AST.TOKEN_TYPES.OPTION_ORDERING,
                                                                         type:         AST.ORDERING_STRATEGY.RANDOM
                                                                     };
-                                                                    //php AST::trace(1015);
+                                                                    //php AST::init(this.$, []);
+                                                                    //php AST::setKey(this.$, 'op', AST::$TOKEN_TYPES['OPTION_ORDERING']);
+                                                                    //php AST::setKey(this.$, 'type', AST::$ORDERING_STRATEGY['RANDOM']);
                                                                
 break;
 case 84:
@@ -867,21 +859,18 @@ case 84:
                                                                         type:         AST.ORDERING_STRATEGY.ORDERED,
                                                                         fields:       $$[$0]
                                                                     };
-                                                                    //php AST::trace(1024);
+                                                                    //php AST::init(this.$, []);
+                                                                    //php AST::setKey(this.$, 'op', AST::$TOKEN_TYPES['OPTION_ORDERING']);
+                                                                    //php AST::setKey(this.$, 'type', AST::$ORDERING_STRATEGY['ORDERED']);
+                                                                    //php AST::setKey(this.$, 'fields', $$[$0]);
                                                                
 break;
 case 85:
 
                                                                     //js
                                                                     this.$ = [ $$[$0] ];
-                                                                    //php AST::trace(1032);
-                                                               
-break;
-case 86:
-
-                                                                    //js
-                                                                    this.$ = $$[$0-2].concat($$[$0]);
-                                                                    //php AST::trace(1037);
+                                                                    //php AST::init(this.$, []);
+                                                                    //php AST::push(this.$, $$[$0] );
                                                                
 break;
 case 87:
@@ -892,7 +881,10 @@ case 87:
                                                                         expression:   $$[$0-1],
                                                                         direction:    AST.ORDER_DIRECTION.ASCENDING
                                                                     };
-                                                                    //php AST::trace(1049);
+                                                                    //php AST::init(this.$, []);
+                                                                    //php AST::setKey(this.$, 'op', AST::$TOKEN_TYPES['ORDER_EXPRESSION']);
+                                                                    //php AST::setKey(this.$, 'expression', $$[$0-1]);
+                                                                    //php AST::setKey(this.$, 'direction', AST::$ORDER_DIRECTION['ASCENDING']);
                                                                
 break;
 case 88:
@@ -903,7 +895,10 @@ case 88:
                                                                         expression:   $$[$0-1],
                                                                         direction:    AST.ORDER_DIRECTION.DESCENDING
                                                                     };
-                                                                    //php AST::trace(1059);
+                                                                    //php AST::init(this.$, []);
+                                                                    //php AST::setKey(this.$, 'op', AST::$TOKEN_TYPES['ORDER_EXPRESSION']);
+                                                                    //php AST::setKey(this.$, 'expression', $$[$0-1]);
+                                                                    //php AST::setKey(this.$, 'direction', AST::$ORDER_DIRECTION['DESCENDING']);
                                                                
 break;
 case 89:
@@ -914,7 +909,10 @@ case 89:
                                                                         expression:   $$[$0],
                                                                         direction:    AST.ORDER_DIRECTION.ASCENDING
                                                                     };
-                                                                    //php AST::trace(1068);
+                                                                    //php AST::init(this.$, []);
+                                                                    //php AST::setKey(this.$, 'op', AST::$TOKEN_TYPES['ORDER_EXPRESSION']);
+                                                                    //php AST::setKey(this.$, 'expression', $$[$0]);
+                                                                    //php AST::setKey(this.$, 'direction', AST::$ORDER_DIRECTION['ASCENDING']);
                                                                
 break;
 case 90:
@@ -925,7 +923,10 @@ case 90:
                                                                         limit:        AST.parseNumber( $$[$0] ),
                                                                         skip:         0
                                                                     };
-                                                                    //php AST::trace(1080);
+                                                                    //php AST::init(this.$, []);
+                                                                    //php AST::setKey(this.$, 'op', AST::$TOKEN_TYPES['OPTION_LIMIT']);
+                                                                    //php AST::setKey(this.$, 'limit', AST::parseNumber($$[$0]));
+                                                                    //php AST::setKey(this.$, 'skip', 0);
                                                                
 break;
 case 91:
@@ -936,7 +937,10 @@ case 91:
                                                                         limit:        AST.parseNumber( $$[$0] ),
                                                                         skip:         AST.parseNumber( $$[$0-2] )
                                                                     };
-                                                                    //php AST::trace(1089);
+                                                                    //php AST::init(this.$, []);
+                                                                    //php AST::setKey(this.$, 'op', AST::$TOKEN_TYPES['OPTION_LIMIT']);
+                                                                    //php AST::setKey(this.$, 'limit', AST::parseNumber( $$[$0] ));
+                                                                    //php AST::setKey(this.$, 'skip', AST::parseNumber($$[$0-2]));
                                                                
 break;
 }

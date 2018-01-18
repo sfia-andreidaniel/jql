@@ -198,7 +198,7 @@ class AST
      */
     public static function unescapeBindingName($bindingName)
     {
-        return preg_replace( '/^\\:/', '', (string)$bindingName);
+        return preg_replace('/^\\:/', '', (string)$bindingName);
     }
 
     /**
@@ -208,11 +208,26 @@ class AST
      */
     public static function parseBoolean($booleanAsString)
     {
-        return strtolower((string)$booleanAsString) === 'true' ? true : false;
+        return strtolower((string)$booleanAsString) === 'true'
+            ? true
+            : false;
     }
 
-    public static function trace( $lineNumber ) {
+    public static function trace($lineNumber)
+    {
         echo "trace: ", $lineNumber, "\n";
+    }
+
+    public static function setKey($thisObject, $key, $value)
+    {
+    }
+
+    public static function init($thisObject, $value)
+    {
+    }
+
+    public static function push($thisObject, $value)
+    {
     }
 
 }

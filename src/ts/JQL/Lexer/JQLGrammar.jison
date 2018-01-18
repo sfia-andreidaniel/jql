@@ -299,14 +299,18 @@ JQL
                                                                     $$ = $2;
                                                                     $$.remote = true;
                                                                     return $$;
-                                                                    //php AST::trace(302);
+                                                                    //php AST::init($$, $2);
+                                                                    //php AST::setKey($$, 'remote', true);
+                                                                    //php return $$;
                                                                }
     | Statement EOF                                            {
                                                                     //js
                                                                     $$ = $1;
                                                                     $$.remote = false;
                                                                     return $$;
-                                                                    //php AST::trace(309);
+                                                                    //php AST::init($$, $1);
+                                                                    //php AST::setKey($$, 'remote', false);
+                                                                    //php return $$;
                                                                }
     ;
 
@@ -314,22 +318,22 @@ Statement
     : SelectStatement                                          {
                                                                     //js
                                                                     $$ = $1;
-                                                                    //php AST::trace(317);
+                                                                    //php AST::init($$, $1);
                                                                }
     | UpdateStatement                                          {
                                                                     //js
                                                                     $$ = $1;
-                                                                    //php AST::trace(322);
+                                                                    //php AST::init($$, $1);
                                                                }
     | InsertStatement                                          {
                                                                     //js
                                                                     $$ = $1;
-                                                                    //php AST::trace(327);
+                                                                    //php AST::init($$, $1);
                                                                }
     | DeleteStatement                                          {
                                                                     //js
                                                                     $$ = $1;
-                                                                    //php AST::trace(332);
+                                                                    //php AST::init($$, $1);
                                                                }
     ;
 
@@ -341,17 +345,21 @@ SelectSingleRowStatement
                                                                         type:         AST.STATEMENT_TYPES.SELECT,
                                                                         fields:       $2
                                                                     };
-                                                                    //php AST::trace(344);
+                                                                    //php AST::init($$, []);
+                                                                    //php AST::setKey($$, 'op', AST::$TOKEN_TYPES['STATEMENT']);
+                                                                    //php AST::setKey($$, 'type', AST::$STATEMENT_TYPES['SELECT']);
+                                                                    //php AST::setKey($$, 'fields', $2);
                                                                }
     ;
 
 SelectFromTableStatement
-    : SelectSingleRowStatement 
+    : SelectSingleRowStatement
       "FROM" TableReference                                    {
                                                                     //js
                                                                     $$ = $1;
                                                                     $$.table = $3
-                                                                    //php AST::trace(354);
+                                                                    //php AST::init($$, $1);
+                                                                    //php AST::setKey($$, 'table', $3);
                                                                }
     ;
 
@@ -360,11 +368,12 @@ SelectWithOptionalWHEREClause
                                                                     //js
                                                                     $$ = $1;
                                                                     $$.where = $3;
-                                                                    //php AST::trace(363);
+                                                                    //php AST::init($$, $1);
+                                                                    //php AST::setKey($$, 'where', $3);
                                                                }
     | SelectFromTableStatement                                 {
                                                                     $$ = $1;
-                                                                    //php AST::trace(367);
+                                                                    //php AST::init($$, $1);
                                                                }
     ;
 
@@ -373,12 +382,13 @@ SelectWithOptionalORDERClause
                                                                     //js
                                                                     $$ = $1;
                                                                     $$.orderBy = $4;
-                                                                    //php AST::trace(376);
+                                                                    //php AST::init($$, $1);
+                                                                    //php AST::setKey($$, 'orderBy', $4);
                                                                }
     | SelectWithOptionalWHEREClause                            {
                                                                     //js
                                                                     $$ = $1;
-                                                                    //php AST::trace(381);
+                                                                    //php AST::init($$, $1);
                                                                }
     ;
 
@@ -387,12 +397,13 @@ SelectWithOptionalLIMITClause
                                                                     //js
                                                                     $$ = $1;
                                                                     $$.limit = $3;
-                                                                    //php AST::trace(390);
+                                                                    //php AST::init($$, $1);
+                                                                    //php AST::setKey($$, limit, $3);
                                                                }
     | SelectWithOptionalORDERClause                            {
                                                                     //js
                                                                     $$ = $1;
-                                                                    //php AST::trace(395);
+                                                                    //php AST::init($$, $1);
                                                                }
     ;
 
@@ -400,12 +411,12 @@ SelectStatementWithoutUnion
     : SelectWithOptionalLIMITClause                            {
                                                                     //js
                                                                     $$ = $1;
-                                                                    //php AST::trace(403);
+                                                                    //php AST::init($$, $1);
                                                                }
     | SelectSingleRowStatement                                 {
                                                                     //js
                                                                     $$ = $1;
-                                                                    //php AST::trace(408);
+                                                                    //php AST::init($$, $1);
                                                                }
     ;
 
@@ -413,13 +424,14 @@ SelectStatement
     : SelectStatementWithoutUnion                              {
                                                                     //js
                                                                     $$ = $1;
-                                                                    //php AST::trace(416);
+                                                                    //php AST::init($$, $1);
                                                                }
     | SelectStatement "UNION" SelectStatementWithoutUnion      {
                                                                     //js
                                                                     $$ = $1;
                                                                     $$.union = $3;
-                                                                    //php AST::trace(422);
+                                                                    //php AST::init($$, $1);
+                                                                    //php AST::setKey($$, 'union', $3);
                                                                }
     ;
 
@@ -432,14 +444,20 @@ UpdateStatementBegin
                                                                         type:         AST.STATEMENT_TYPES.UPDATE,
                                                                         delayed: $2
                                                                     };
-                                                                    //php AST::trace(435);
+                                                                    //php AST::init($$, []);
+                                                                    //php AST::setKey($$, 'op', AST::$TOKEN_TYPES['STATEMENT']);
+                                                                    //php AST::setKey($$, 'type', AST::$STATEMENT_TYPES['UPDATE']);
+                                                                    //php AST::setKey($$, 'delayed', $2);
                                                                }
     | "UPDATE"                                                 {
                                                                     //js
                                                                     $$ = {
                                                                         op:           AST.TOKEN_TYPES.STATEMENT,
                                                                         type:         AST.STATEMENT_TYPES.UPDATE
-                                                                    };//php AST::trace(442);
+                                                                    };
+                                                                    //php AST::init($$, []);
+                                                                    //php AST::setKey($$, 'op', AST::$TOKEN_TYPES['STATEMENT']);
+                                                                    //php AST::setKey($$, 'type', AST::$STATEMENT_TYPES['UPDATE']);
                                                                }
     ;
 
@@ -450,7 +468,9 @@ DelayedClause
                                                                         op:           AST.TOKEN_TYPES.OPTION_DELAYED,
                                                                         timer:        AST.parseNumber($2)
                                                                     };
-                                                                    //php AST::trace(453);
+                                                                    //php AST::init($$, []);
+                                                                    //php AST::setKey($$, 'op',  AST::$TOKEN_TYPES['OPTION_DELAYED']);
+                                                                    //php AST::setKey($$, 'timer', AST::parseNumber($2));
                                                                }
     | "DELAYED"                                                {
                                                                     //js
@@ -458,18 +478,22 @@ DelayedClause
                                                                         op:           AST.TOKEN_TYPES.OPTION_DELAYED,
                                                                         timer:        null
                                                                     };
-                                                                    //php AST::trace(461);
+                                                                    //php AST::init($$, []);
+                                                                    //php AST::setKey($$, 'op', AST::$TOKEN_TYPES['OPTION_DELAYED']);
+                                                                    //php AST::setKey($$, 'timer', null);
                                                                }
     ;
 
 UpdateAllRowsStatement
-    : UpdateStatementBegin TableReference 
+    : UpdateStatementBegin TableReference
       "SET" UpdateFieldsList                                   {
                                                                     //js
                                                                     $$ = $1;
                                                                     $$.table = $2;
                                                                     $$.fields = $4;
-                                                                    //php AST::trace(472);
+                                                                    //php AST::init($$, $1);
+                                                                    //php AST::setKey($$, 'table', $2);
+                                                                    //php AST::setKey($$, 'fields', $4);
                                                                }
     ;
 
@@ -478,22 +502,24 @@ UpdateWithOptionalWHEREStatement
                                                                     //js
                                                                     $$ = $1;
                                                                     $$.where = $3;
-                                                                    //php AST::trace(481);
+                                                                    //php AST::init($$, $1);
+                                                                    //php AST::setKey($$, 'where', $3);
                                                                }
     | UpdateAllRowsStatement                                   {
                                                                     //js
                                                                     $$ = $1;
-                                                                    //php AST::trace(486);
+                                                                    //php AST::init($$, $1);
                                                                }
     ;
 
 UpdateWithOptionalORDERStatement
-    : UpdateWithOptionalWHEREStatement 
+    : UpdateWithOptionalWHEREStatement
       "ORDER" "BY" OrderByClause                               {
                                                                     //js
                                                                     $$ = $1;
                                                                     $$.orderBy = $4;
-                                                                    //php AST::trace(496);
+                                                                    //php AST::init($$, $1);
+                                                                    //php AST::setKey($$, 'orderBy', $4);
                                                                }
     | UpdateWithOptionalWHEREStatement
     ;
@@ -503,12 +529,13 @@ UpdateWithOptionalLIMITStatement
                                                                     //js
                                                                     $$ = $1;
                                                                     $$.limit = $3;
-                                                                    //php AST::trace(506);
+                                                                    //php AST::init($$, $1);
+                                                                    //php AST::setKey($$, 'limit', $3);
                                                                }
     | UpdateWithOptionalORDERStatement                         {
                                                                     //js
                                                                     $$ = $1;
-                                                                    //php AST::trace(511);
+                                                                    //php AST::init($$, $1);
                                                                }
     ;
 
@@ -516,7 +543,7 @@ UpdateStatement
     : UpdateWithOptionalLIMITStatement                         {
                                                                     //js
                                                                     $$ = $1;
-                                                                    //php AST::trace(519);
+                                                                    //php AST::init($$, $1);
                                                                }
     ;
 
@@ -528,7 +555,10 @@ InsertStatementBegin
                                                                         type:         AST.STATEMENT_TYPES.INSERT,
                                                                         ignoreDuplicates: true
                                                                     };
-                                                                    //php AST::trace(531);
+                                                                    //php AST::init($$, []);
+                                                                    //php AST::setKey($$, 'op', AST::$TOKEN_TYPES['STATEMENT']);
+                                                                    //php AST::setKey($$, 'type', AST::$STATEMENT_TYPES['INSERT']);
+                                                                    //php AST::setKey($$, 'ignoreDuplicates', true);
                                                                }
     | "INSERT"                                                 {
                                                                     //js
@@ -536,7 +566,9 @@ InsertStatementBegin
                                                                         op:           AST.TOKEN_TYPES.STATEMENT,
                                                                         type:         AST.STATEMENT_TYPES.INSERT
                                                                     };
-                                                                    //php AST::trace(539);
+                                                                    //php AST::init($$, []);
+                                                                    //php AST::setKey($$, 'op', AST::$TOKEN_TYPES['STATEMENT']);
+                                                                    //php AST::setKey($$, 'type', AST::$STATEMENT_TYPES['INSERT']);
                                                                }
     ;
 
@@ -547,7 +579,9 @@ InsertStatement
                                                                     $$ = $1;
                                                                     $$.table = $3;
                                                                     $$.fields = $5;
-                                                                    //php AST::trace(550);
+                                                                    //php AST::init($$, $1);
+                                                                    //php AST::setKey($$, 'table', $3);
+                                                                    //php AST::setKey($$, 'fields', $5);
                                                                }
     ;
 
@@ -559,7 +593,10 @@ DeleteAllRowsStatement
                                                                         type:         AST.STATEMENT_TYPES.DELETE,
                                                                         table:        $3
                                                                     };
-                                                                    //php AST::trace(562);
+                                                                    //php AST::init($$, []);
+                                                                    //php AST::setKey($$, 'op', AST::$TOKEN_TYPES['STATEMENT']);
+                                                                    //php AST::setKey($$, 'type', AST::$STATEMENT_TYPES['DELETE']);
+                                                                    //php AST::setKey($$, 'table', $3);
                                                                }
     ;
 
@@ -568,11 +605,12 @@ DeleteWithOptionalWHEREClauseStatement
                                                                     //js
                                                                     $$ = $1;
                                                                     $$.where = $3;
-                                                                    //php AST::trace(571);
+                                                                    //php AST::init($$, $1);
+                                                                    //php AST::setKey($$, 'where', $3);
                                                                }
     | DeleteAllRowsStatement                                   {
                                                                     $$ = $1;
-                                                                    //php AST::trace(575);
+                                                                    //php AST::init($$, $1);
                                                                }
     ;
 
@@ -582,12 +620,13 @@ DeleteWithOptionalORDERClauseStatement
                                                                     //js
                                                                     $$ = $1;
                                                                     $$.orderBy = $4;
-                                                                    //php AST::trace(585);
+                                                                    //php AST::init($$, $1);
+                                                                    //php AST::setKey($$, 'orderBy', $4);
                                                                }
     | DeleteWithOptionalWHEREClauseStatement                   {
                                                                     //js
                                                                     $$ = $1;
-                                                                    //php AST::trace(590);
+                                                                    //php AST::init($$, $1);
                                                                }
     ;
 
@@ -597,12 +636,13 @@ DeleteWithOptionalLIMITClauseStatement
                                                                     //js
                                                                     $$ = $1;
                                                                     $$.limit = $3;
-                                                                    //php AST::trace(600);
+                                                                    //php AST::init($$, $1);
+                                                                    //php AST::setKey($$, 'limit', $3);
                                                                }
     | DeleteWithOptionalORDERClauseStatement                   {
                                                                     //js
                                                                     $$ = $1;
-                                                                    //php AST::trace(605);
+                                                                    //php AST::init($$, $1);
                                                                }
     ;
 
@@ -610,7 +650,7 @@ DeleteStatement
     : DeleteWithOptionalLIMITClauseStatement                   {
                                                                     //js
                                                                     $$ = $1;
-                                                                    //php AST::trace(613);
+                                                                    //php AST::init($$, $1);
                                                                }
     ;
 
@@ -621,7 +661,9 @@ TableReference
                                                                         op:           AST.TOKEN_TYPES.TABLE_REFERENCE,
                                                                         name:         $1
                                                                     };
-                                                                    //php AST::trace(624);
+                                                                    //php AST::init($$, []);
+                                                                    //php AST::setKey($$, 'op', AST::$TOKEN_TYPES['TABLE_REFERENCE']);
+                                                                    //php AST::setKey($$, 'name', $1);
                                                                }
     | "ESCAPED_IDENTIFIER"                                     {
                                                                     //js
@@ -629,7 +671,9 @@ TableReference
                                                                         op:           AST.TOKEN_TYPES.TABLE_REFERENCE,
                                                                         name:         AST.unescapeIdentifier( $1 )
                                                                     };
-                                                                    //php AST::trace(632);
+                                                                    //php AST::init($$, []);
+                                                                    //php AST::setKey($$, 'op', AST::$TOKEN_TYPES['TABLE_REFERENCE']);
+                                                                    //php AST::setKey($$, 'name', AST::unescapeIdentifier($1));
                                                                }
     ;
 
@@ -640,7 +684,9 @@ SelectFieldsList
                                                                          op:          AST.TOKEN_TYPES.FIELDS_LIST,
                                                                          type:        AST.FIELD_TYPES.ALL_FIELDS
                                                                     };
-                                                                    //php AST::trace(643);
+                                                                    //php AST::init($$, []);
+                                                                    //php AST::setKey($$, 'op', AST::$TOKEN_TYPES['FIELDS_LIST']);
+                                                                    //php AST::setKey($$, 'type', AST::$FIELD_TYPES['ALL_FIELDS']);
                                                                }
     | SelectFieldEnumeration                                   {
                                                                     //js
@@ -648,7 +694,10 @@ SelectFieldsList
                                                                         type:         AST.FIELD_TYPES.SPECIFIC_FIELDS,
                                                                         fields:       $1
                                                                     };
-                                                                    //php AST::trace(651);
+                                                                    //php AST::init($$, []);
+                                                                    //php AST::setKey($$, 'op', AST::$TOKEN_TYPES['FIELDS_LIST']);
+                                                                    //php AST::setKey($$, 'type', AST::$FIELD_TYPES['SPECIFIC_FIELDS']);
+                                                                    //php AST::setKey($$, 'fields', $1);
                                                                }
     ;
 
@@ -656,12 +705,13 @@ SelectFieldEnumeration
     : SelectField                                              {
                                                                     //js
                                                                     $$ = [ $1 ];
-                                                                    //php AST::trace(659);
+                                                                    //php AST::init($$, []);
+                                                                    //php AST::push($$, $1);
                                                                }
     | SelectFieldEnumeration "," SelectField                   {
                                                                     //js
                                                                     $$ = $1.concat($3);
-                                                                    //php AST::trace(664);
+                                                                    //php AST::push($1, $3);
                                                                }
     ;
 
@@ -673,7 +723,10 @@ SelectField
                                                                          literal:     AST.createFieldAliasFromExpression($1),
                                                                          expression:  $1
                                                                      };
-                                                                    //php AST::trace(676);
+                                                                    //php AST::init($$, []);
+                                                                    //php AST::setKey($$, 'op', AST::$TOKEN_TYPES['FIELD']);
+                                                                    //php AST::setKey($$, 'literal', AST::createFieldAliasFromExpression($1));
+                                                                    //php AST::setKey($$, 'expression', $1);
                                                                }
     | Expression "AS" "IDENTIFIER"                             {
                                                                     //js
@@ -682,7 +735,10 @@ SelectField
                                                                         literal:      $3,
                                                                         expression:   $1
                                                                     };
-                                                                    //php AST::trace(685);
+                                                                    //php AST::init($$, []);
+                                                                    //php AST::setKey($$, 'op', AST::$TOKEN_TYPES['FIELD']);
+                                                                    //php AST::setKey($$, 'literal', $3);
+                                                                    //php AST::setKey($$, 'expression', $1);
                                                                }
     | Expression "AS" "ESCAPED_IDENTIFIER"                     {
                                                                     //js
@@ -691,7 +747,10 @@ SelectField
                                                                         literal:      AST.unescapeIdentifier($3),
                                                                         expression:   $1
                                                                     };
-                                                                    //php AST::trace(694);
+                                                                    //php AST::init($$, []);
+                                                                    //php AST::setKey($$, 'op', AST::$TOKEN_TYPES['FIELD']);
+                                                                    //php AST::setKey($$, 'literal', AST::unescapeIdentifier($3));
+                                                                    //php AST::setKey($$, 'expression', $1);
                                                                }
     ;
 
@@ -699,17 +758,20 @@ UpdateFieldsList
     : UpdateField                                              {
                                                                     //js
                                                                     $$ = [ $1 ];
-                                                                    //php AST::trace(702);
+                                                                    //php AST::init($$, []);
+                                                                    //php AST::push($$, $1);
                                                                }
     | UpdateFieldsList "SET" UpdateField                       {
                                                                     //js
                                                                     $$ = $1.concat($3);
-                                                                    //php AST::trace(707);
+                                                                    //php AST::push($1, $3);
+                                                                    //php AST::init($$, $1);
                                                                }
     | UpdateFieldsList "," UpdateField                         {
                                                                     //js
                                                                     $$ = $1.concat($3);
-                                                                    //php AST::trace(712);
+                                                                    //php AST::push($1, $3);
+                                                                    //php AST::init($$, $1);
                                                                }
     ;
 
@@ -721,7 +783,10 @@ UpdateField
                                                                         name:         $1,
                                                                         expression:   $3
                                                                     };
-                                                                    //php AST::trace(724);
+                                                                    //php AST::init($$, []);
+                                                                    //php AST::setKey($$, 'op', AST::$TOKEN_TYPES['UPDATE_FIELD']);
+                                                                    //php AST::setKey($$, 'name', $1);
+                                                                    //php AST::setKey($$, 'expression', $3);
                                                                }
     | "ESCAPED_IDENTIFIER" "=" Expression                      {
                                                                     //js
@@ -730,7 +795,10 @@ UpdateField
                                                                         name:         AST.unescapeIdentifier($1),
                                                                         expression:   $3
                                                                     };
-                                                                    //php AST::trace(733);
+                                                                    //php AST::init($$, []);
+                                                                    //php AST::setKey($$, 'op', AST::$TOKEN_TYPES['UPDATE_FIELD']);
+                                                                    //php AST::setKey($$, 'name', AST::unescapeIdentifier($1));
+                                                                    //php AST::setKey($$, 'expression', $3);
                                                                }
     ;
 
@@ -742,7 +810,10 @@ Expression
                                                                         type:         AST.EXPRESSION.NUMBER,
                                                                         value:        AST.parseNumber( $1 )
                                                                     };
-                                                                    //php AST::trace(745);
+                                                                    //php AST::init($$, []);
+                                                                    //php AST::setKey($$, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                    //php AST::setKey($$, 'type', AST::$EXPRESSION['NUMBER']);
+                                                                    //php AST::setKey($$, 'value', AST::parseNumber($1));
                                                                }
     | "BOOLEAN"                                                {
                                                                     //js
@@ -751,7 +822,10 @@ Expression
                                                                         type:         AST.EXPRESSION.BOOLEAN,
                                                                         value:        AST.parseBoolean( $1 )
                                                                     };
-                                                                    //php AST::trace(754);
+                                                                    //php AST::init($$, []);
+                                                                    //php AST::setKey($$, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                    //php AST::setKey($$, 'type', AST::$EXPRESSION['BOOLEAN']);
+                                                                    //php AST::setKey($$, 'value', AST::parseBoolean( $1 ));
                                                                }
     | "NULL"                                                   {
                                                                     //js
@@ -759,7 +833,9 @@ Expression
                                                                         op:           AST.TOKEN_TYPES.EXPRESSION,
                                                                         type:         AST.EXPRESSION.NULL
                                                                     };
-                                                                    //php AST::trace(762);
+                                                                    //php AST::init($$, []);
+                                                                    //php AST::setKey($$, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                    //php AST::setKey($$, 'type', AST::$EXPRESSION['NULL']);
                                                                }
     | "STRING"                                                 {
                                                                     //js
@@ -768,9 +844,12 @@ Expression
                                                                         type:         AST.EXPRESSION.STRING,
                                                                         value:        AST.parseString( $1 )
                                                                     };
-                                                                    //php AST::trace(771);
+                                                                    //php AST::init($$, []);
+                                                                    //php AST::setKey($$, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                    //php AST::setKey($$, 'type', AST::$EXPRESSION['STRING']);
+                                                                    //php AST::setKey($$, 'value', AST::parseString($1));
                                                                }
-    
+
     | "!" Expression                                           {
                                                                     //js
                                                                     $$ = {
@@ -779,7 +858,11 @@ Expression
                                                                         operator:     AST.OPERATOR.NOT,
                                                                         left:         $2
                                                                     };
-                                                                    //php AST::trace(782);
+                                                                    //php AST::init($$, []);
+                                                                    //php AST::setKey($$, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                    //php AST::setKey($$, 'type', AST::$EXPRESSION['UNARY']);
+                                                                    //php AST::setKey($$, 'operator', AST::$OPERATOR['NOT']);
+                                                                    //php AST::setKey($$, 'left', $2);
                                                                }
     | "-" Expression                                           {
                                                                     //js
@@ -789,9 +872,13 @@ Expression
                                                                         operator:     AST.OPERATOR.INVERT,
                                                                         left:         $2
                                                                     };
-                                                                    //php AST::trace(792);
+                                                                    //php AST::init($$, []);
+                                                                    //php AST::setKey($$, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                    //php AST::setKey($$, 'type', AST::$EXPRESSION['UNARY']);
+                                                                    //php AST::setKey($$, 'operator', AST::$OPERATOR['INVERT']);
+                                                                    //php AST::setKey($$, 'left', $2);
                                                                }
-    
+
     | Expression "||" Expression                               {
                                                                     //js
                                                                     $$ = {
@@ -801,7 +888,12 @@ Expression
                                                                         left:         $1,
                                                                         right:        $3
                                                                     };
-                                                                    //php AST::trace(804);
+                                                                    //php AST::init($$, []);
+                                                                    //php AST::setKey($$, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                    //php AST::setKey($$, 'type', AST::$EXPRESSION['LOGICAL']);
+                                                                    //php AST::setKey($$, 'operator', AST::$OPERATOR['OR']);
+                                                                    //php AST::setKey($$, 'left', $1);
+                                                                    //php AST::setKey($$, 'right', $3);
                                                                }
     | Expression "&&" Expression                               {
                                                                     //js
@@ -812,7 +904,12 @@ Expression
                                                                         left:         $1,
                                                                         right:        $3
                                                                     };
-                                                                    //php AST::trace(815);
+                                                                    //php AST::init($$, []);
+                                                                    //php AST::setKey($$, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                    //php AST::setKey($$, 'type', AST::$EXPRESSION['LOGICAL']);
+                                                                    //php AST::setKey($$, 'operator', AST::$OPERATOR['AND']);
+                                                                    //php AST::setKey($$, 'left', $1);
+                                                                    //php AST::setKey($$, 'right', $3);
                                                                }
 
     | Expression "==" Expression                               {
@@ -824,7 +921,12 @@ Expression
                                                                         left:         $1,
                                                                         right:        $3
                                                                     };
-                                                                    //php AST::trace(827);
+                                                                    //php AST::init($$, []);
+                                                                    //php AST::setKey($$, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                    //php AST::setKey($$, 'type', AST::$EXPRESSION['LOGICAL']);
+                                                                    //php AST::setKey($$, 'operator', AST::$OPERATOR['EQUALS']);
+                                                                    //php AST::setKey($$, 'left', $1);
+                                                                    //php AST::setKey($$, 'right', $3);
                                                                }
     | Expression "~=" Expression                               {
                                                                     //js
@@ -835,7 +937,12 @@ Expression
                                                                         left:         $1,
                                                                         right:        $3
                                                                     };
-                                                                    //php AST::trace(838);
+                                                                    //php AST::init($$, []);
+                                                                    //php AST::setKey($$, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                    //php AST::setKey($$, 'type', AST::$EXPRESSION['LOGICAL']);
+                                                                    //php AST::setKey($$, 'operator', AST::$OPERATOR['LIKE']);
+                                                                    //php AST::setKey($$, 'left', $1);
+                                                                    //php AST::setKey($$, 'right', $3);
                                                                }
     | Expression "<=" Expression                               {
                                                                     //js
@@ -846,7 +953,12 @@ Expression
                                                                         left:         $1,
                                                                         right:        $3
                                                                     };
-                                                                    //php AST::trace(849);
+                                                                    //php AST::init($$, []);
+                                                                    //php AST::setKey($$, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                    //php AST::setKey($$, 'type', AST::$EXPRESSION['LOGICAL']);
+                                                                    //php AST::setKey($$, 'operator',  AST::$OPERATOR['type']);
+                                                                    //php AST::setKey($$, 'left', $1);
+                                                                    //php AST::setKey($$, 'right', $3);
                                                                }
     | Expression "<"  Expression                               {
                                                                     //js
@@ -857,7 +969,12 @@ Expression
                                                                         left:         $1,
                                                                         right:        $3
                                                                     };
-                                                                    //php AST::trace(860);
+                                                                    //php AST::init($$, []);
+                                                                    //php AST::setKey($$, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                    //php AST::setKey($$, 'type', AST::$EXPRESSION['LOGICAL']);
+                                                                    //php AST::setKey($$, 'operator', AST::$OPERATOR['LT']);
+                                                                    //php AST::setKey($$, 'left', $1);
+                                                                    //php AST::setKey($$, 'right', $3);
                                                                }
     | Expression ">=" Expression                               {
                                                                     //js
@@ -868,7 +985,12 @@ Expression
                                                                         left:         $1,
                                                                         right:        $3
                                                                     };
-                                                                    //php AST::trace(871);
+                                                                    //php AST::init($$, []);
+                                                                    //php AST::setKey($$, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                    //php AST::setKey($$, 'type', AST::$EXPRESSION['LOGICAL']);
+                                                                    //php AST::setKey($$, 'operator', AST::$OPERATOR['GTE']);
+                                                                    //php AST::setKey($$, 'left', $1);
+                                                                    //php AST::setKey($$, 'right', $3);
                                                                }
     | Expression ">"  Expression                               {
                                                                     //js
@@ -879,7 +1001,12 @@ Expression
                                                                         left:         $1,
                                                                         right:        $3
                                                                     };
-                                                                    //php AST::trace(882);
+                                                                    //php AST::init($$, []);
+                                                                    //php AST::setKey($$, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                    //php AST::setKey($$, 'type', AST::$EXPRESSION['LOGICAL']);
+                                                                    //php AST::setKey($$, 'operator', AST::$OPERATOR['GT']);
+                                                                    //php AST::setKey($$, 'left', $1);
+                                                                    //php AST::setKey($$, 'right', $3);
                                                                }
 
     | Expression "*"  Expression                               {
@@ -891,7 +1018,12 @@ Expression
                                                                         left:         $1,
                                                                         right:        $3
                                                                     };
-                                                                    //php AST::trace(894);
+                                                                    //php AST::init($$, []);
+                                                                    //php AST::setKey($$, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                    //php AST::setKey($$, 'type', AST::$EXPRESSION['MATH']);
+                                                                    //php AST::setKey($$, 'operator', AST::$OPERATOR['MULTIPLY']);
+                                                                    //php AST::setKey($$, 'left', $1);
+                                                                    //php AST::setKey($$, 'right', $3);
                                                                }
     | Expression "/"  Expression                               {
                                                                     //js
@@ -902,7 +1034,12 @@ Expression
                                                                         left:         $1,
                                                                         right:        $3
                                                                     };
-                                                                    //php AST::trace(905);
+                                                                    //php AST::init($$, []);
+                                                                    //php AST::setKey($$, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                    //php AST::setKey($$, 'type', AST::$EXPRESSION['MATH']);
+                                                                    //php AST::setKey($$, 'operator', AST::$OPERATOR['DIVISION']);
+                                                                    //php AST::setKey($$, 'left', $1);
+                                                                    //php AST::setKey($$, 'right', $3);
                                                                }
     | Expression "+"  Expression                               {
                                                                     //js
@@ -913,7 +1050,12 @@ Expression
                                                                         left:         $1,
                                                                         right:        $3
                                                                     };
-                                                                    //php AST::trace(916);
+                                                                    //php AST::init($$, []);
+                                                                    //php AST::setKey($$, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                    //php AST::setKey($$, 'type', AST::$EXPRESSION['MATH']);
+                                                                    //php AST::setKey($$, 'operator', AST::$OPERATOR['ADDITION']);
+                                                                    //php AST::setKey($$, 'left', $1);
+                                                                    //php AST::setKey($$, 'right', $3);
                                                                }
     | Expression "-"  Expression                               {
                                                                     //js
@@ -924,12 +1066,17 @@ Expression
                                                                         left:         $1,
                                                                         right:        $3
                                                                     };
-                                                                    //php AST::trace(927);
+                                                                    //php AST::init($$, []);
+                                                                    //php AST::setKey($$, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                    //php AST::setKey($$, 'type', AST::$EXPRESSION['MATH']);
+                                                                    //php AST::setKey($$, 'operator', AST::$OPERATOR['DIFFERENCE']);
+                                                                    //php AST::setKey($$, 'left', $1);
+                                                                    //php AST::setKey($$, 'right', $3);
                                                                }
     | FunctionCall                                             {
                                                                     //js
                                                                     $$ = $1;
-                                                                    //php AST::trace(932);
+                                                                    //php AST::init($$, $1);
                                                                }
     | "(" Expression ")"                                       {
                                                                     //js
@@ -938,7 +1085,10 @@ Expression
                                                                         type:         AST.EXPRESSION.GROUP,
                                                                         expression:   $2
                                                                     };
-                                                                    //php AST::trace(941);
+                                                                    //php AST::init($$, []);
+                                                                    //php AST::setKey($$, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                    //php AST::setKey($$, 'type', AST::$EXPRESSION['GROUP']);
+                                                                    //php AST::setKey($$, 'expression', $2);
                                                                }
     | "IDENTIFIER"                                             {
                                                                     //js
@@ -947,7 +1097,10 @@ Expression
                                                                         type:         AST.EXPRESSION.IDENTIFIER,
                                                                         name:         $1
                                                                     };
-                                                                    //php AST::trace(950);
+                                                                    //php AST::init($$, []);
+                                                                    //php AST::setKey($$, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                    //php AST::setKey($$, 'type', AST::$EXPRESSION['IDENTIFIER']);
+                                                                    //php AST::setKey($$, 'name', $1);
                                                                }
     | "ESCAPED_IDENTIFIER"                                     {
                                                                     //js
@@ -956,7 +1109,10 @@ Expression
                                                                         type:         AST.EXPRESSION.IDENTIFIER,
                                                                         name:         AST.unescapeIdentifier($1)
                                                                     };
-                                                                    //php AST::trace(959);
+                                                                    //php AST::init($$, []);
+                                                                    //php AST::setKey($$, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                    //php AST::setKey($$, 'type', AST::$EXPRESSION['IDENTIFIER']);
+                                                                    //php AST::setKey($$, 'name', AST::unescapeIdentifier($1));
                                                                }
     | "BINDING"                                                {
                                                                     //js
@@ -965,7 +1121,10 @@ Expression
                                                                         type:         AST.EXPRESSION.BINDING,
                                                                         name:         AST.unescapeBindingName($1)
                                                                     };
-                                                                    //php AST::trace(968);
+                                                                    //php AST::init($$, []);
+                                                                    //php AST::setKey($$, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                    //php AST::setKey($$, 'type', AST::$EXPRESSION['BINDING']);
+                                                                    //php AST::setKey($$, 'name', AST::unescapeBindingName($1));
                                                                }
     ;
 
@@ -978,7 +1137,11 @@ FunctionCall
                                                                         function_name: $1,
                                                                         arguments:    []
                                                                     };
-                                                                    //php AST::trace(981);
+                                                                    //php AST::init($$, []);
+                                                                    //php AST::setKey($$, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                    //php AST::setKey($$, 'type', AST::$EXPRESSION['FUNCTION_CALL']);
+                                                                    //php AST::setKey($$, 'function_name', $1);
+                                                                    //php AST::setKey($$, 'arguments', []);
                                                                }
     | "IDENTIFIER" "(" FunctionCallArgumentsList ")"           {
                                                                     //js
@@ -988,7 +1151,11 @@ FunctionCall
                                                                         function_name: $1,
                                                                         arguments:    $3
                                                                     };
-                                                                    //php AST::trace(991);
+                                                                    //php AST::init($$, []);
+                                                                    //php AST::setKey($$, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                    //php AST::setKey($$, 'type', AST::$EXPRESSION['FUNCTION_CALL']);
+                                                                    //php AST::setKey($$, 'function_name', $1);
+                                                                    //php AST::setKey($$, 'arguments', $3);
                                                                }
     ;
 
@@ -996,12 +1163,14 @@ FunctionCallArgumentsList
     : Expression                                               {
                                                                     //js
                                                                     $$ = [ $1 ];
-                                                                    //php AST::trace(999);
+                                                                    //php AST::init($$, []);
+                                                                    //php AST::push($$, $1);
                                                                }
     | FunctionCallArgumentsList "," Expression                 {
                                                                     //js
                                                                     $$ = $1.concat($3);
-                                                                    //php AST::trace(1004);
+                                                                    //php AST::push($1, $3 );
+                                                                    //php AST::init($$, $1);
                                                                }
     ;
 
@@ -1012,7 +1181,9 @@ OrderByClause
                                                                         op:           AST.TOKEN_TYPES.OPTION_ORDERING,
                                                                         type:         AST.ORDERING_STRATEGY.RANDOM
                                                                     };
-                                                                    //php AST::trace(1015);
+                                                                    //php AST::init($$, []);
+                                                                    //php AST::setKey($$, 'op', AST::$TOKEN_TYPES['OPTION_ORDERING']);
+                                                                    //php AST::setKey($$, 'type', AST::$ORDERING_STRATEGY['RANDOM']);
                                                                }
     | OrderByClauseFieldsList                                  {
                                                                     //js
@@ -1021,7 +1192,10 @@ OrderByClause
                                                                         type:         AST.ORDERING_STRATEGY.ORDERED,
                                                                         fields:       $1
                                                                     };
-                                                                    //php AST::trace(1024);
+                                                                    //php AST::init($$, []);
+                                                                    //php AST::setKey($$, 'op', AST::$TOKEN_TYPES['OPTION_ORDERING']);
+                                                                    //php AST::setKey($$, 'type', AST::$ORDERING_STRATEGY['ORDERED']);
+                                                                    //php AST::setKey($$, 'fields', $1);
                                                                }
     ;
 
@@ -1029,12 +1203,14 @@ OrderByClauseFieldsList
     : OrderByField                                             {
                                                                     //js
                                                                     $$ = [ $1 ];
-                                                                    //php AST::trace(1032);
+                                                                    //php AST::init($$, []);
+                                                                    //php AST::push($$, $1 );
                                                                }
     | OrderByClauseFieldsList "," OrderByField                 {
                                                                     //js
                                                                     $$ = $1.concat($3);
-                                                                    //php AST::trace(1037);
+                                                                    //php AST::push($1, $3);
+                                                                    //php AST::init($$, $1);
                                                                }
     ;
 
@@ -1046,7 +1222,10 @@ OrderByField
                                                                         expression:   $1,
                                                                         direction:    AST.ORDER_DIRECTION.ASCENDING
                                                                     };
-                                                                    //php AST::trace(1049);
+                                                                    //php AST::init($$, []);
+                                                                    //php AST::setKey($$, 'op', AST::$TOKEN_TYPES['ORDER_EXPRESSION']);
+                                                                    //php AST::setKey($$, 'expression', $1);
+                                                                    //php AST::setKey($$, 'direction', AST::$ORDER_DIRECTION['ASCENDING']);
                                                                }
     }
     | Expression "DESC"                                        {
@@ -1056,7 +1235,10 @@ OrderByField
                                                                         expression:   $1,
                                                                         direction:    AST.ORDER_DIRECTION.DESCENDING
                                                                     };
-                                                                    //php AST::trace(1059);
+                                                                    //php AST::init($$, []);
+                                                                    //php AST::setKey($$, 'op', AST::$TOKEN_TYPES['ORDER_EXPRESSION']);
+                                                                    //php AST::setKey($$, 'expression', $1);
+                                                                    //php AST::setKey($$, 'direction', AST::$ORDER_DIRECTION['DESCENDING']);
                                                                }
     | Expression                                               {
                                                                     //js
@@ -1065,7 +1247,10 @@ OrderByField
                                                                         expression:   $1,
                                                                         direction:    AST.ORDER_DIRECTION.ASCENDING
                                                                     };
-                                                                    //php AST::trace(1068);
+                                                                    //php AST::init($$, []);
+                                                                    //php AST::setKey($$, 'op', AST::$TOKEN_TYPES['ORDER_EXPRESSION']);
+                                                                    //php AST::setKey($$, 'expression', $1);
+                                                                    //php AST::setKey($$, 'direction', AST::$ORDER_DIRECTION['ASCENDING']);
                                                                }
     ;
 
@@ -1077,7 +1262,10 @@ LimitClause
                                                                         limit:        AST.parseNumber( $1 ),
                                                                         skip:         0
                                                                     };
-                                                                    //php AST::trace(1080);
+                                                                    //php AST::init($$, []);
+                                                                    //php AST::setKey($$, 'op', AST::$TOKEN_TYPES['OPTION_LIMIT']);
+                                                                    //php AST::setKey($$, 'limit', AST::parseNumber($1));
+                                                                    //php AST::setKey($$, 'skip', 0);
                                                                }
     | "NUMBER" "," "NUMBER"                                    {
                                                                     //js
@@ -1086,6 +1274,9 @@ LimitClause
                                                                         limit:        AST.parseNumber( $3 ),
                                                                         skip:         AST.parseNumber( $1 )
                                                                     };
-                                                                    //php AST::trace(1089);
+                                                                    //php AST::init($$, []);
+                                                                    //php AST::setKey($$, 'op', AST::$TOKEN_TYPES['OPTION_LIMIT']);
+                                                                    //php AST::setKey($$, 'limit', AST::parseNumber( $3 ));
+                                                                    //php AST::setKey($$, 'skip', AST::parseNumber($1));
                                                                }
     ;

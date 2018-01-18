@@ -1,5 +1,6 @@
 <?php
 
+use Jison\AST;
 use Jison\JQLGrammar;
 
 require_once __DIR__ . './AST.php';
@@ -9,4 +10,4 @@ $grammar = new JQLGrammar();
 
 $result = $grammar->parse('SELECT a AS moo, b AS car FROM foo' );
 
-var_dump($result);
+echo json_encode($result, JSON_PRETTY_PRINT ), "\n";

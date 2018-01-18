@@ -2964,454 +2964,510 @@ class JQLGrammar
 switch ($yystate) {
 case 1:
 
-                                                                     AST::trace(302);
+                                                                     AST::init($thisS, $s[$o-1]);
+                                                                     AST::setKey($thisS, 'remote', true);
+                                                                     return $thisS;
                                                                
 break;
 case 2:
 
-                                                                     AST::trace(309);
+                                                                     AST::init($thisS, $s[$o-1]);
+                                                                     AST::setKey($thisS, 'remote', false);
+                                                                     return $thisS;
                                                                
 break;
-case 3:
+case 3: case 4: case 5: case 6: case 12: case 14: case 15: case 16: case 17: case 25: case 29: case 30: case 38: case 40: case 41: case 74:
 
-                                                                     AST::trace(317);
-                                                               
-break;
-case 4:
-
-                                                                     AST::trace(322);
-                                                               
-break;
-case 5:
-
-                                                                     AST::trace(327);
-                                                               
-break;
-case 6:
-
-                                                                     AST::trace(332);
+                                                                     AST::init($thisS, $s[$o]);
                                                                
 break;
 case 7:
 
                                                                      AST::trace(344);
+                                                                     AST::init($thisS, []);
+                                                                     AST::setKey($thisS, 'op', AST::$TOKEN_TYPES['STATEMENT']);
+                                                                     AST::setKey($thisS, 'type', AST::$STATEMENT_TYPES['SELECT']);
+                                                                     AST::setKey($thisS, 'fields', $s[$o]);
                                                                
 break;
 case 8:
 
-                                                                     AST::trace(354);
+                                                                     AST::init($thisS, $s[$o-2]);
+                                                                     AST::setKey($thisS, 'table', $s[$o]);
                                                                
 break;
-case 9:
+case 9: case 24: case 35:
 
-                                                                     AST::trace(363);
+                                                                     AST::init($thisS, $s[$o-2]);
+                                                                     AST::setKey($thisS, 'where', $s[$o]);
                                                                
 break;
-case 10:
+case 10: case 36:
 
                                                                     $thisS = $s[$o];
-                                                                     AST::trace(367);
+                                                                     AST::init($thisS, $s[$o]);
                                                                
 break;
-case 11:
+case 11: case 26: case 37:
 
-                                                                     AST::trace(376);
-                                                               
-break;
-case 12:
-
-                                                                     AST::trace(381);
+                                                                     AST::init($thisS, $s[$o-3]);
+                                                                     AST::setKey($thisS, 'orderBy', $s[$o]);
                                                                
 break;
 case 13:
 
-                                                                     AST::trace(390);
-                                                               
-break;
-case 14:
-
-                                                                     AST::trace(395);
-                                                               
-break;
-case 15:
-
-                                                                     AST::trace(403);
-                                                               
-break;
-case 16:
-
-                                                                     AST::trace(408);
-                                                               
-break;
-case 17:
-
-                                                                     AST::trace(416);
+                                                                     AST::init($thisS, $s[$o-2]);
+                                                                     AST::setKey($thisS, limit, $s[$o]);
                                                                
 break;
 case 18:
 
-                                                                     AST::trace(422);
+                                                                     AST::init($thisS, $s[$o-2]);
+                                                                     AST::setKey($thisS, 'union', $s[$o]);
                                                                
 break;
 case 19:
 
-                                                                     AST::trace(435);
+                                                                     AST::init($thisS, []);
+                                                                     AST::setKey($thisS, 'op', AST::$TOKEN_TYPES['STATEMENT']);
+                                                                     AST::setKey($thisS, 'type', AST::$STATEMENT_TYPES['UPDATE']);
+                                                                     AST::setKey($thisS, 'delayed', $s[$o]);
                                                                
 break;
 case 20:
 
-                                                                     AST::trace(442);
+                                                                     AST::init($thisS, []);
+                                                                     AST::setKey($thisS, 'op', AST::$TOKEN_TYPES['STATEMENT']);
+                                                                     AST::setKey($thisS, 'type', AST::$STATEMENT_TYPES['UPDATE']);
                                                                
 break;
 case 21:
 
-                                                                     AST::trace(453);
+                                                                     AST::init($thisS, []);
+                                                                     AST::setKey($thisS, 'op',  AST::$TOKEN_TYPES['OPTION_DELAYED']);
+                                                                     AST::setKey($thisS, 'timer', AST::parseNumber($s[$o]));
                                                                
 break;
 case 22:
 
-                                                                     AST::trace(461);
+                                                                     AST::init($thisS, []);
+                                                                     AST::setKey($thisS, 'op', AST::$TOKEN_TYPES['OPTION_DELAYED']);
+                                                                     AST::setKey($thisS, 'timer', null);
                                                                
 break;
 case 23:
 
-                                                                     AST::trace(472);
+                                                                     AST::init($thisS, $s[$o-3]);
+                                                                     AST::setKey($thisS, 'table', $s[$o-2]);
+                                                                     AST::setKey($thisS, 'fields', $s[$o]);
                                                                
 break;
-case 24:
+case 28: case 39:
 
-                                                                     AST::trace(481);
-                                                               
-break;
-case 25:
-
-                                                                     AST::trace(486);
-                                                               
-break;
-case 26:
-
-                                                                     AST::trace(496);
-                                                               
-break;
-case 28:
-
-                                                                     AST::trace(506);
-                                                               
-break;
-case 29:
-
-                                                                     AST::trace(511);
-                                                               
-break;
-case 30:
-
-                                                                     AST::trace(519);
+                                                                     AST::init($thisS, $s[$o-2]);
+                                                                     AST::setKey($thisS, 'limit', $s[$o]);
                                                                
 break;
 case 31:
 
-                                                                     AST::trace(531);
+                                                                     AST::init($thisS, []);
+                                                                     AST::setKey($thisS, 'op', AST::$TOKEN_TYPES['STATEMENT']);
+                                                                     AST::setKey($thisS, 'type', AST::$STATEMENT_TYPES['INSERT']);
+                                                                     AST::setKey($thisS, 'ignoreDuplicates', true);
                                                                
 break;
 case 32:
 
-                                                                     AST::trace(539);
+                                                                     AST::init($thisS, []);
+                                                                     AST::setKey($thisS, 'op', AST::$TOKEN_TYPES['STATEMENT']);
+                                                                     AST::setKey($thisS, 'type', AST::$STATEMENT_TYPES['INSERT']);
                                                                
 break;
 case 33:
 
-                                                                     AST::trace(550);
+                                                                     AST::init($thisS, $s[$o-4]);
+                                                                     AST::setKey($thisS, 'table', $s[$o-2]);
+                                                                     AST::setKey($thisS, 'fields', $s[$o]);
                                                                
 break;
 case 34:
 
-                                                                     AST::trace(562);
-                                                               
-break;
-case 35:
-
-                                                                     AST::trace(571);
-                                                               
-break;
-case 36:
-
-                                                                    $thisS = $s[$o];
-                                                                     AST::trace(575);
-                                                               
-break;
-case 37:
-
-                                                                     AST::trace(585);
-                                                               
-break;
-case 38:
-
-                                                                     AST::trace(590);
-                                                               
-break;
-case 39:
-
-                                                                     AST::trace(600);
-                                                               
-break;
-case 40:
-
-                                                                     AST::trace(605);
-                                                               
-break;
-case 41:
-
-                                                                     AST::trace(613);
+                                                                     AST::init($thisS, []);
+                                                                     AST::setKey($thisS, 'op', AST::$TOKEN_TYPES['STATEMENT']);
+                                                                     AST::setKey($thisS, 'type', AST::$STATEMENT_TYPES['DELETE']);
+                                                                     AST::setKey($thisS, 'table', $s[$o]);
                                                                
 break;
 case 42:
 
-                                                                     AST::trace(624);
+                                                                     AST::init($thisS, []);
+                                                                     AST::setKey($thisS, 'op', AST::$TOKEN_TYPES['TABLE_REFERENCE']);
+                                                                     AST::setKey($thisS, 'name', $s[$o]);
                                                                
 break;
 case 43:
 
-                                                                     AST::trace(632);
+                                                                     AST::init($thisS, []);
+                                                                     AST::setKey($thisS, 'op', AST::$TOKEN_TYPES['TABLE_REFERENCE']);
+                                                                     AST::setKey($thisS, 'name', AST::unescapeIdentifier($s[$o]));
                                                                
 break;
 case 44:
 
-                                                                     AST::trace(643);
+                                                                     AST::init($thisS, []);
+                                                                     AST::setKey($thisS, 'op', AST::$TOKEN_TYPES['FIELDS_LIST']);
+                                                                     AST::setKey($thisS, 'type', AST::$FIELD_TYPES['ALL_FIELDS']);
                                                                
 break;
 case 45:
 
-                                                                     AST::trace(651);
+                                                                     AST::init($thisS, []);
+                                                                     AST::setKey($thisS, 'op', AST::$TOKEN_TYPES['FIELDS_LIST']);
+                                                                     AST::setKey($thisS, 'type', AST::$FIELD_TYPES['SPECIFIC_FIELDS']);
+                                                                     AST::setKey($thisS, 'fields', $s[$o]);
                                                                
 break;
-case 46:
+case 46: case 51: case 81:
 
-                                                                     AST::trace(659);
+                                                                     AST::init($thisS, []);
+                                                                     AST::push($thisS, $s[$o]);
                                                                
 break;
 case 47:
 
-                                                                     AST::trace(664);
+                                                                     AST::push($s[$o-2], $s[$o]);
                                                                
 break;
 case 48:
 
-                                                                     AST::trace(676);
+                                                                     AST::init($thisS, []);
+                                                                     AST::setKey($thisS, 'op', AST::$TOKEN_TYPES['FIELD']);
+                                                                     AST::setKey($thisS, 'literal', AST::createFieldAliasFromExpression($s[$o]));
+                                                                     AST::setKey($thisS, 'expression', $s[$o]);
                                                                
 break;
 case 49:
 
-                                                                     AST::trace(685);
+                                                                     AST::init($thisS, []);
+                                                                     AST::setKey($thisS, 'op', AST::$TOKEN_TYPES['FIELD']);
+                                                                     AST::setKey($thisS, 'literal', $s[$o]);
+                                                                     AST::setKey($thisS, 'expression', $s[$o-2]);
                                                                
 break;
 case 50:
 
-                                                                     AST::trace(694);
+                                                                     AST::init($thisS, []);
+                                                                     AST::setKey($thisS, 'op', AST::$TOKEN_TYPES['FIELD']);
+                                                                     AST::setKey($thisS, 'literal', AST::unescapeIdentifier($s[$o]));
+                                                                     AST::setKey($thisS, 'expression', $s[$o-2]);
                                                                
 break;
-case 51:
+case 52: case 53: case 86:
 
-                                                                     AST::trace(702);
-                                                               
-break;
-case 52:
-
-                                                                     AST::trace(707);
-                                                               
-break;
-case 53:
-
-                                                                     AST::trace(712);
+                                                                     AST::push($s[$o-2], $s[$o]);
+                                                                     AST::init($thisS, $s[$o-2]);
                                                                
 break;
 case 54:
 
-                                                                     AST::trace(724);
+                                                                     AST::init($thisS, []);
+                                                                     AST::setKey($thisS, 'op', AST::$TOKEN_TYPES['UPDATE_FIELD']);
+                                                                     AST::setKey($thisS, 'name', $s[$o-2]);
+                                                                     AST::setKey($thisS, 'expression', $s[$o]);
                                                                
 break;
 case 55:
 
-                                                                     AST::trace(733);
+                                                                     AST::init($thisS, []);
+                                                                     AST::setKey($thisS, 'op', AST::$TOKEN_TYPES['UPDATE_FIELD']);
+                                                                     AST::setKey($thisS, 'name', AST::unescapeIdentifier($s[$o-2]));
+                                                                     AST::setKey($thisS, 'expression', $s[$o]);
                                                                
 break;
 case 56:
 
-                                                                     AST::trace(745);
+                                                                     AST::init($thisS, []);
+                                                                     AST::setKey($thisS, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                     AST::setKey($thisS, 'type', AST::$EXPRESSION['NUMBER']);
+                                                                     AST::setKey($thisS, 'value', AST::parseNumber($s[$o]));
                                                                
 break;
 case 57:
 
-                                                                     AST::trace(754);
+                                                                     AST::init($thisS, []);
+                                                                     AST::setKey($thisS, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                     AST::setKey($thisS, 'type', AST::$EXPRESSION['BOOLEAN']);
+                                                                     AST::setKey($thisS, 'value', AST::parseBoolean( $s[$o] ));
                                                                
 break;
 case 58:
 
-                                                                     AST::trace(762);
+                                                                     AST::init($thisS, []);
+                                                                     AST::setKey($thisS, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                     AST::setKey($thisS, 'type', AST::$EXPRESSION['NULL']);
                                                                
 break;
 case 59:
 
-                                                                     AST::trace(771);
+                                                                     AST::init($thisS, []);
+                                                                     AST::setKey($thisS, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                     AST::setKey($thisS, 'type', AST::$EXPRESSION['STRING']);
+                                                                     AST::setKey($thisS, 'value', AST::parseString($s[$o]));
                                                                
 break;
 case 60:
 
-                                                                     AST::trace(782);
+                                                                     AST::init($thisS, []);
+                                                                     AST::setKey($thisS, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                     AST::setKey($thisS, 'type', AST::$EXPRESSION['UNARY']);
+                                                                     AST::setKey($thisS, 'operator', AST::$OPERATOR['NOT']);
+                                                                     AST::setKey($thisS, 'left', $s[$o]);
                                                                
 break;
 case 61:
 
-                                                                     AST::trace(792);
+                                                                     AST::init($thisS, []);
+                                                                     AST::setKey($thisS, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                     AST::setKey($thisS, 'type', AST::$EXPRESSION['UNARY']);
+                                                                     AST::setKey($thisS, 'operator', AST::$OPERATOR['INVERT']);
+                                                                     AST::setKey($thisS, 'left', $s[$o]);
                                                                
 break;
 case 62:
 
-                                                                     AST::trace(804);
+                                                                     AST::init($thisS, []);
+                                                                     AST::setKey($thisS, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                     AST::setKey($thisS, 'type', AST::$EXPRESSION['LOGICAL']);
+                                                                     AST::setKey($thisS, 'operator', AST::$OPERATOR['OR']);
+                                                                     AST::setKey($thisS, 'left', $s[$o-2]);
+                                                                     AST::setKey($thisS, 'right', $s[$o]);
                                                                
 break;
 case 63:
 
-                                                                     AST::trace(815);
+                                                                     AST::init($thisS, []);
+                                                                     AST::setKey($thisS, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                     AST::setKey($thisS, 'type', AST::$EXPRESSION['LOGICAL']);
+                                                                     AST::setKey($thisS, 'operator', AST::$OPERATOR['AND']);
+                                                                     AST::setKey($thisS, 'left', $s[$o-2]);
+                                                                     AST::setKey($thisS, 'right', $s[$o]);
                                                                
 break;
 case 64:
 
-                                                                     AST::trace(827);
+                                                                     AST::init($thisS, []);
+                                                                     AST::setKey($thisS, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                     AST::setKey($thisS, 'type', AST::$EXPRESSION['LOGICAL']);
+                                                                     AST::setKey($thisS, 'operator', AST::$OPERATOR['EQUALS']);
+                                                                     AST::setKey($thisS, 'left', $s[$o-2]);
+                                                                     AST::setKey($thisS, 'right', $s[$o]);
                                                                
 break;
 case 65:
 
-                                                                     AST::trace(838);
+                                                                     AST::init($thisS, []);
+                                                                     AST::setKey($thisS, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                     AST::setKey($thisS, 'type', AST::$EXPRESSION['LOGICAL']);
+                                                                     AST::setKey($thisS, 'operator', AST::$OPERATOR['LIKE']);
+                                                                     AST::setKey($thisS, 'left', $s[$o-2]);
+                                                                     AST::setKey($thisS, 'right', $s[$o]);
                                                                
 break;
 case 66:
 
-                                                                     AST::trace(849);
+                                                                     AST::init($thisS, []);
+                                                                     AST::setKey($thisS, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                     AST::setKey($thisS, 'type', AST::$EXPRESSION['LOGICAL']);
+                                                                     AST::setKey($thisS, 'operator',  AST::$OPERATOR['type']);
+                                                                     AST::setKey($thisS, 'left', $s[$o-2]);
+                                                                     AST::setKey($thisS, 'right', $s[$o]);
                                                                
 break;
 case 67:
 
-                                                                     AST::trace(860);
+                                                                     AST::init($thisS, []);
+                                                                     AST::setKey($thisS, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                     AST::setKey($thisS, 'type', AST::$EXPRESSION['LOGICAL']);
+                                                                     AST::setKey($thisS, 'operator', AST::$OPERATOR['LT']);
+                                                                     AST::setKey($thisS, 'left', $s[$o-2]);
+                                                                     AST::setKey($thisS, 'right', $s[$o]);
                                                                
 break;
 case 68:
 
-                                                                     AST::trace(871);
+                                                                     AST::init($thisS, []);
+                                                                     AST::setKey($thisS, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                     AST::setKey($thisS, 'type', AST::$EXPRESSION['LOGICAL']);
+                                                                     AST::setKey($thisS, 'operator', AST::$OPERATOR['GTE']);
+                                                                     AST::setKey($thisS, 'left', $s[$o-2]);
+                                                                     AST::setKey($thisS, 'right', $s[$o]);
                                                                
 break;
 case 69:
 
-                                                                     AST::trace(882);
+                                                                     AST::init($thisS, []);
+                                                                     AST::setKey($thisS, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                     AST::setKey($thisS, 'type', AST::$EXPRESSION['LOGICAL']);
+                                                                     AST::setKey($thisS, 'operator', AST::$OPERATOR['GT']);
+                                                                     AST::setKey($thisS, 'left', $s[$o-2]);
+                                                                     AST::setKey($thisS, 'right', $s[$o]);
                                                                
 break;
 case 70:
 
-                                                                     AST::trace(894);
+                                                                     AST::init($thisS, []);
+                                                                     AST::setKey($thisS, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                     AST::setKey($thisS, 'type', AST::$EXPRESSION['MATH']);
+                                                                     AST::setKey($thisS, 'operator', AST::$OPERATOR['MULTIPLY']);
+                                                                     AST::setKey($thisS, 'left', $s[$o-2]);
+                                                                     AST::setKey($thisS, 'right', $s[$o]);
                                                                
 break;
 case 71:
 
-                                                                     AST::trace(905);
+                                                                     AST::init($thisS, []);
+                                                                     AST::setKey($thisS, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                     AST::setKey($thisS, 'type', AST::$EXPRESSION['MATH']);
+                                                                     AST::setKey($thisS, 'operator', AST::$OPERATOR['DIVISION']);
+                                                                     AST::setKey($thisS, 'left', $s[$o-2]);
+                                                                     AST::setKey($thisS, 'right', $s[$o]);
                                                                
 break;
 case 72:
 
-                                                                     AST::trace(916);
+                                                                     AST::init($thisS, []);
+                                                                     AST::setKey($thisS, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                     AST::setKey($thisS, 'type', AST::$EXPRESSION['MATH']);
+                                                                     AST::setKey($thisS, 'operator', AST::$OPERATOR['ADDITION']);
+                                                                     AST::setKey($thisS, 'left', $s[$o-2]);
+                                                                     AST::setKey($thisS, 'right', $s[$o]);
                                                                
 break;
 case 73:
 
-                                                                     AST::trace(927);
-                                                               
-break;
-case 74:
-
-                                                                     AST::trace(932);
+                                                                     AST::init($thisS, []);
+                                                                     AST::setKey($thisS, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                     AST::setKey($thisS, 'type', AST::$EXPRESSION['MATH']);
+                                                                     AST::setKey($thisS, 'operator', AST::$OPERATOR['DIFFERENCE']);
+                                                                     AST::setKey($thisS, 'left', $s[$o-2]);
+                                                                     AST::setKey($thisS, 'right', $s[$o]);
                                                                
 break;
 case 75:
 
-                                                                     AST::trace(941);
+                                                                     AST::init($thisS, []);
+                                                                     AST::setKey($thisS, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                     AST::setKey($thisS, 'type', AST::$EXPRESSION['GROUP']);
+                                                                     AST::setKey($thisS, 'expression', $s[$o-1]);
                                                                
 break;
 case 76:
 
-                                                                     AST::trace(950);
+                                                                     AST::init($thisS, []);
+                                                                     AST::setKey($thisS, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                     AST::setKey($thisS, 'type', AST::$EXPRESSION['IDENTIFIER']);
+                                                                     AST::setKey($thisS, 'name', $s[$o]);
                                                                
 break;
 case 77:
 
-                                                                     AST::trace(959);
+                                                                     AST::init($thisS, []);
+                                                                     AST::setKey($thisS, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                     AST::setKey($thisS, 'type', AST::$EXPRESSION['IDENTIFIER']);
+                                                                     AST::setKey($thisS, 'name', AST::unescapeIdentifier($s[$o]));
                                                                
 break;
 case 78:
 
-                                                                     AST::trace(968);
+                                                                     AST::init($thisS, []);
+                                                                     AST::setKey($thisS, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                     AST::setKey($thisS, 'type', AST::$EXPRESSION['BINDING']);
+                                                                     AST::setKey($thisS, 'name', AST::unescapeBindingName($s[$o]));
                                                                
 break;
 case 79:
 
-                                                                     AST::trace(981);
+                                                                     AST::init($thisS, []);
+                                                                     AST::setKey($thisS, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                     AST::setKey($thisS, 'type', AST::$EXPRESSION['FUNCTION_CALL']);
+                                                                     AST::setKey($thisS, 'function_name', $s[$o-2]);
+                                                                     AST::setKey($thisS, 'arguments', []);
                                                                
 break;
 case 80:
 
-                                                                     AST::trace(991);
-                                                               
-break;
-case 81:
-
-                                                                     AST::trace(999);
+                                                                     AST::init($thisS, []);
+                                                                     AST::setKey($thisS, 'op', AST::$TOKEN_TYPES['EXPRESSION']);
+                                                                     AST::setKey($thisS, 'type', AST::$EXPRESSION['FUNCTION_CALL']);
+                                                                     AST::setKey($thisS, 'function_name', $s[$o-3]);
+                                                                     AST::setKey($thisS, 'arguments', $s[$o-1]);
                                                                
 break;
 case 82:
 
-                                                                     AST::trace(1004);
+                                                                     AST::push($s[$o-2], $s[$o] );
+                                                                     AST::init($thisS, $s[$o-2]);
                                                                
 break;
 case 83:
 
-                                                                     AST::trace(1015);
+                                                                     AST::init($thisS, []);
+                                                                     AST::setKey($thisS, 'op', AST::$TOKEN_TYPES['OPTION_ORDERING']);
+                                                                     AST::setKey($thisS, 'type', AST::$ORDERING_STRATEGY['RANDOM']);
                                                                
 break;
 case 84:
 
-                                                                     AST::trace(1024);
+                                                                     AST::init($thisS, []);
+                                                                     AST::setKey($thisS, 'op', AST::$TOKEN_TYPES['OPTION_ORDERING']);
+                                                                     AST::setKey($thisS, 'type', AST::$ORDERING_STRATEGY['ORDERED']);
+                                                                     AST::setKey($thisS, 'fields', $s[$o]);
                                                                
 break;
 case 85:
 
-                                                                     AST::trace(1032);
-                                                               
-break;
-case 86:
-
-                                                                     AST::trace(1037);
+                                                                     AST::init($thisS, []);
+                                                                     AST::push($thisS, $s[$o] );
                                                                
 break;
 case 87:
 
-                                                                     AST::trace(1049);
+                                                                     AST::init($thisS, []);
+                                                                     AST::setKey($thisS, 'op', AST::$TOKEN_TYPES['ORDER_EXPRESSION']);
+                                                                     AST::setKey($thisS, 'expression', $s[$o-1]);
+                                                                     AST::setKey($thisS, 'direction', AST::$ORDER_DIRECTION['ASCENDING']);
                                                                
 break;
 case 88:
 
-                                                                     AST::trace(1059);
+                                                                     AST::init($thisS, []);
+                                                                     AST::setKey($thisS, 'op', AST::$TOKEN_TYPES['ORDER_EXPRESSION']);
+                                                                     AST::setKey($thisS, 'expression', $s[$o-1]);
+                                                                     AST::setKey($thisS, 'direction', AST::$ORDER_DIRECTION['DESCENDING']);
                                                                
 break;
 case 89:
 
-                                                                     AST::trace(1068);
+                                                                     AST::init($thisS, []);
+                                                                     AST::setKey($thisS, 'op', AST::$TOKEN_TYPES['ORDER_EXPRESSION']);
+                                                                     AST::setKey($thisS, 'expression', $s[$o]);
+                                                                     AST::setKey($thisS, 'direction', AST::$ORDER_DIRECTION['ASCENDING']);
                                                                
 break;
 case 90:
 
-                                                                     AST::trace(1080);
+                                                                     AST::init($thisS, []);
+                                                                     AST::setKey($thisS, 'op', AST::$TOKEN_TYPES['OPTION_LIMIT']);
+                                                                     AST::setKey($thisS, 'limit', AST::parseNumber($s[$o]));
+                                                                     AST::setKey($thisS, 'skip', 0);
                                                                
 break;
 case 91:
 
-                                                                     AST::trace(1089);
+                                                                     AST::init($thisS, []);
+                                                                     AST::setKey($thisS, 'op', AST::$TOKEN_TYPES['OPTION_LIMIT']);
+                                                                     AST::setKey($thisS, 'limit', AST::parseNumber( $s[$o] ));
+                                                                     AST::setKey($thisS, 'skip', AST::parseNumber($s[$o-2]));
                                                                
 break;
 }
@@ -3963,7 +4019,6 @@ class ParserValue
     public $loc;
     public $lineNo = 0;
     public $text;
-    public $result = null;
 
     function __clone() {
         $clone = new ParserValue();
