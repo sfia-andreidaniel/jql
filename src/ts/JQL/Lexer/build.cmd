@@ -1,1 +1,1 @@
-node ..\..\..\..\vendor\jison\ports\php\php.js JQLGrammar.jison
+node jison JQLGrammar.jison
