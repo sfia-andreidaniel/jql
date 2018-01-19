@@ -165,8 +165,9 @@ var JQLLexerFactory = (function () {
                         return new JQLExpressionBinding(lexerToken);
                     case EJQL_LEXER_EXPRESSION_TYPES.FUNCTION_CALL:
                         return new JQLExpressionFunctionCall(lexerToken);
+                    default:
+                        throw new Error('Unknown expression type: ' + JSON.stringify(lexerToken));
                 }
-                break;
             case EJQL_LEXER_OPCODE_TYPES.FIELDS_LIST:
                 switch (lexerToken.type) {
                     case EJQL_LEXER_FIELD_TYPES.ALL_FIELDS:
@@ -2436,11 +2437,11 @@ var JQLStatementSelectFieldsListAll = (function (_super) {
 }(JQLStatementSelectFieldsList));
 var JQLStatementSelectFieldsListSpecific = (function (_super) {
     __extends(JQLStatementSelectFieldsListSpecific, _super);
-    function JQLStatementSelectFieldsListSpecific(lexerToken) {
+    function JQLStatementSelectFieldsListSpecific(token) {
         var _this = _super.call(this) || this;
         _this.fields = [];
-        for (var i = 0, len = lexerToken.fields.length; i < len; i++) {
-            _this.fields.push(JQLLexerFactory.create(lexerToken.fields[i]));
+        for (var i = 0, len = token.fields.length; i < len; i++) {
+            _this.fields.push(JQLLexerFactory.create(token.fields[i]));
         }
         return _this;
     }
@@ -2454,12 +2455,12 @@ var JQLStatementSelectFieldsListSpecific = (function (_super) {
 }(JQLStatementSelectFieldsList));
 var JQLStatementInsert = (function (_super) {
     __extends(JQLStatementInsert, _super);
-    function JQLStatementInsert(statement) {
-        var _this = _super.call(this, statement) || this;
+    function JQLStatementInsert(token) {
+        var _this = _super.call(this, token) || this;
         _this.fields = [];
-        _this.table = JQLLexerFactory.create(statement.table);
-        for (var i = 0, len = statement.fields.length; i < len; i++) {
-            _this.fields.push(JQLLexerFactory.create(statement.fields[i]));
+        _this.table = JQLLexerFactory.create(token.table);
+        for (var i = 0, len = token.fields.length; i < len; i++) {
+            _this.fields.push(JQLLexerFactory.create(token.fields[i]));
         }
         return _this;
     }
@@ -2503,28 +2504,28 @@ var JQLStatementInsert = (function (_super) {
 }(JQLStatement));
 var JQLStatementUpdate = (function (_super) {
     __extends(JQLStatementUpdate, _super);
-    function JQLStatementUpdate(statement) {
-        var _this = _super.call(this, statement) || this;
+    function JQLStatementUpdate(token) {
+        var _this = _super.call(this, token) || this;
         _this.fields = [];
         _this.filter = null;
         _this.limit = null;
         _this.sorter = null;
         _this.timer = null;
-        _this.table = JQLLexerFactory.create(statement.table);
-        if (!!statement.delayed) {
-            _this.timer = JQLLexerFactory.create(statement.delayed);
+        _this.table = JQLLexerFactory.create(token.table);
+        if (!!token.delayed) {
+            _this.timer = JQLLexerFactory.create(token.delayed);
         }
-        for (var i = 0, len = statement.fields.length; i < len; i++) {
-            _this.fields.push(JQLLexerFactory.create(statement.fields[i]));
+        for (var i = 0, len = token.fields.length; i < len; i++) {
+            _this.fields.push(JQLLexerFactory.create(token.fields[i]));
         }
-        if (!!statement.where) {
-            _this.filter = JQLLexerFactory.create(statement.where);
+        if (!!token.where) {
+            _this.filter = JQLLexerFactory.create(token.where);
         }
-        if (!!statement.limit) {
-            _this.limit = JQLLexerFactory.create(statement.limit);
+        if (!!token.limit) {
+            _this.limit = JQLLexerFactory.create(token.limit);
         }
-        if (!!statement.orderBy) {
-            _this.sorter = JQLLexerFactory.create(statement.orderBy);
+        if (!!token.orderBy) {
+            _this.sorter = JQLLexerFactory.create(token.orderBy);
         }
         return _this;
     }
@@ -2658,20 +2659,20 @@ var JQLStatementUpdateDelayedOption = (function (_super) {
 }(JQLOpcode));
 var JQLStatementDelete = (function (_super) {
     __extends(JQLStatementDelete, _super);
-    function JQLStatementDelete(statement) {
-        var _this = _super.call(this, statement) || this;
+    function JQLStatementDelete(token) {
+        var _this = _super.call(this, token) || this;
         _this.filter = null;
         _this.sorter = null;
         _this.limit = null;
-        _this.table = JQLLexerFactory.create(statement.table);
-        if (!!statement.where) {
-            _this.filter = JQLLexerFactory.create(statement.where);
+        _this.table = JQLLexerFactory.create(token.table);
+        if (!!token.where) {
+            _this.filter = JQLLexerFactory.create(token.where);
         }
-        if (!!statement.orderBy) {
-            _this.sorter = JQLLexerFactory.create(statement.orderBy);
+        if (!!token.orderBy) {
+            _this.sorter = JQLLexerFactory.create(token.orderBy);
         }
-        if (!!statement.limit) {
-            _this.limit = JQLLexerFactory.create(statement.limit);
+        if (!!token.limit) {
+            _this.limit = JQLLexerFactory.create(token.limit);
         }
         return _this;
     }

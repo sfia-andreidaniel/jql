@@ -12,30 +12,30 @@ class JQLStatementUpdate extends JQLStatement {
 
     private timer: JQLStatementUpdateDelayedOption = null;
 
-    constructor(statement: IJQL_LEXER_PARSED_UPDATE_STATEMENT) {
+    constructor(token: IJQL_LEXER_PARSED_UPDATE_STATEMENT) {
 
-        super(statement);
+        super(token);
 
-        this.table = <JQLTableReference>JQLLexerFactory.create(statement.table);
+        this.table = <JQLTableReference>JQLLexerFactory.create(token.table);
 
-        if (!!statement.delayed) {
-            this.timer = <JQLStatementUpdateDelayedOption>JQLLexerFactory.create(statement.delayed);
+        if (!!token.delayed) {
+            this.timer = <JQLStatementUpdateDelayedOption>JQLLexerFactory.create(token.delayed);
         }
 
-        for (let i = 0, len = statement.fields.length; i < len; i++) {
-            this.fields.push(<JQLStatementUpdateField>JQLLexerFactory.create(statement.fields[ i ]));
+        for (let i = 0, len = token.fields.length; i < len; i++) {
+            this.fields.push(<JQLStatementUpdateField>JQLLexerFactory.create(token.fields[ i ]));
         }
 
-        if (!!statement.where) {
-            this.filter = <JQLExpression>JQLLexerFactory.create(statement.where);
+        if (!!token.where) {
+            this.filter = <JQLExpression>JQLLexerFactory.create(token.where);
         }
 
-        if (!!statement.limit) {
-            this.limit = <JQLLimit>JQLLexerFactory.create(statement.limit);
+        if (!!token.limit) {
+            this.limit = <JQLLimit>JQLLexerFactory.create(token.limit);
         }
 
-        if (!!statement.orderBy) {
-            this.sorter = <JQLSorterStrategy>JQLLexerFactory.create(statement.orderBy);
+        if (!!token.orderBy) {
+            this.sorter = <JQLSorterStrategy>JQLLexerFactory.create(token.orderBy);
         }
 
     }

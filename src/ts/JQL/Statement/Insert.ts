@@ -4,14 +4,14 @@ class JQLStatementInsert extends JQLStatement {
 
     private fields: JQLStatementUpdateField[] = [];
 
-    constructor(statement: IJQL_LEXER_PARSED_INSERT_STATEMENT) {
+    constructor(token: IJQL_LEXER_PARSED_INSERT_STATEMENT) {
 
-        super(statement);
+        super(token);
 
-        this.table = <JQLTableReference>JQLLexerFactory.create(statement.table);
+        this.table = <JQLTableReference>JQLLexerFactory.create(token.table);
 
-        for (let i = 0, len = statement.fields.length; i < len; i++) {
-            this.fields.push(<JQLStatementUpdateField>JQLLexerFactory.create(statement.fields[ i ]));
+        for (let i = 0, len = token.fields.length; i < len; i++) {
+            this.fields.push(<JQLStatementUpdateField>JQLLexerFactory.create(token.fields[ i ]));
         }
     }
 

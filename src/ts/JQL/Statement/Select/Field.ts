@@ -1,4 +1,5 @@
 class JQLStatementSelectField extends JQLOpcode {
+
     private literal: string|null = null;
 
     private expression: JQLExpression;

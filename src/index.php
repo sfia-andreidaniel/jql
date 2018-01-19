@@ -22,8 +22,8 @@ try {
         'message' => $e->getMessage(),
         'code'    => $e->getCode(),
         'line'    => $e->getLine(),
-        'file'    => $e->getFile(),
+        'file'    => preg_replace('/\\.php$/', '', @end(explode(DIRECTORY_SEPARATOR, $e->getFile()))),
         'kind'    => preg_replace('/\\.php$/i', '', @end(explode('\\', get_class($e)))),
-    ]);
+    ], JSON_PRETTY_PRINT);
 
 }

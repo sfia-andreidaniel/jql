@@ -125,9 +125,9 @@ class JQLLexerFactory {
                     case EJQL_LEXER_EXPRESSION_TYPES.FUNCTION_CALL:
                         return new JQLExpressionFunctionCall(<IJQL_LEXER_EXPRESSION_FUNCTION_CALL>lexerToken);
 
+                    default:
+                        throw new Error('Unknown expression type: ' + JSON.stringify(lexerToken) );
                 }
-
-                break;
 
             case EJQL_LEXER_OPCODE_TYPES.FIELDS_LIST:
 
