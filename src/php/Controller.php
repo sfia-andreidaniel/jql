@@ -5,6 +5,7 @@ namespace JQL;
 use JQL\Authorization\AuthorizationException;
 use JQL\Authorization\AuthorizationService;
 use JQL\Database\Database;
+use JQL\RemoteQuery\RemoteQueryException;
 use JQL\RemoteQuery\RemoteQueryService;
 
 class Controller
@@ -86,6 +87,7 @@ class Controller
      * @return mixed
      * @throws AuthorizationException
      * @throws ControllerException
+     * @throws RemoteQueryException
      */
     public function dispatch()
     {
@@ -132,6 +134,7 @@ class Controller
      * @return mixed
      * @throws AuthorizationException
      * @throws ControllerException
+     * @throws RemoteQueryException
      */
     private function executeQueryAction()
     {
