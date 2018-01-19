@@ -10,6 +10,8 @@ class JQLDatabase implements IJQLDatabase {
 
     private authorizationToken: string;
 
+    private rpcEndpointName: string;
+
     public withJQuery(jq: JQueryStatic): this {
         this.jq = jq;
         this.planner = new JQLDatabaseQueryPlanner(this);
@@ -27,6 +29,15 @@ class JQLDatabase implements IJQLDatabase {
 
     public getAuthorizationToken(): string {
         return this.authorizationToken;
+    }
+
+    public withRPCEndpointName( rpcEndpointName: string ): this {
+        this.rpcEndpointName = rpcEndpointName;
+        return this;
+    }
+
+    public getRPCEndpointName(): string {
+        return this.rpcEndpointName;
     }
 
     private isValidIdentifierName(identifier: string): boolean {

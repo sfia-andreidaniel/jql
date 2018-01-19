@@ -411,6 +411,13 @@ var JQLDatabase = (function () {
     JQLDatabase.prototype.getAuthorizationToken = function () {
         return this.authorizationToken;
     };
+    JQLDatabase.prototype.withRPCEndpointName = function (rpcEndpointName) {
+        this.rpcEndpointName = rpcEndpointName;
+        return this;
+    };
+    JQLDatabase.prototype.getRPCEndpointName = function () {
+        return this.rpcEndpointName;
+    };
     JQLDatabase.prototype.isValidIdentifierName = function (identifier) {
         return "string" === typeof identifier && /^[a-zA-Z$_][a-zA-Z0-9_$]+$/.test(identifier);
     };
@@ -971,10 +978,25 @@ var JQLDatabaseStatementExecutorRemoteStatement = (function () {
         return function () {
             return _this.db.getJQuery().Deferred(function (defer) {
                 if (_this.statement.getStatementType() !== EJQL_LEXER_STATEMENT_TYPES.SELECT) {
-                    defer.reject(new Error('Only select statements can be sent to backend!'));
+                    defer.reject(new Error("Only select statements can be sent to backend!"));
                     return;
                 }
-                defer.reject(new Error('REMOTE statements not implemented!'));
+                var rpcEndpointName = _this.db.getRPCEndpointName(), query = {
+                    "auth": _this.db.getAuthorizationToken(),
+                    "query": btoa(JSON.stringify(_this.statement.getTokenizedStatement())),
+                    "bindings": btoa(JSON.stringify(_this.statement.getBindingData())),
+                };
+                _this.db.getJQuery().ajax({
+                    url: _this.db.getRPCEndpointName() + "?action=query",
+                    type: "POST",
+                    dataType: "json",
+                    data: query,
+                }).then(function (result) {
+                    console.log("REMOTE: " + JSON.stringify(result));
+                }).fail(function (e) {
+                    console.error('args: ', arguments);
+                    defer.reject(e);
+                });
             }).promise();
         };
     };
@@ -1420,6 +1442,7 @@ var JQLStatement = (function (_super) {
     function JQLStatement(token) {
         var _this = _super.call(this) || this;
         _this.remote = token.remote;
+        _this.statement = token;
         return _this;
     }
     JQLStatement.prototype.getOpcodeType = function () {
@@ -1446,8 +1469,20 @@ var JQLStatement = (function (_super) {
         this.binded = true;
         return this;
     };
+    JQLStatement.prototype.getBindingData = function () {
+        var bindData = {}, bindings = this.getBindings(), bindingName;
+        for (var i = 0, len = bindings.length; i < len; i++) {
+            if (undefined === bindData[bindingName = bindings[i].getBindingName()]) {
+                bindData[bindingName] = bindings[i].getBindedValue();
+            }
+        }
+        return bindData;
+    };
     JQLStatement.prototype.isBinded = function () {
         return this.binded;
+    };
+    JQLStatement.prototype.getTokenizedStatement = function () {
+        return JSON.parse(JSON.stringify(this.statement));
     };
     return JQLStatement;
 }(JQLOpcode));
@@ -1496,6 +1531,12 @@ var JQLExpressionBinding = (function (_super) {
     JQLExpressionBinding.prototype.getBindingName = function () {
         return this.bindingName;
     };
+    JQLExpressionBinding.prototype.getBindedValue = function () {
+        if (undefined === this.bindingValue) {
+            throw new Error("Binding " + JSON.stringify(this.bindingName) + " is not binded!");
+        }
+        return this.bindingValue;
+    };
     JQLExpressionBinding.prototype.getBindings = function () {
         return [this];
     };
@@ -1518,11 +1559,11 @@ var JQLExpressionBinding = (function (_super) {
             return this.bindingValue;
         }
         else {
-            throw new Error('Failed to compute binding: Binding ' + this.bindingName + ' is not binded!');
+            throw new Error("Failed to compute binding: Binding " + this.bindingName + " is not binded!");
         }
     };
     JQLExpressionBinding.prototype.toString = function () {
-        return ':' + this.bindingName;
+        return ":" + this.bindingName;
     };
     return JQLExpressionBinding;
 }(JQLExpression));

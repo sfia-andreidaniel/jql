@@ -4,7 +4,7 @@ class JQLExpressionBinding extends JQLExpression {
 
     private bindingValue: JQLPrimitive;
 
-    constructor( token: IJQL_LEXER_EXPRESSION_BINDING ) {
+    constructor(token: IJQL_LEXER_EXPRESSION_BINDING) {
 
         super();
 
@@ -20,6 +20,13 @@ class JQLExpressionBinding extends JQLExpression {
         return this.bindingName;
     }
 
+    public getBindedValue(): JQLPrimitive {
+        if (undefined === this.bindingValue) {
+            throw new Error("Binding " + JSON.stringify(this.bindingName) + " is not binded!");
+        }
+        return this.bindingValue;
+    }
+
     public getBindings(): JQLExpressionBinding[] {
         return [ this ];
     }
@@ -32,7 +39,7 @@ class JQLExpressionBinding extends JQLExpression {
         return [];
     }
 
-    public bind( value: JQLPrimitive ): this {
+    public bind(value: JQLPrimitive): this {
         this.bindingValue = value;
         return this;
     }
@@ -42,20 +49,20 @@ class JQLExpressionBinding extends JQLExpression {
         return this;
     }
 
-    public compute( context: IJQLTableRow ): JQLPrimitive {
+    public compute(context: IJQLTableRow): JQLPrimitive {
 
-        if ( undefined !== this.bindingValue ) {
+        if (undefined !== this.bindingValue) {
 
             return this.bindingValue;
 
         } else {
 
-            throw new Error('Failed to compute binding: Binding ' + this.bindingName + ' is not binded!');
+            throw new Error("Failed to compute binding: Binding " + this.bindingName + " is not binded!");
 
         }
     }
 
     public toString(): string {
-        return ':' + this.bindingName;
+        return ":" + this.bindingName;
     }
 }

@@ -393,3 +393,6 @@ interface IJQLPlannerQueueEntry {
     defer: JQueryDeferred<JQLStatementResult>;
 }
 
+interface IStringMap {
+    [ key: string ]: string;
+}

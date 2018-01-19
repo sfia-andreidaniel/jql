@@ -23,6 +23,7 @@ $authorizationToken = json_decode(file_get_contents('http://127.0.0.1/?action=to
 
         db
             .withAuthorizationToken(<?php echo json_encode($authorizationToken) ?>)
+            .withRPCEndpointName("http://127.0.0.1/")
             .withTable(
                 'persons',
                 JQLTable.createFromInMemoryArrayOfObjects(

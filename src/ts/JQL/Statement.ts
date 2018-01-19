@@ -4,9 +4,12 @@ abstract class JQLStatement extends JQLOpcode {
 
     private binded: boolean;
 
+    private statement: IJQL_LEXER_PARSED_STATEMENT;
+
     constructor(token: IJQL_LEXER_PARSED_STATEMENT) {
         super();
         this.remote = token.remote;
+        this.statement = token;
     }
 
     public abstract getStatementType(): EJQL_LEXER_STATEMENT_TYPES;
@@ -57,8 +60,29 @@ abstract class JQLStatement extends JQLOpcode {
 
     }
 
+    public getBindingData(): IJQLBindData {
+
+        let bindData: IJQLBindData = {},
+            bindings: JQLExpressionBinding[] = this.getBindings(),
+            bindingName;
+
+        for ( let i=0, len = bindings.length; i<len; i++ ) {
+            if ( undefined === bindData[ bindingName = bindings[i].getBindingName() ] ) {
+                bindData[ bindingName ] = bindings[i].getBindedValue();
+            }
+        }
+
+        return bindData;
+
+    }
+
     public isBinded(): boolean {
         return this.binded;
+    }
+
+    public getTokenizedStatement(): IJQL_LEXER_PARSED_STATEMENT {
+        // return a clone of the parsed statement, in order to avoid argument-passed-by-reference issues
+        return JSON.parse(JSON.stringify(this.statement));
     }
 
 }
