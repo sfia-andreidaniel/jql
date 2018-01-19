@@ -2,7 +2,7 @@
 
 namespace JQL\Tokenizer;
 
-class EJQLOpcodeTypes
+class EJQLLexerOpcodeTypes
 {
     const STATEMENT = "statement";
     const TABLE = "table_reference";
