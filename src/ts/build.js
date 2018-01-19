@@ -1448,9 +1448,6 @@ var JQLExpressionBinding = (function (_super) {
         _this.bindingName = token.name;
         return _this;
     }
-    JQLExpressionBinding.prototype.getOpcodeType = function () {
-        return EJQL_LEXER_OPCODE_TYPES.EXPRESSION;
-    };
     JQLExpressionBinding.prototype.getExpressionType = function () {
         return EJQL_LEXER_EXPRESSION_TYPES.BINDING;
     };
@@ -1489,14 +1486,11 @@ var JQLExpressionBinding = (function (_super) {
 }(JQLExpression));
 var JQLExpressionBoolean = (function (_super) {
     __extends(JQLExpressionBoolean, _super);
-    function JQLExpressionBoolean(lexerToken) {
+    function JQLExpressionBoolean(token) {
         var _this = _super.call(this) || this;
-        _this.value = lexerToken.value;
+        _this.value = token.value;
         return _this;
     }
-    JQLExpressionBoolean.prototype.getOpcodeType = function () {
-        return EJQL_LEXER_OPCODE_TYPES.EXPRESSION;
-    };
     JQLExpressionBoolean.prototype.getExpressionType = function () {
         return EJQL_LEXER_EXPRESSION_TYPES.BOOLEAN;
     };
@@ -1529,9 +1523,6 @@ var JQLExpressionFunctionCall = (function (_super) {
         }
         return _this;
     }
-    JQLExpressionFunctionCall.prototype.getOpcodeType = function () {
-        return EJQL_LEXER_OPCODE_TYPES.EXPRESSION;
-    };
     JQLExpressionFunctionCall.prototype.getExpressionType = function () {
         return EJQL_LEXER_EXPRESSION_TYPES.FUNCTION_CALL;
     };
@@ -1600,9 +1591,6 @@ var JQLExpressionGroup = (function (_super) {
         _this.expression = JQLLexerFactory.create(token.expression);
         return _this;
     }
-    JQLExpressionGroup.prototype.getOpcodeType = function () {
-        return EJQL_LEXER_OPCODE_TYPES.EXPRESSION;
-    };
     JQLExpressionGroup.prototype.getExpressionType = function () {
         return EJQL_LEXER_EXPRESSION_TYPES.GROUP;
     };
@@ -1630,9 +1618,6 @@ var JQLExpressionIdentifier = (function (_super) {
         _this.identifierName = token.name;
         return _this;
     }
-    JQLExpressionIdentifier.prototype.getOpcodeType = function () {
-        return EJQL_LEXER_OPCODE_TYPES.EXPRESSION;
-    };
     JQLExpressionIdentifier.prototype.getExpressionType = function () {
         return EJQL_LEXER_EXPRESSION_TYPES.IDENTIFIER;
     };
@@ -1664,9 +1649,6 @@ var JQLExpressionLogical = (function (_super) {
         _this.right = JQLLexerFactory.create(token.right);
         return _this;
     }
-    JQLExpressionLogical.prototype.getOpcodeType = function () {
-        return EJQL_LEXER_OPCODE_TYPES.EXPRESSION;
-    };
     JQLExpressionLogical.prototype.getExpressionType = function () {
         return EJQL_LEXER_EXPRESSION_TYPES.LOGICAL;
     };
@@ -1856,9 +1838,6 @@ var JQLExpressionMath = (function (_super) {
         _this.right = JQLLexerFactory.create(token.right);
         return _this;
     }
-    JQLExpressionMath.prototype.getOpcodeType = function () {
-        return EJQL_LEXER_OPCODE_TYPES.EXPRESSION;
-    };
     JQLExpressionMath.prototype.getExpressionType = function () {
         return EJQL_LEXER_EXPRESSION_TYPES.MATH;
     };
@@ -1973,9 +1952,6 @@ var JQLExpressionNull = (function (_super) {
     function JQLExpressionNull() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    JQLExpressionNull.prototype.getOpcodeType = function () {
-        return EJQL_LEXER_OPCODE_TYPES.EXPRESSION;
-    };
     JQLExpressionNull.prototype.getExpressionType = function () {
         return EJQL_LEXER_EXPRESSION_TYPES.NULL;
     };
@@ -1998,14 +1974,11 @@ var JQLExpressionNull = (function (_super) {
 }(JQLExpression));
 var JQLExpressionNumber = (function (_super) {
     __extends(JQLExpressionNumber, _super);
-    function JQLExpressionNumber(opcode) {
+    function JQLExpressionNumber(token) {
         var _this = _super.call(this) || this;
-        _this.value = opcode.value;
+        _this.value = token.value;
         return _this;
     }
-    JQLExpressionNumber.prototype.getOpcodeType = function () {
-        return EJQL_LEXER_OPCODE_TYPES.EXPRESSION;
-    };
     JQLExpressionNumber.prototype.getExpressionType = function () {
         return EJQL_LEXER_EXPRESSION_TYPES.NUMBER;
     };
@@ -2028,14 +2001,11 @@ var JQLExpressionNumber = (function (_super) {
 }(JQLExpression));
 var JQLExpressionString = (function (_super) {
     __extends(JQLExpressionString, _super);
-    function JQLExpressionString(opcode) {
+    function JQLExpressionString(token) {
         var _this = _super.call(this) || this;
-        _this.value = opcode.value;
+        _this.value = token.value;
         return _this;
     }
-    JQLExpressionString.prototype.getOpcodeType = function () {
-        return EJQL_LEXER_OPCODE_TYPES.EXPRESSION;
-    };
     JQLExpressionString.prototype.getExpressionType = function () {
         return EJQL_LEXER_EXPRESSION_TYPES.STRING;
     };
@@ -2063,9 +2033,6 @@ var JQLExpressionUnary = (function (_super) {
         _this.operand = JQLLexerFactory.create(token.left);
         return _this;
     }
-    JQLExpressionUnary.prototype.getOpcodeType = function () {
-        return EJQL_LEXER_OPCODE_TYPES.EXPRESSION;
-    };
     JQLExpressionUnary.prototype.getExpressionType = function () {
         return EJQL_LEXER_EXPRESSION_TYPES.UNARY;
     };

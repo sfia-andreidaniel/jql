@@ -2,7 +2,7 @@
 
 namespace JQL\Tokenizer;
 
-abstract class Opcode
+abstract class JQLOpcode
 {
 
     public abstract function getOpcodeType();

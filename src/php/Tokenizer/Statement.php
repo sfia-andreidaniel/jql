@@ -2,11 +2,7 @@
 
 namespace JQL\Tokenizer;
 
-use JQL\Expression\JQLExpressionBinding;
-use JQL\Expression\JQLExpressionFunctionCall;
-use JQL\Expression\JQLExpressionIdentifier;
-
-abstract class Statement extends Opcode
+abstract class Statement extends JQLOpcode
 {
 
     /**
@@ -29,7 +25,7 @@ abstract class Statement extends Opcode
      */
     public function getOpcodeType()
     {
-        return EJQLOpcodeTypes::STATEMENT;
+        return EJQLLexerOpcodeTypes::STATEMENT;
     }
 
     /**

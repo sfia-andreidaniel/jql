@@ -2,16 +2,12 @@ class JQLExpressionBoolean extends JQLExpression {
 
     private value: boolean;
 
-    constructor( lexerToken: IJQL_LEXER_EXPRESSION_BOOLEAN ) {
+    constructor( token: IJQL_LEXER_EXPRESSION_BOOLEAN ) {
 
         super();
 
-        this.value = lexerToken.value;
+        this.value = token.value;
 
-    }
-
-    public getOpcodeType(): EJQL_LEXER_OPCODE_TYPES {
-        return EJQL_LEXER_OPCODE_TYPES.EXPRESSION;
     }
 
     public getExpressionType(): EJQL_LEXER_EXPRESSION_TYPES {
