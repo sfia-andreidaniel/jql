@@ -10,15 +10,15 @@ abstract class JQLTable implements IJQLTable {
 
         for (let i = 0, idtf = identifiers || [], len = idtf.length; i < len; i++) {
 
-            this.identifiers.push(idtf[i]);
+            this.identifiers.push(idtf[ i ]);
 
-            if (undefined !== idtf[i].default) {
+            if (undefined !== idtf[ i ].default) {
 
-                this.emptyRow.push(idtf[i].default);
+                this.emptyRow.push(idtf[ i ].default);
 
             } else {
 
-                switch (identifiers[i].type) {
+                switch (identifiers[ i ].type) {
 
                     case EJQLTableColumnType.NULL:
                         this.emptyRow.push(null);
@@ -29,7 +29,7 @@ abstract class JQLTable implements IJQLTable {
                         break;
 
                     case EJQLTableColumnType.STRING:
-                        this.emptyRow.push('');
+                        this.emptyRow.push("");
                         break;
 
                     case EJQLTableColumnType.BOOLEAN:
@@ -53,7 +53,7 @@ abstract class JQLTable implements IJQLTable {
     public hasIdentifier(identifierName: string): boolean {
 
         for (let i = 0, len = this.identifiers.length; i < len; i++) {
-            if (this.identifiers[i].name === identifierName) {
+            if (this.identifiers[ i ].name === identifierName) {
                 return true;
             }
         }
@@ -67,19 +67,19 @@ abstract class JQLTable implements IJQLTable {
 
     public static createFromInMemoryArrayOfObjects(rows: object[], columnDefinitions?: IJQLTableColumn[]): JQLTable {
 
-        let identifiers = undefined === columnDefinitions
+        let identifiers              = undefined === columnDefinitions
             ? JQLUtils.getColumnDefinitions(rows)
             : columnDefinitions,
 
             result: JQLPrimitive[][] = [],
-            ncols: number = identifiers.length,
+            ncols: number            = identifiers.length,
             row: JQLPrimitive[],
             v: JQLPrimitive,
             vType: EJQLTableColumnType;
 
         if (!identifiers.length) {
 
-            throw new Error('No valid columns were detected in "in-memory" array!');
+            throw new Error("No valid columns were detected in \"in-memory\" array!");
 
         }
 
@@ -89,11 +89,11 @@ abstract class JQLTable implements IJQLTable {
 
             for (let col = 0; col < ncols; col++) {
 
-                v = rows[i][identifiers[col].name];
+                v = rows[ i ][ identifiers[ col ].name ];
 
                 vType = JQLUtils.getType(v);
 
-                if (vType === null || vType !== identifiers[col].type) {
+                if (vType === null || vType !== identifiers[ col ].type) {
                     v = null;
                 }
 
@@ -109,6 +109,10 @@ abstract class JQLTable implements IJQLTable {
 
     }
 
+    public static createFromRemoteTableDefinition(columns: IJQLTableColumn[]): JQLTable {
+        return new JQLTableStorageEngineRemote(columns);
+    }
+
     public createEmptyRow(): JQLPrimitive[] {
         return this.emptyRow.slice(0);
     }
@@ -121,11 +125,11 @@ abstract class JQLTable implements IJQLTable {
 
         for (let i = 0, len = this.indexes.length; i < len; i++) {
 
-            this.indexes[i].index();
+            this.indexes[ i ].index();
 
-            if (this.indexes[i].isAutoIncrement()) {
+            if (this.indexes[ i ].isAutoIncrement()) {
 
-                this.setNextAutoIncrementValue(this.indexes[i].getNextAutoIncrementValue());
+                this.setNextAutoIncrementValue(this.indexes[ i ].getNextAutoIncrementValue());
 
             }
         }

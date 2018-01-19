@@ -319,14 +319,15 @@ interface IJQLTableIndex {
 }
 
 enum EJQLTableStorageEngine {
-    IN_MEMORY = 'memory',
+    IN_MEMORY = "memory",
+    REMOTE    = "remote",
 }
 
 interface IJQLTable {
 
     describe(): IJQLTableColumn[];
 
-    hasIdentifier( identifierName: string ): boolean;
+    hasIdentifier(identifierName: string): boolean;
 
     isRemote(): boolean;
 

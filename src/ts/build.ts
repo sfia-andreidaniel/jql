@@ -13,6 +13,7 @@
 ///<reference path="./JQL/Table/Index.ts" />
 ///<reference path="./JQL/Table/Index/SingleColumn.ts" />
 ///<reference path="./JQL/Table/StorageEngine/InMemory.ts" />
+///<reference path="./JQL/Table/StorageEngine/Remote.ts" />
 ///<reference path="./JQL/Table/Utils/Iterator.ts" />
 ///<reference path="./JQL/Row.ts" />
 ///<reference path="./JQL/Database/QueryPlanner.ts" />
@@ -63,4 +64,3 @@
 ///<reference path="./JQL/Statement/Update/DelayedOption.ts" />
 ///<reference path="./JQL/Statement/Delete.ts" />
 
-///<reference path="./demo.ts" />

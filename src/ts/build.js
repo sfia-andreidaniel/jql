@@ -83,6 +83,7 @@ var EJQLTableColumnType;
 var EJQLTableStorageEngine;
 (function (EJQLTableStorageEngine) {
     EJQLTableStorageEngine["IN_MEMORY"] = "memory";
+    EJQLTableStorageEngine["REMOTE"] = "remote";
 })(EJQLTableStorageEngine || (EJQLTableStorageEngine = {}));
 var JQLLexerFactory = (function () {
     function JQLLexerFactory() {
@@ -403,6 +404,13 @@ var JQLDatabase = (function () {
     JQLDatabase.prototype.getJQuery = function () {
         return this.jq;
     };
+    JQLDatabase.prototype.withAuthorizationToken = function (authorizationToken) {
+        this.authorizationToken = authorizationToken;
+        return this;
+    };
+    JQLDatabase.prototype.getAuthorizationToken = function () {
+        return this.authorizationToken;
+    };
     JQLDatabase.prototype.isValidIdentifierName = function (identifier) {
         return "string" === typeof identifier && /^[a-zA-Z$_][a-zA-Z0-9_$]+$/.test(identifier);
     };
@@ -467,8 +475,8 @@ var JQLDatabase = (function () {
         }
     };
     JQLDatabase.prototype.createStatement = function (statement) {
-        if (!statement || 'string' !== typeof statement) {
-            throw new Error('Invalid argument: statement: string expected!');
+        if (!statement || "string" !== typeof statement) {
+            throw new Error("Invalid argument: statement: string expected!");
         }
         var stmt = JQLLexerFactory.create(JQLGrammar.parse(statement));
         var tableReference = stmt.getTable();
@@ -523,7 +531,7 @@ var JQLDatabase = (function () {
                 case EJQL_LEXER_STATEMENT_TYPES.DELETE:
                     return (new JQLDatabaseStatementExecutorDelete(statement, this)).execute();
                 default:
-                    throw new Error('Failed to create execution strategy: Uknown statement type!');
+                    throw new Error("Failed to create execution strategy: Uknown statement type!");
             }
         }
         else {
@@ -991,7 +999,7 @@ var JQLTable = (function () {
                         this.emptyRow.push(0);
                         break;
                     case EJQLTableColumnType.STRING:
-                        this.emptyRow.push('');
+                        this.emptyRow.push("");
                         break;
                     case EJQLTableColumnType.BOOLEAN:
                         this.emptyRow.push(false);
@@ -1018,7 +1026,7 @@ var JQLTable = (function () {
             ? JQLUtils.getColumnDefinitions(rows)
             : columnDefinitions, result = [], ncols = identifiers.length, row, v, vType;
         if (!identifiers.length) {
-            throw new Error('No valid columns were detected in "in-memory" array!');
+            throw new Error("No valid columns were detected in \"in-memory\" array!");
         }
         for (var i = 0, len = rows.length; i < len; i++) {
             row = [];
@@ -1033,6 +1041,9 @@ var JQLTable = (function () {
             result.push(row);
         }
         return new JQLTableStorageEngineInMemory(identifiers, result);
+    };
+    JQLTable.createFromRemoteTableDefinition = function (columns) {
+        return new JQLTableStorageEngineRemote(columns);
     };
     JQLTable.prototype.createEmptyRow = function () {
         return this.emptyRow.slice(0);
@@ -1245,6 +1256,37 @@ var JQLTableStorageEngineInMemory = (function (_super) {
         this.autoIncrementValue = value;
     };
     return JQLTableStorageEngineInMemory;
+}(JQLTable));
+var JQLTableStorageEngineRemote = (function (_super) {
+    __extends(JQLTableStorageEngineRemote, _super);
+    function JQLTableStorageEngineRemote() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    JQLTableStorageEngineRemote.prototype.isRemote = function () {
+        return true;
+    };
+    JQLTableStorageEngineRemote.prototype.getStorageEngine = function () {
+        return EJQLTableStorageEngine.REMOTE;
+    };
+    JQLTableStorageEngineRemote.prototype.isTransactional = function () {
+        return false;
+    };
+    JQLTableStorageEngineRemote.prototype.startTransaction = function () {
+        throw new Error('Operation handled by backend!');
+    };
+    JQLTableStorageEngineRemote.prototype.commitTransaction = function () {
+        throw new Error('Operation handled by backend!');
+    };
+    JQLTableStorageEngineRemote.prototype.rollbackTransaction = function () {
+        throw new Error('Operation handled by backend!');
+    };
+    JQLTableStorageEngineRemote.prototype.getNextAutoIncrementValue = function () {
+        throw new Error('Operation handled by backend!');
+    };
+    JQLTableStorageEngineRemote.prototype.setNextAutoIncrementValue = function (nextAutoIncrementValue) {
+        throw new Error('Operation handled by backend!');
+    };
+    return JQLTableStorageEngineRemote;
 }(JQLTable));
 var JQLTableUtilsIterator = (function () {
     function JQLTableUtilsIterator(table) {
@@ -2714,61 +2756,3 @@ var JQLStatementDelete = (function (_super) {
     };
     return JQLStatementDelete;
 }(JQLStatement));
-var db = (new JQLDatabase()).withJQuery(jQuery.noConflict());
-db.withTable('persons', JQLTable.createFromInMemoryArrayOfObjects([
-    {
-        id: 1,
-        name: "Jack",
-        age: 12,
-    },
-    {
-        id: 2,
-        name: "Jill",
-        age: 14,
-    },
-    {
-        id: 3,
-        name: "Betty",
-        age: 32
-    },
-], [
-    {
-        name: "id",
-        type: EJQLTableColumnType.NUMBER,
-        default: null,
-        unique: true,
-        autoIncrement: true,
-    },
-    {
-        name: "name",
-        type: EJQLTableColumnType.STRING,
-        default: "",
-        unique: false,
-    },
-    {
-        name: "age",
-        type: EJQLTableColumnType.NUMBER,
-        default: 0,
-        unique: false,
-    }
-]));
-db.withTable('products', JQLTable.createFromInMemoryArrayOfObjects([
-    {
-        id: 1,
-        name: "VGA Card",
-        ownerId: 1,
-    },
-    {
-        id: 2,
-        name: "CPU",
-        ownerId: 1,
-    },
-    {
-        id: 4,
-        name: "Computer keyboard",
-        ownerId: 3,
-    }
-]));
-db.withFunction('sum', function (a, b) {
-    return a + b;
-});

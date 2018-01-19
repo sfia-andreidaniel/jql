@@ -8,6 +8,8 @@ class JQLDatabase implements IJQLDatabase {
 
     private planner: JQLDatabaseQueryPlanner;
 
+    private authorizationToken: string;
+
     public withJQuery(jq: JQueryStatic): this {
         this.jq = jq;
         this.planner = new JQLDatabaseQueryPlanner(this);
@@ -16,6 +18,15 @@ class JQLDatabase implements IJQLDatabase {
 
     public getJQuery(): JQueryStatic {
         return this.jq;
+    }
+
+    public withAuthorizationToken(authorizationToken: string): this {
+        this.authorizationToken = authorizationToken;
+        return this;
+    }
+
+    public getAuthorizationToken(): string {
+        return this.authorizationToken;
     }
 
     private isValidIdentifierName(identifier: string): boolean {
@@ -33,8 +44,8 @@ class JQLDatabase implements IJQLDatabase {
         /**
          * IF FUNCTION NAME IS A RESERVED KEYWORD, ABORT
          */
-        if ( JQLUtils.isReservedKeyword( functionName ) ) {
-            throw new Error( JSON.stringify(functionName) + " is a reserved keyword and cannot be used as a function name!" );
+        if (JQLUtils.isReservedKeyword(functionName)) {
+            throw new Error(JSON.stringify(functionName) + " is a reserved keyword and cannot be used as a function name!");
         }
 
         if (undefined !== this.functions[ functionName ]) {
@@ -48,11 +59,11 @@ class JQLDatabase implements IJQLDatabase {
 
     public hasFunction(functionName: string): boolean {
 
-        if ( "string" === typeof functionName ) {
+        if ("string" === typeof functionName) {
 
             functionName = functionName.toLowerCase();
 
-            if ( undefined !== this.functions[functionName] && this.functions.hasOwnProperty(functionName) ) {
+            if (undefined !== this.functions[ functionName ] && this.functions.hasOwnProperty(functionName)) {
                 return true;
             }
 
@@ -110,8 +121,8 @@ class JQLDatabase implements IJQLDatabase {
 
     public createStatement(statement: string): JQLStatement {
 
-        if ( !statement || 'string' !== typeof statement ) {
-            throw new Error('Invalid argument: statement: string expected!');
+        if (!statement || "string" !== typeof statement) {
+            throw new Error("Invalid argument: statement: string expected!");
         }
 
         let stmt = <JQLStatement>JQLLexerFactory.create(
@@ -184,7 +195,7 @@ class JQLDatabase implements IJQLDatabase {
 
             } else {
 
-                statementFunctions[i].withDatabase(this);
+                statementFunctions[ i ].withDatabase(this);
 
             }
 
@@ -198,30 +209,30 @@ class JQLDatabase implements IJQLDatabase {
 
         statement.bind(bindings);
 
-        return this.planner.scheduleStatement( statement, this.createExecutionStrategy( statement ) );
+        return this.planner.scheduleStatement(statement, this.createExecutionStrategy(statement));
 
     }
 
-    private createExecutionStrategy( statement: JQLStatement ): IJQLQueryExecuteStrategy {
+    private createExecutionStrategy(statement: JQLStatement): IJQLQueryExecuteStrategy {
 
-        if ( !statement.isRemote() ) {
+        if (!statement.isRemote()) {
 
-            switch ( statement.getStatementType() ) {
+            switch (statement.getStatementType()) {
 
                 case EJQL_LEXER_STATEMENT_TYPES.SELECT:
-                    return (new JQLDatabaseStatementExecutorSelect(<JQLStatementSelect>statement, this) ).execute();
+                    return (new JQLDatabaseStatementExecutorSelect(<JQLStatementSelect>statement, this)).execute();
 
                 case EJQL_LEXER_STATEMENT_TYPES.INSERT:
-                    return (new JQLDatabaseStatementExecutorInsert(<JQLStatementInsert>statement, this) ).execute();
+                    return (new JQLDatabaseStatementExecutorInsert(<JQLStatementInsert>statement, this)).execute();
 
                 case EJQL_LEXER_STATEMENT_TYPES.UPDATE:
-                    return (new JQLDatabaseStatementExecutorUpdate(<JQLStatementUpdate>statement, this ) ).execute();
+                    return (new JQLDatabaseStatementExecutorUpdate(<JQLStatementUpdate>statement, this)).execute();
 
                 case EJQL_LEXER_STATEMENT_TYPES.DELETE:
-                    return (new JQLDatabaseStatementExecutorDelete(<JQLStatementDelete>statement, this ) ).execute();
+                    return (new JQLDatabaseStatementExecutorDelete(<JQLStatementDelete>statement, this)).execute();
 
                 default:
-                    throw new Error('Failed to create execution strategy: Uknown statement type!' );
+                    throw new Error("Failed to create execution strategy: Uknown statement type!");
             }
 
         } else {
