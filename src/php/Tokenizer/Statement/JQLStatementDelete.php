@@ -10,9 +10,9 @@ use JQL\Tokenizer\JQLLexerFactory;
 use JQL\Tokenizer\JQLLimit;
 use JQL\Tokenizer\JQLTableReference;
 use JQL\Tokenizer\Sorter\JQLSorterStrategy;
-use JQL\Tokenizer\Statement;
+use JQL\Tokenizer\JQLStatement;
 
-class JQLStatementDelete extends Statement
+class JQLStatementDelete extends JQLStatement
 {
 
     /**
@@ -44,6 +44,8 @@ class JQLStatementDelete extends Statement
      */
     public function __construct(array $token)
     {
+
+        parent::__construct($token);
 
         $this->table = JQLLexerFactory::create($token['table']);
 

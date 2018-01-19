@@ -11,10 +11,10 @@ use JQL\Tokenizer\JQLLexerFactory;
 use JQL\Tokenizer\JQLLimit;
 use JQL\Tokenizer\JQLTableReference;
 use JQL\Tokenizer\Sorter\JQLSorterStrategy;
-use JQL\Tokenizer\Statement;
+use JQL\Tokenizer\JQLStatement;
 use JQL\Tokenizer\Statement\Select\JQLStatementSelectFieldsList;
 
-class JQLStatementSelect extends Statement
+class JQLStatementSelect extends JQLStatement
 {
 
     /**
@@ -62,6 +62,9 @@ class JQLStatementSelect extends Statement
      */
     public function __construct( array $token )
     {
+
+        parent::__construct($token);
+
         $this->fields = JQLLexerFactory::create($token['fields'] );
 
         if (isset($token['table'])) {

@@ -11,11 +11,11 @@ use JQL\Tokenizer\JQLLexerFactory;
 use JQL\Tokenizer\JQLLimit;
 use JQL\Tokenizer\JQLTableReference;
 use JQL\Tokenizer\Sorter\JQLSorterStrategy;
-use JQL\Tokenizer\Statement;
+use JQL\Tokenizer\JQLStatement;
 use JQL\Tokenizer\Statement\Update\JQLStatementUpdateDelayedOption;
 use JQL\Tokenizer\Statement\Update\JQLStatementUpdateField;
 
-class JQLStatementUpdate extends Statement
+class JQLStatementUpdate extends JQLStatement
 {
 
     /**
@@ -57,6 +57,9 @@ class JQLStatementUpdate extends Statement
      */
     public function __construct(array $token)
     {
+
+        parent::__construct($token);
+
         $this->table = JQLLexerFactory::create($token['table']);
 
         if (isset($token['delayed'])) {

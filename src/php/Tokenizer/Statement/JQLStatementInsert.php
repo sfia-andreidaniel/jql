@@ -8,10 +8,10 @@ use JQL\Tokenizer\Expression\JQLExpressionFunctionCall;
 use JQL\Tokenizer\Expression\JQLExpressionIdentifier;
 use JQL\Tokenizer\JQLLexerFactory;
 use JQL\Tokenizer\JQLTableReference;
-use JQL\Tokenizer\Statement;
+use JQL\Tokenizer\JQLStatement;
 use JQL\Tokenizer\Statement\Update\JQLStatementUpdateField;
 
-class JQLStatementInsert extends Statement
+class JQLStatementInsert extends JQLStatement
 {
 
     /**
@@ -27,16 +27,19 @@ class JQLStatementInsert extends Statement
     /**
      * JQLStatementInsert constructor.
      *
-     * @param array $statement
+     * @param array $token
      *
      * @throws \JQL\Tokenizer\TokenizerException
      */
-    public function __construct(array $statement)
+    public function __construct(array $token)
     {
-        $this->table = JQLLexerFactory::create($statement['table']);
 
-        for ($i = 0, $len = count($statement['fields']); $i < $len; $i++) {
-            $this->fields[] = JQLLexerFactory::create($statement['fields'][$i]);
+        parent::__construct($token);
+
+        $this->table = JQLLexerFactory::create($token['table']);
+
+        for ($i = 0, $len = count($token['fields']); $i < $len; $i++) {
+            $this->fields[] = JQLLexerFactory::create($token['fields'][$i]);
         }
     }
 
