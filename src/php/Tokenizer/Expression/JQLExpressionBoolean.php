@@ -2,25 +2,26 @@
 
 namespace JQL\Tokenizer\Expression;
 
+
 use JQL\Tokenizer\EJQLLexerExpressionTypes;
 use JQL\Tokenizer\JQLExpression;
 
-class JQLExpressionIdentifier extends JQLExpression
+class JQLExpressionBoolean extends JQLExpression
 {
 
     /**
-     * @var string
+     * @var bool
      */
-    private $identifierName;
+    private $value;
 
     /**
-     * JQLExpressionIdentifier constructor.
+     * JQLExpressionBoolean constructor.
      *
      * @param array $token
      */
     public function __construct(array $token)
     {
-        $this->identifierName = $token['name'];
+        $this->value = $token['value'];
     }
 
     /**
@@ -28,21 +29,21 @@ class JQLExpressionIdentifier extends JQLExpression
      */
     public function getExpressionType()
     {
-        return EJQLLexerExpressionTypes::IDENTIFIER;
-    }
-
-    /**
-     * @return mixed|string
-     */
-    public function getIdentifierName()
-    {
-        return $this->identifierName;
+        return EJQLLexerExpressionTypes::BOOLEAN;
     }
 
     /**
      * @return JQLExpressionBinding[]
      */
     public function getBindings()
+    {
+        return [];
+    }
+
+    /**
+     * @return JQLExpressionIdentifier[]
+     */
+    public function getIdentifiers()
     {
         return [];
     }
@@ -56,18 +57,12 @@ class JQLExpressionIdentifier extends JQLExpression
     }
 
     /**
-     * @return JQLExpressionIdentifier[]
-     */
-    public function getIdentifiers()
-    {
-        return [$this];
-    }
-
-    /**
      * @return string
      */
     public function toString()
     {
-        return $this->identifierName;
+        return $this->value
+            ? 'true'
+            : 'false';
     }
 }
