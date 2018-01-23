@@ -2,6 +2,7 @@
 
 namespace JQL\Tokenizer\Expression;
 
+use JQL\Assertion\Assertion;
 use JQL\Tokenizer\EJQLLexerExpressionTypes;
 use JQL\Tokenizer\JQLExpression;
 
@@ -17,9 +18,13 @@ class JQLExpressionBinding extends JQLExpression
      * JQLExpressionBinding constructor.
      *
      * @param array $token
+     *
+     * @throws \JQL\Assertion\AssertionException
      */
     public function __construct(array $token)
     {
+        Assertion::assertIsStringKey($token, 'name');
+        Assertion::assertIsValidIdentifierName($token['name']);
         $this->bindingName = $token['name'];
     }
 
@@ -44,7 +49,7 @@ class JQLExpressionBinding extends JQLExpression
      */
     public function getBindings()
     {
-        return [ $this ];
+        return [$this];
     }
 
     /**

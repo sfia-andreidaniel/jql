@@ -2,6 +2,8 @@
 
 namespace JQL\Tokenizer;
 
+use JQL\Assertion\Assertion;
+
 class JQLTableReference extends JQLOpcode
 {
 
@@ -10,8 +12,17 @@ class JQLTableReference extends JQLOpcode
      */
     public $name;
 
+    /**
+     * JQLTableReference constructor.
+     *
+     * @param array $token
+     *
+     * @throws \JQL\Assertion\AssertionException
+     */
     public function __construct(array $token)
     {
+        Assertion::assertIsStringKey($token, 'name');
+        Assertion::assertIsValidIdentifierName($token['name'], 'Invalid table name!');
         $this->name = $token['name'];
     }
 

@@ -2,6 +2,7 @@
 
 namespace JQL\Tokenizer\Expression;
 
+use JQL\Assertion\Assertion;
 use JQL\Tokenizer\EJQLLexerExpressionTypes;
 use JQL\Tokenizer\JQLExpression;
 use JQL\Tokenizer\JQLLexerFactory;
@@ -25,9 +26,14 @@ class JQLExpressionFunctionCall extends JQLExpression
      * @param array $token
      *
      * @throws \JQL\Tokenizer\TokenizerException
+     * @throws \JQL\Assertion\AssertionException
      */
     public function __construct(array $token)
     {
+
+        Assertion::assertIsStringKey($token, 'functionName');
+        Assertion::assertIsValidIdentifierName($token['functionName']);
+        Assertion::assertIsArray($token['arguments']);
 
         $this->functionName = $token['functionName'];
 
@@ -81,7 +87,7 @@ class JQLExpressionFunctionCall extends JQLExpression
 
     public function getFunctions()
     {
-        $result = [ $this ];
+        $result = [$this];
 
         for ($argI = 0, $numArgs = count($this->arguments); $argI < $numArgs; $argI++) {
 
@@ -113,8 +119,8 @@ class JQLExpressionFunctionCall extends JQLExpression
     {
         $result = $this->functionName . '(';
 
-        for ( $i=0, $len = count($this->arguments); $i<$len; $i++ ) {
-            $result .= ( $i === 0 ? '' : ', ' ) . $this->arguments[$i]->toString();
+        for ($i = 0, $len = count($this->arguments); $i < $len; $i++) {
+            $result .= ($i === 0 ? '' : ', ') . $this->arguments[$i]->toString();
         }
 
         return $result . ')';

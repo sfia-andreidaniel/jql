@@ -5,8 +5,8 @@ namespace JQL\Assertion;
 class Assertion
 {
     /**
-     * @param      $var
-     * @param null $message
+     * @param mixed       $var
+     * @param null|string $message
      *
      * @throws AssertionException
      */
@@ -23,9 +23,9 @@ class Assertion
     }
 
     /**
-     * @param      $var
-     * @param      $key
-     * @param null $message
+     * @param mixed       $var
+     * @param string      $key
+     * @param null|string $message
      *
      * @throws AssertionException
      */
@@ -44,9 +44,9 @@ class Assertion
     }
 
     /**
-     * @param      $var
-     * @param      $key
-     * @param null $message
+     * @param mixed       $var
+     * @param string      $key
+     * @param null|string $message
      *
      * @throws AssertionException
      */
@@ -60,5 +60,45 @@ class Assertion
                 AssertionException::ERR_ASSERTION_FAILED
             );
         }
+    }
+
+    /**
+     * @param mixed       $var
+     * @param null|string $message
+     *
+     * @throws AssertionException
+     */
+    public static function assertIsString($var, $message = null)
+    {
+        if (!is_string($var)) {
+            throw new AssertionException(
+                null === $message
+                    ? 'Failed asserting that variable is string!'
+                    : $message,
+                AssertionException::ERR_ASSERTION_FAILED
+            );
+        }
+    }
+
+    /**
+     * @param      $var
+     * @param null $message
+     *
+     * @throws AssertionException
+     */
+    public static function assertIsValidIdentifierName($var, $message = null)
+    {
+
+        if (is_string($var) && preg_match('/^[a-zA-Z_\\$]([a-zA-Z0-9_\\$]+)?$/', $var)) {
+            return;
+        }
+
+        throw new AssertionException(
+            null === $message
+                ? 'Failed asserting that variable represents a valid identifier name!'
+                : $message,
+            AssertionException::ERR_ASSERTION_FAILED
+        );
+
     }
 }
