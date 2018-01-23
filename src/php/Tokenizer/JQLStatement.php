@@ -2,6 +2,7 @@
 
 namespace JQL\Tokenizer;
 
+use JQL\Assertion\Assertion;
 use JQL\Tokenizer\Expression\JQLExpressionBinding;
 use JQL\Tokenizer\Expression\JQLExpressionFunctionCall;
 use JQL\Tokenizer\Expression\JQLExpressionIdentifier;
@@ -28,12 +29,18 @@ abstract class JQLStatement extends JQLOpcode
      * Statement constructor.
      *
      * @param array $token
+     *
+     * @throws \JQL\Assertion\AssertionException
      */
     public function __construct(array $token)
     {
+
+        Assertion::assertIsArray($token, 'A parsed JQL token must always be of type array!');
+        Assertion::assertIsBooleanKey($token, 'remote');
+
         $this->remote = $token['remote'];
         $this->tokenizedStatement = $token;
-        $this->id = md5( json_encode( $token ) );
+        $this->id = md5(json_encode($token));
     }
 
     /**

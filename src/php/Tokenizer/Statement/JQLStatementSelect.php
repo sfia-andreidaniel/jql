@@ -59,6 +59,7 @@ class JQLStatementSelect extends JQLStatement
      * @param array $token
      *
      * @throws \JQL\Tokenizer\TokenizerException
+     * @throws \JQL\Assertion\AssertionException
      */
     public function __construct( array $token )
     {
