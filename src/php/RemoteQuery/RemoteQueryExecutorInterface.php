@@ -9,7 +9,9 @@ interface RemoteQueryExecutorInterface
     /**
      * @param AuthorizationToken $authorization
      *
+     * @throws RemoteQueryException
+     *
      * @return array
      */
-    public function execute( AuthorizationToken $authorization );
+    public function execute(AuthorizationToken $authorization);
 }

@@ -13,13 +13,15 @@ CREATE TABLE jql_forms_config (
 
 CREATE TABLE jql_form_allowed_queries (
 
+  user_id                INT NOT NULL,
   form_id                INT NOT NULL,
+
   query_md5_hash         CHAR(32),
 
-  PRIMARY KEY( form_id, query_md5_hash ),
+  PRIMARY KEY( user_id, form_id, query_md5_hash ),
 
-  CONSTRAINT FK_jql_form_allowed_queries_jql_forms_config FOREIGN KEY (form_id )
-  REFERENCES jql_forms_config(form_id) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT FK_jql_form_allowed_queries_jql_forms_config FOREIGN KEY (form_id, user_id )
+  REFERENCES jql_forms_config(form_id, user_id) ON DELETE CASCADE ON UPDATE CASCADE
 
 ) ENGINE = INNODB, CHARSET = UTF8;
 

@@ -21,6 +21,11 @@ class RemoteQueryService
     private $queryExecutor;
 
     /**
+     * @var RemoteQueryServiceDAO
+     */
+    private $dao;
+
+    /**
      * RemoteQueryService constructor.
      *
      * @param Controller $controller
@@ -29,6 +34,7 @@ class RemoteQueryService
     {
         $this->controller = $controller;
         $this->queryExecutor = new RemoteQueryExecutor($controller);
+        $this->dao = new RemoteQueryServiceDAO($controller->getDatabase());
     }
 
     /**
@@ -71,6 +77,18 @@ class RemoteQueryService
 
         }
 
+    }
+
+    /**
+     * @param AuthorizationToken $authorization
+     * @param string             $statementId
+     *
+     * @return bool
+     * @throws RemoteQueryException
+     */
+    public function isAuthorizedStatement(AuthorizationToken $authorization, $statementId)
+    {
+        return $this->dao->isAuthorizedStatement( $authorization->getUserId(), $authorization->getFormId(), $statementId );
     }
 
 }
