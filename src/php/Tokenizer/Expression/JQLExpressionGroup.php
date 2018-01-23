@@ -59,8 +59,13 @@ class JQLExpressionGroup extends JQLExpression
         return $this->expression->getIdentifiers();
     }
 
-    public function toString()
+    /**
+     * @param $queryExecutionContext
+     *
+     * @return string
+     */
+    public function toString($queryExecutionContext )
     {
-        return '(' . $this->expression->toString() . ')';
+        return '(' . $this->expression->toString( $queryExecutionContext ) . ')';
     }
 }

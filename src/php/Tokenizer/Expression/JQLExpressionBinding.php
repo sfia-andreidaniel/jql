@@ -68,7 +68,12 @@ class JQLExpressionBinding extends JQLExpression
         return [];
     }
 
-    public function toString()
+    /**
+     * @param $queryExecutionContext
+     *
+     * @return string
+     */
+    public function toString($queryExecutionContext )
     {
         return ':' . $this->bindingName;
     }

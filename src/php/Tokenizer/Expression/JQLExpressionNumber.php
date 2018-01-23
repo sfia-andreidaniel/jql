@@ -57,9 +57,11 @@ class JQLExpressionNumber extends JQLExpression
     }
 
     /**
+     * @param $queryExecutionContext
+     *
      * @return string
      */
-    public function toString()
+    public function toString( $queryExecutionContext )
     {
         return (string)$this->value;
     }

@@ -993,8 +993,9 @@ var JQLDatabaseStatementExecutorRemoteStatement = (function () {
                     data: query,
                 }).then(function (result) {
                     console.log("REMOTE: " + JSON.stringify(result));
+                    defer.resolve(result);
                 }).fail(function (e) {
-                    console.error('args: ', arguments);
+                    console.error("args: ", arguments);
                     defer.reject(e);
                 });
             }).promise();

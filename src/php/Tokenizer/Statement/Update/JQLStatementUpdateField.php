@@ -3,6 +3,7 @@
 namespace JQL\Tokenizer\Statement\Update;
 
 
+use JQL\Assertion\Assertion;
 use JQL\Tokenizer\EJQLLexerOpcodeTypes;
 use JQL\Tokenizer\JQLExpression;
 use JQL\Tokenizer\JQLLexerFactory;
@@ -27,9 +28,13 @@ class JQLStatementUpdateField extends JQLOpcode
      * @param array $token
      *
      * @throws \JQL\Tokenizer\TokenizerException
+     * @throws \JQL\Assertion\AssertionException
      */
     public function __construct(array $token)
     {
+
+        Assertion::assertIsValidIdentifierName($token['name']);
+
         $this->name = $token['name'];
 
         $this->expression = JQLLexerFactory::create($token['expression']);
@@ -54,4 +59,13 @@ class JQLStatementUpdateField extends JQLOpcode
         return $this->expression;
     }
 
+    /**
+     * @param $queryExecutionContext - one of EJQLQueryExecutionContext constants
+     *
+     * @return string
+     */
+    public function toString($queryExecutionContext)
+    {
+        return '`' . $this->name . '` = ' . $this->expression->toString($queryExecutionContext);
+    }
 }

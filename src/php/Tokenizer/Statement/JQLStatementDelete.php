@@ -73,28 +73,32 @@ class JQLStatementDelete extends JQLStatement
     /**
      * @return JQLTableReference
      */
-    public function getTable() {
+    public function getTable()
+    {
         return $this->table;
     }
 
     /**
      * @return JQLExpression|null
      */
-    public function getFilter() {
+    public function getFilter()
+    {
         return $this->filter;
     }
 
     /**
      * @return JQLSorterStrategy|null
      */
-    public function getSorter() {
+    public function getSorter()
+    {
         return $this->sorter;
     }
 
     /**
      * @return JQLLimit|null
      */
-    public function getLimit() {
+    public function getLimit()
+    {
         return $this->limit;
     }
 
@@ -107,7 +111,7 @@ class JQLStatementDelete extends JQLStatement
 
         if ($this->filter) {
             for ($bindings = $this->filter->getBindings(), $i = 0, $len = count($bindings); $i < $len; $i++) {
-                $result[] = $bindings[ $i ];
+                $result[] = $bindings[$i];
             }
 
         }
@@ -115,8 +119,8 @@ class JQLStatementDelete extends JQLStatement
         if ($this->sorter) {
             if (!$this->sorter->isRandom()) {
                 for ($sorterByExpression = $this->sorter, $i = 0, $expressions = $sorterByExpression->getSortExpressions(), $len = count($expressions); $i < $len; $i++) {
-                    for ($j = 0, $bindings = $expressions[ $i ]->getExpression()->getBindings(), $n = count($bindings); $j < $n; $j++) {
-                        $result[] = $bindings[ $i ];
+                    for ($j = 0, $bindings = $expressions[$i]->getExpression()->getBindings(), $n = count($bindings); $j < $n; $j++) {
+                        $result[] = $bindings[$i];
                     }
                 }
             }
@@ -135,15 +139,15 @@ class JQLStatementDelete extends JQLStatement
 
         if ($this->filter) {
             for ($functions = $this->filter->getFunctions(), $i = 0, $len = count($functions); $i < $len; $i++) {
-                $result[] = $functions[ $i ];
+                $result[] = $functions[$i];
             }
         }
 
         if ($this->sorter) {
             if (!$this->sorter->isRandom()) {
                 for ($sorterByExpression = $this->sorter, $i = 0, $expressions = $sorterByExpression->getSortExpressions(), $len = count(expressions); $i < $len; $i++) {
-                    for ($j = 0, $functions = $expressions[ $i ]->getExpression()->getFunctions(), $n = count($functions); $j < $n; $j++) {
-                        $result[] = $functions[ $i ];
+                    for ($j = 0, $functions = $expressions[$i]->getExpression()->getFunctions(), $n = count($functions); $j < $n; $j++) {
+                        $result[] = $functions[$i];
                     }
                 }
             }
@@ -160,15 +164,15 @@ class JQLStatementDelete extends JQLStatement
 
         if (null !== $this->filter) {
             for ($identifiers = $this->filter->getIdentifiers(), $i = 0, $len = count($identifiers); $i < $len; $i++) {
-                $result[] = $identifiers[ $i ];
+                $result[] = $identifiers[$i];
             }
         }
 
         if (null !== $this->sorter) {
             if (!$this->sorter->isRandom()) {
                 for ($sorterByExpression = $this->sorter, $i = 0, $expressions = $sorterByExpression->getSortExpressions(), $len = count($expressions); $i < $len; $i++) {
-                    for ($j = 0, $identifiers = $expressions[ $i ]->getExpression()->getIdentifiers(), $n = count($identifiers); $j < $n; $j++) {
-                        $result[] = $identifiers[ $j ];
+                    for ($j = 0, $identifiers = $expressions[$i]->getExpression()->getIdentifiers(), $n = count($identifiers); $j < $n; $j++) {
+                        $result[] = $identifiers[$j];
                     }
                 }
             }
@@ -177,4 +181,13 @@ class JQLStatementDelete extends JQLStatement
         return $result;
     }
 
+    /**
+     * @param $queryExecutionContext - one of EJQLQueryExecutionContext constants
+     *
+     * @return string
+     */
+    public function toString($queryExecutionContext)
+    {
+        return 'DELETE';
+    }
 }

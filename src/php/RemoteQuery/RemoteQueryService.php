@@ -7,7 +7,6 @@ use JQL\Controller;
 use JQL\Tokenizer\EJQLLexerOpcodeTypes;
 use JQL\Tokenizer\JQLLexerFactory;
 use JQL\Tokenizer\JQLStatement;
-use JQL\Tokenizer\TokenizerException;
 
 class RemoteQueryService
 {
@@ -17,6 +16,11 @@ class RemoteQueryService
     private $controller;
 
     /**
+     * @var RemoteQueryExecutor
+     */
+    private $queryExecutor;
+
+    /**
      * RemoteQueryService constructor.
      *
      * @param Controller $controller
@@ -24,6 +28,7 @@ class RemoteQueryService
     public function __construct(Controller $controller)
     {
         $this->controller = $controller;
+        $this->queryExecutor = new RemoteQueryExecutor($controller);
     }
 
     /**
@@ -48,7 +53,9 @@ class RemoteQueryService
                 );
             }
 
-            return true;
+            /** @var JQLStatement $statement */
+            return $this->queryExecutor->createExecutorFromParsedJQLStatement($statement)
+                ->execute($auth);
 
         } catch (RemoteQueryException $e) {
 

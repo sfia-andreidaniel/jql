@@ -56,12 +56,6 @@ class JQLLexerFactory
             Assertion::assertIsArray($lexerToken);
             Assertion::assertIsStringKey($lexerToken, 'op');
 
-            if (!isset($lexerToken['op'])) {
-                throw new TokenizerException(
-                    'Value is not a valid binding tokenized opcode', TokenizerException::ERR_VALUE_IS_NOT_A_TOKENIZED_OPCODE
-                );
-            }
-
             switch ($lexerToken['op']) {
 
                 case EJQLLexerOpcodeTypes::STATEMENT:

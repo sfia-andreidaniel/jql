@@ -57,9 +57,11 @@ class JQLExpressionString extends JQLExpression
     }
 
     /**
+     * @param $queryExecutionContext
+     *
      * @return string
      */
-    public function toString()
+    public function toString( $queryExecutionContext )
     {
         return json_encode($this->value);
     }

@@ -33,13 +33,15 @@ class JQLDatabaseStatementExecutorRemoteStatement implements IDatabaseStatementE
                     type:     "POST",
                     dataType: "json",
                     data:     query,
-                }).then(function( result: any ){
+                }).then(function (result: any) {
 
-                    console.log( "REMOTE: " + JSON.stringify(result) );
+                    console.log("REMOTE: " + JSON.stringify(result));
 
-                }).fail(function(e){
+                    defer.resolve(result);
 
-                    console.error('args: ', arguments);
+                }).fail(function (e) {
+
+                    console.error("args: ", arguments);
 
                     defer.reject(e);
 

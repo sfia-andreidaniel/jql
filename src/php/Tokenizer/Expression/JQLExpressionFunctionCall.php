@@ -115,12 +115,17 @@ class JQLExpressionFunctionCall extends JQLExpression
         return $result;
     }
 
-    public function toString()
+    /**
+     * @param $queryExecutionContext
+     *
+     * @return string
+     */
+    public function toString($queryExecutionContext)
     {
         $result = $this->functionName . '(';
 
         for ($i = 0, $len = count($this->arguments); $i < $len; $i++) {
-            $result .= ($i === 0 ? '' : ', ') . $this->arguments[$i]->toString();
+            $result .= ($i === 0 ? '' : ', ') . $this->arguments[$i]->toString($queryExecutionContext);
         }
 
         return $result . ')';

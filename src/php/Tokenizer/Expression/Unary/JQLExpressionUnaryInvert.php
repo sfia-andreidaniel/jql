@@ -10,11 +10,13 @@ class JQLExpressionUnaryInvert extends JQLExpressionUnary
 {
 
     /**
+     * @param $queryExecutionContext
+     *
      * @return string
      */
-    public function toString()
+    public function toString( $queryExecutionContext )
     {
-        return '-' . $this->operand->toString();
+        return '-' . $this->operand->toString( $queryExecutionContext );
     }
 
     /**

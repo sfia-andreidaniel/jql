@@ -3,6 +3,7 @@
 namespace JQL\Tokenizer\Expression\Unary;
 
 
+use JQL\Tokenizer\EJQLQueryExecutionContext;
 use JQL\Tokenizer\Expression\JQLExpressionUnary;
 use JQL\Tokenizer\Statement\EJQLLexerOperatorUnaryType;
 
@@ -10,11 +11,26 @@ class JQLExpressionUnaryNot extends JQLExpressionUnary
 {
 
     /**
+     * @param $queryExecutionContext
+     *
      * @return string
      */
-    public function toString()
+    public function toString($queryExecutionContext)
     {
-        return '!' . $this->operand->toString();
+
+        switch ($queryExecutionContext) {
+
+            case EJQLQueryExecutionContext::CLIENT_SIDE:
+                return '!' . $this->operand->toString($queryExecutionContext);
+                break;
+
+            case EJQLQueryExecutionContext::SERVER_SIDE:
+            case EJQLQueryExecutionContext::ANY:
+            default:
+                return 'NOT ' . $this->operand->toString($queryExecutionContext);
+                break;
+
+        }
     }
 
     /**

@@ -120,4 +120,13 @@ class JQLStatementInsert extends JQLStatement
 
     }
 
+    /**
+     * @param $queryExecutionContext - one of EJQLQueryExecutionContext constants
+     *
+     * @return string
+     */
+    public function toString($queryExecutionContext)
+    {
+        return 'INSERT';
+    }
 }

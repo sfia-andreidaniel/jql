@@ -29,4 +29,14 @@ class JQLStatementSelectFieldsListAll extends JQLStatementSelectFieldsList
     {
         return [];
     }
+
+    /**
+     * @param $queryExecutionContext - one of EJQLQueryExecutionContext constants
+     *
+     * @return string
+     */
+    public function toString($queryExecutionContext)
+    {
+        return '*';
+    }
 }

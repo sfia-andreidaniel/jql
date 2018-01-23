@@ -61,12 +61,12 @@ class JQLStatementSelect extends JQLStatement
      * @throws \JQL\Tokenizer\TokenizerException
      * @throws \JQL\Assertion\AssertionException
      */
-    public function __construct( array $token )
+    public function __construct(array $token)
     {
 
         parent::__construct($token);
 
-        $this->fields = JQLLexerFactory::create($token['fields'] );
+        $this->fields = JQLLexerFactory::create($token['fields']);
 
         if (isset($token['table'])) {
 
@@ -97,7 +97,7 @@ class JQLStatementSelect extends JQLStatement
      */
     public function isRemote()
     {
-        if ( null !== $this->previous) {
+        if (null !== $this->previous) {
             return $this->previous->isRemote();
         } else {
             return parent::isRemote();
@@ -115,7 +115,8 @@ class JQLStatementSelect extends JQLStatement
     /**
      * @return JQLStatementSelectFieldsList|null
      */
-    public function getFields() {
+    public function getFields()
+    {
         return $this->fields;
     }
 
@@ -130,28 +131,32 @@ class JQLStatementSelect extends JQLStatement
     /**
      * @return JQLExpression|null
      */
-    public function getFilter() {
+    public function getFilter()
+    {
         return $this->filter;
     }
 
     /**
      * @return JQLSorterStrategy|null
      */
-    public function getSorter() {
+    public function getSorter()
+    {
         return $this->sorter;
     }
 
     /**
      * @return JQLLimit|null
      */
-    public function getLimit() {
+    public function getLimit()
+    {
         return $this->limit;
     }
 
     /**
      * @return JQLStatementSelect|null
      */
-    public function getUnion() {
+    public function getUnion()
+    {
         return $this->union;
     }
 
@@ -160,7 +165,8 @@ class JQLStatementSelect extends JQLStatement
      *
      * @return self
      */
-    public function withPreviousStatement(JQLStatementSelect $previous ) {
+    public function withPreviousStatement(JQLStatementSelect $previous)
+    {
         $this->previous = $previous ? $previous : null;
         return $this;
     }
@@ -176,8 +182,8 @@ class JQLStatementSelect extends JQLStatement
         if (null !== $this->fields) {
             if (!$this->fields->isSelectingAllFields()) {
                 for ($specificFields = $this->fields, $i = 0, $fields = $specificFields->getFields(), $len = count($fields); $i < $len; $i++) {
-                    for ($j = 0, $bindings = $fields[ $i ]->getExpression()->getBindings(), $n = count($bindings); $j < $n; $j++) {
-                        $result[] = $bindings[ $j ];
+                    for ($j = 0, $bindings = $fields[$i]->getExpression()->getBindings(), $n = count($bindings); $j < $n; $j++) {
+                        $result[] = $bindings[$j];
                     }
                 }
             }
@@ -185,15 +191,15 @@ class JQLStatementSelect extends JQLStatement
 
         if (null !== $this->filter) {
             for ($bindings = $this->filter->getBindings(), $i = 0, $len = count($bindings); $i < $len; $i++) {
-                $result = $bindings[ $i ];
+                $result = $bindings[$i];
             }
         }
 
         if (null !== $this->sorter) {
             if (!$this->sorter->isRandom()) {
                 for ($sorterByExpression = $this->sorter, $i = 0, $expressions = $sorterByExpression->getSortExpressions(), $len = count($expressions); $i < $len; $i++) {
-                    for ( $j = 0, $bindings = $expressions[ $i ]->getExpression()->getBindings(), $n = count($bindings); $j < $n; $j++) {
-                        $result[] = $bindings[ $i ];
+                    for ($j = 0, $bindings = $expressions[$i]->getExpression()->getBindings(), $n = count($bindings); $j < $n; $j++) {
+                        $result[] = $bindings[$i];
                     }
                 }
             }
@@ -213,8 +219,8 @@ class JQLStatementSelect extends JQLStatement
         if (null !== $this->fields) {
             if ($this->fields->isSelectingAllFields()) {
                 for ($specificFields = $this->fields, $i = 0, $fields = $specificFields->getFields(), $len = count($fields); $i < $len; $i++) {
-                    for ($j = 0, $functions = $fields[ $i ]->getExpression()->getFunctions(), $n = count($functions); $j < $n; $j++) {
-                        $result[] = $functions[ $j ];
+                    for ($j = 0, $functions = $fields[$i]->getExpression()->getFunctions(), $n = count($functions); $j < $n; $j++) {
+                        $result[] = $functions[$j];
                     }
                 }
             }
@@ -222,15 +228,15 @@ class JQLStatementSelect extends JQLStatement
 
         if (null !== $this->filter) {
             for ($functions = $this->filter->getFunctions(), $i = 0, $len = count($functions); $i < $len; $i++) {
-                $result[] = $functions[ $i ];
+                $result[] = $functions[$i];
             }
         }
 
         if (null !== $this->sorter) {
             if (!$this->sorter->isRandom()) {
                 for ($sorterByExpression = $this->sorter, $i = 0, $expressions = $sorterByExpression->getSortExpressions(), $len = count($expressions); $i < $len; $i++) {
-                    for ( $j = 0, $functions = $expressions[ $i ]->getExpression()->getFunctions(), $n = count($functions); $j < $n; $j++) {
-                        $result[] = $functions[ $i ];
+                    for ($j = 0, $functions = $expressions[$i]->getExpression()->getFunctions(), $n = count($functions); $j < $n; $j++) {
+                        $result[] = $functions[$i];
                     }
                 }
             }
@@ -250,8 +256,8 @@ class JQLStatementSelect extends JQLStatement
         if (null !== $this->fields) {
             if (!$this->fields->isSelectingAllFields()) {
                 for ($specificFields = $this->fields, $i = 0, $fields = $specificFields->getFields(), $len = count($fields); $i < $len; $i++) {
-                    for ($j = 0, $identifiers = $fields[ $i ]->getExpression()->getIdentifiers(), $n = count($identifiers); $j < $n; $j++) {
-                        $result[] = $identifiers[ $j ];
+                    for ($j = 0, $identifiers = $fields[$i]->getExpression()->getIdentifiers(), $n = count($identifiers); $j < $n; $j++) {
+                        $result[] = $identifiers[$j];
                     }
                 }
             }
@@ -259,21 +265,61 @@ class JQLStatementSelect extends JQLStatement
 
         if (null !== $this->filter) {
             for ($identifiers = $this->filter->getIdentifiers(), $i = 0, $len = count($identifiers); $i < $len; $i++) {
-                $result[] = $identifiers[ $i ];
+                $result[] = $identifiers[$i];
             }
         }
 
         if (null !== $this->sorter) {
             if (!$this->sorter->isRandom()) {
                 for ($sorterByExpression = $this->sorter, $i = 0, $expressions = $sorterByExpression->getSortExpressions(), $len = count($expressions); $i < $len; $i++) {
-                    for ($j = 0, $identifiers = $expressions[ $i ]->getExpression()->getIdentifiers(), $n = count($identifiers); $j < $n; $j++) {
-                        $result[] = $identifiers[ $j ];
+                    for ($j = 0, $identifiers = $expressions[$i]->getExpression()->getIdentifiers(), $n = count($identifiers); $j < $n; $j++) {
+                        $result[] = $identifiers[$j];
                     }
                 }
             }
         }
 
         return $result;
+
+    }
+
+    /**
+     * @param $queryExecutionContext - one of EJQLQueryExecutionContext constants
+     *
+     * @return string
+     */
+    public function toString($queryExecutionContext)
+    {
+        $result = ['SELECT'];
+
+        $result[] = $this->fields->toString($queryExecutionContext);
+
+        if (null !== $this->table) {
+
+            $result[] = 'FROM ' . $this->table->toString($queryExecutionContext);
+
+            if (null !== $this->filter) {
+                $result[] = 'WHERE ' . $this->filter->toString($queryExecutionContext);
+            }
+
+            if (null !== $this->sorter) {
+                $result[] = $this->sorter->toString($queryExecutionContext);
+            }
+
+            if (null !== $this->limit) {
+                $result[] = $this->limit->toString($queryExecutionContext);
+            }
+
+        }
+
+        if (null !== $this->union) {
+
+            $result[] = ['UNION'];
+            $result[] = $this->union->toString($queryExecutionContext);
+
+        }
+
+        return implode(' ', $result);
 
     }
 }

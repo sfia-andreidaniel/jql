@@ -10,11 +10,16 @@ class JQLExpressionLogicalLowerThenEquals extends JQLExpressionLogical
 {
 
     /**
+     * @param $queryExecutionContext
+     *
      * @return string
      */
-    public function toString()
+    public function toString( $queryExecutionContext )
     {
-        return $this->left->toString() . ' <= ' . $this->right->toString();
+        $leftStringified = $this->left->toString($queryExecutionContext);
+        $rightStringified = $this->right->toString($queryExecutionContext);
+
+        return $leftStringified . ' <= ' . $rightStringified;
     }
 
     /**

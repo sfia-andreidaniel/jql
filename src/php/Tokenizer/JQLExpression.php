@@ -44,21 +44,18 @@ abstract class JQLExpression extends JQLOpcode
     public abstract function getIdentifiers();
 
     /**
+     * @param $queryExecutionContext
+     *
      * @return string
      */
-    public abstract function toString();
-
-    /**
-     * @return string
-     */
-    public function getLiteral()
+    public function getLiteral( $queryExecutionContext )
     {
 
         if (null !== $this->literal) {
             return $this->literal;
         }
         else {
-            $this->literal = preg_replace('/["\']+/g', '', trim($this->toString()));
+            $this->literal = preg_replace('/["\']+/g', '', trim($this->toString($queryExecutionContext)));
             return $this->literal;
         }
     }
