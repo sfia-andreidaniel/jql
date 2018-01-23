@@ -187,11 +187,11 @@ class Controller
             );
         }
 
-        $tokenizedJSONBindings = @json_decode($bindingsBase64);
+        $tokenizedJSONBindings = @base64_decode($bindingsBase64, true);
 
         if (!is_string($tokenizedJSONBindings) || empty($tokenizedJSONBindings)) {
             throw new ControllerException(
-                'Invalid argument: $bindings. Failed to decode the bindings as base/64 string!' .
+                'Invalid argument: $bindings. Failed to decode the bindings as base/64 string!',
                 ControllerException::ERR_INVALID_REQUEST_ARGUMENT
             );
         }
@@ -215,7 +215,7 @@ class Controller
             );
         }
 
-        $result = $this->remoteQueryService->executeQuery($decodedQuery, $decodedBindings, $auth);
+        $result = $this->getRemoteQueryService()->executeQuery($decodedQuery, $decodedBindings, $auth);
 
         return $result;
     }

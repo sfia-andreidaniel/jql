@@ -21,7 +21,7 @@ abstract class JQLStatement extends JQLOpcode
      */
     public function __construct(array $token)
     {
-        $this['remote'] = $token['remote'];
+        $this->remote = $token['remote'];
     }
 
     /**

@@ -69,7 +69,7 @@ $authorizationToken = json_decode(file_get_contents('http://127.0.0.1/?action=to
                         {
                             "name": "email",
                             "type": EJQLTableColumnType.STRING,
-                            "default": "",
+                            "default": ""
                         },
                         {
                             "name": "age",
