@@ -10,6 +10,16 @@ abstract class JQLStatement extends JQLOpcode
 {
 
     /**
+     * @var array
+     */
+    private $tokenizedStatement;
+
+    /**
+     * @var string
+     */
+    private $id;
+
+    /**
      * @var boolean
      */
     private $remote;
@@ -22,6 +32,8 @@ abstract class JQLStatement extends JQLOpcode
     public function __construct(array $token)
     {
         $this->remote = $token['remote'];
+        $this->tokenizedStatement = $token;
+        $this->id = md5( json_encode( $token ) );
     }
 
     /**
@@ -65,4 +77,19 @@ abstract class JQLStatement extends JQLOpcode
      */
     public abstract function getTable();
 
+    /**
+     * @return array
+     */
+    public function getTokenizedStatement()
+    {
+        return $this->tokenizedStatement;
+    }
+
+    /**
+     * @return string
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 }
