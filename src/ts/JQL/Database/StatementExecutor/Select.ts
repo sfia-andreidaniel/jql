@@ -15,76 +15,114 @@ class JQLDatabaseStatementExecutorSelect implements IDatabaseStatementExecutor {
 
             return <any>this.db.getJQuery().Deferred((defer) => {
 
-                this.db.getTable(this.statement.getTable().getName())
-                    .fetch()
-                    .then((table: JQLTableStorageEngineInMemory) => {
+                let rows: object[];
 
-                        try {
+                if (this.statement.getTable()) {
+                    this.db.getTable(this.statement.getTable().getName())
+                        .fetch()
+                        .then((table: JQLTableStorageEngineInMemory) => {
 
-                            let rows: object[];
+                            try {
 
-                            // SELECT ROWS
+                                // SELECT ROWS
 
-                            if (!this.statement.getTable()) {
+                                rows = this.applyLimit(this.applySorting(this.getStatementCandidateRows(table)));
 
-                                rows = [this.createSingleStatementRow()];
+                                let result = (new JQLStatementResultSelect()).addRows(rows);
 
-                            } else {
+                                // EXECUTE UNION
 
-                                rows = this.applyLimit(this.applySorting(this.getStatementCandidateRows()));
+                                if (this.statement.getUnion()) {
 
-                            }
+                                    (new JQLDatabaseStatementExecutorSelect(this.statement.getUnion(), this.db)).execute()().then(function (unionResult: JQLStatementResultSelect) {
 
-                            let result = (new JQLStatementResultSelect()).addRows(rows);
+                                        result.addRows(unionResult.getRows());
 
-                            // EXECUTE UNION
+                                        defer.resolve(result);
 
-                            if (this.statement.getUnion()) {
+                                    }).fail(function (e) {
 
-                                (new JQLDatabaseStatementExecutorSelect(this.statement.getUnion(), this.db)).execute()().then(function (unionResult: JQLStatementResultSelect) {
+                                        defer.reject(e);
 
-                                    result.addRows(unionResult.getRows());
+                                    });
+
+                                } else {
 
                                     defer.resolve(result);
 
-                                }).fail(function (e) {
+                                }
 
-                                    defer.reject(e);
+                            }
+                            catch (e) {
 
-                                });
+                                console.error(e);
 
-                            } else {
-
-                                defer.resolve(result);
+                                defer.reject(new Error("Failed to execute INSERT statement!"));
 
                             }
 
-                        } catch (e) {
-
+                        })
+                        .fail((e) => {
                             console.error(e);
+                            defer.reject(new Error("Failed to fetch table from server!"));
+                        });
 
-                            defer.reject(new Error('Failed to execute INSERT statement!') );
+                } else {
+
+                    try {
+
+                        // SELECT ROWS
+
+                        rows = [ this.createSingleStatementRow() ];
+
+                        let result = (new JQLStatementResultSelect()).addRows(rows);
+
+                        // EXECUTE UNION
+
+                        if (this.statement.getUnion()) {
+
+                            (new JQLDatabaseStatementExecutorSelect(this.statement.getUnion(), this.db)).execute()().then(function (unionResult: JQLStatementResultSelect) {
+
+                                result.addRows(unionResult.getRows());
+
+                                defer.resolve(result);
+
+                            }).fail(function (e) {
+
+                                defer.reject(e);
+
+                            });
+
+                        } else {
+
+                            defer.resolve(result);
 
                         }
 
-                    })
-                    .fail((e) => {
+                    }
+                    catch (e) {
+
                         console.error(e);
-                        defer.reject( new Error('Failed to fetch table from server!') );
-                    });
+
+                        defer.reject(new Error("Failed to execute INSERT statement!"));
+
+                    }
+
+
+                }
 
 
             }).promise();
 
-        }
+        };
 
     }
 
     private createSingleStatementRow(): object {
 
-        let result = Object.create(null),
+        let result          = Object.create(null),
             context: JQLRow = new JQLRow([], [], 0),
-            fields = this.statement.getFields(),
+            fields          = this.statement.getFields(),
             exprResult: JQLPrimitive,
             fieldName: string;
 
@@ -94,15 +132,15 @@ class JQLDatabaseStatementExecutorSelect implements IDatabaseStatementExecutor {
 
         for (let i = 0, fieldsList = <JQLStatementSelectFieldsListSpecific>fields, specificFields = fieldsList.getFields(), len = specificFields.length; i < len; i++) {
 
-            fieldName = specificFields[i].getLiteral();
+            fieldName = specificFields[ i ].getLiteral();
 
-            exprResult = specificFields[i].getExpression().compute(context);
+            exprResult = specificFields[ i ].getExpression().compute(context);
 
             if (null === fieldName) {
-                fieldName = specificFields[i].getExpression().getLiteral();
+                fieldName = specificFields[ i ].getExpression().getLiteral();
             }
 
-            result[fieldName] = exprResult;
+            result[ fieldName ] = exprResult;
 
         }
 
@@ -110,22 +148,21 @@ class JQLDatabaseStatementExecutorSelect implements IDatabaseStatementExecutor {
 
     }
 
-    private getStatementCandidateRows(): object[] {
+    private getStatementCandidateRows(table: JQLTableStorageEngineInMemory): object[] {
 
-        let table: JQLTableStorageEngineInMemory = <JQLTableStorageEngineInMemory>this.db.getTable(this.statement.getTable().getName()),
-            iterator                             = table.createIterator(),
+        let iterator             = table.createIterator(),
             row: JQLRow,
-            result: object[]                     = [],
-            tableFieldsList                      = table.describe(),
-            statementFieldsList                  = this.statement.getFields(),
-            isAllFields: boolean                 = statementFieldsList.isSelectingAllFields(),
-            specificFieldsList                   = <JQLStatementSelectFieldsListSpecific>statementFieldsList,
+            result: object[]     = [],
+            tableFieldsList      = table.describe(),
+            statementFieldsList  = this.statement.getFields(),
+            isAllFields: boolean = statementFieldsList.isSelectingAllFields(),
+            specificFieldsList   = <JQLStatementSelectFieldsListSpecific>statementFieldsList,
             specificFieldsListCollection: JQLStatementSelectField[],
             o: object,
             exprResult: JQLPrimitive,
             fieldName: string,
             addRow: boolean,
-            where = this.statement.getFilter();
+            where                = this.statement.getFilter();
 
         if (!isAllFields) {
             specificFieldsListCollection = specificFieldsList.getFields();
@@ -151,15 +188,15 @@ class JQLDatabaseStatementExecutorSelect implements IDatabaseStatementExecutor {
 
                     for (let i = 0, len = specificFieldsListCollection.length; i < len; i++) {
 
-                        fieldName = specificFieldsListCollection[i].getLiteral();
+                        fieldName = specificFieldsListCollection[ i ].getLiteral();
 
-                        exprResult = specificFieldsListCollection[i].getExpression().compute(row);
+                        exprResult = specificFieldsListCollection[ i ].getExpression().compute(row);
 
                         if (null === fieldName) {
-                            fieldName = specificFieldsListCollection[i].getExpression().getLiteral();
+                            fieldName = specificFieldsListCollection[ i ].getExpression().getLiteral();
                         }
 
-                        o[fieldName] = exprResult;
+                        o[ fieldName ] = exprResult;
 
                     }
 
@@ -174,46 +211,46 @@ class JQLDatabaseStatementExecutorSelect implements IDatabaseStatementExecutor {
         return result;
     }
 
-    private applySorting( rows: object[] ): object[] {
+    private applySorting(rows: object[]): object[] {
 
         let sorter = this.statement.getSorter();
 
-        if ( !sorter || rows.length < 2 ) {
+        if (!sorter || rows.length < 2) {
             return rows;
         }
 
-        if ( sorter.isRandom() ) {
-            return JQLUtils.shuffleArray( rows );
+        if (sorter.isRandom()) {
+            return JQLUtils.shuffleArray(rows);
         }
 
-        let expressions = (<JQLSorterStrategyByExpression>sorter).getSortExpressions(),
+        let expressions    = (<JQLSorterStrategyByExpression>sorter).getSortExpressions(),
             numExpressions = expressions.length;
 
-        let sortFunction = (function(){
+        let sortFunction = (function () {
 
             let walkers: any[] = [];
 
-            for ( let i=0; i<numExpressions; i++ ) {
+            for (let i = 0; i < numExpressions; i++) {
 
-                if ( i === numExpressions - 1 ) {
+                if (i === numExpressions - 1) {
 
                     // LAST WALKER
 
-                    walkers.push((function(i){
+                    walkers.push((function (i) {
 
-                        return function( a: JQLRow, b: JQLRow ): number {
+                        return function (a: JQLRow, b: JQLRow): number {
 
-                            let exprA = expressions[i].getExpression().compute(a),
-                                exprB = expressions[i].getExpression().compute(b),
-                                result: number = JQLUtils.compare( exprA, exprB );
+                            let exprA          = expressions[ i ].getExpression().compute(a),
+                                exprB          = expressions[ i ].getExpression().compute(b),
+                                result: number = JQLUtils.compare(exprA, exprB);
 
-                            if ( expressions[i].getDirection() === EJQL_LEXER_ORDER_DIRECTION.DESCENDING ) {
+                            if (expressions[ i ].getDirection() === EJQL_LEXER_ORDER_DIRECTION.DESCENDING) {
                                 result = -result;
                             }
 
                             return result;
 
-                        }
+                        };
 
                     })(i));
 
@@ -222,51 +259,51 @@ class JQLDatabaseStatementExecutorSelect implements IDatabaseStatementExecutor {
 
                     // NOT LAST WALKER
 
-                    walkers.push((function(i){
+                    walkers.push((function (i) {
 
-                        return function( a: JQLRow, b: JQLRow ): number {
+                        return function (a: JQLRow, b: JQLRow): number {
 
-                            let exprA = expressions[i].getExpression().compute(a),
-                                exprB = expressions[i].getExpression().compute(b),
-                                result: number = JQLUtils.compare( exprA, exprB );
+                            let exprA          = expressions[ i ].getExpression().compute(a),
+                                exprB          = expressions[ i ].getExpression().compute(b),
+                                result: number = JQLUtils.compare(exprA, exprB);
 
-                            if ( expressions[i].getDirection() === EJQL_LEXER_ORDER_DIRECTION.DESCENDING ) {
+                            if (expressions[ i ].getDirection() === EJQL_LEXER_ORDER_DIRECTION.DESCENDING) {
                                 result = -result;
                             }
 
-                            if ( 0 === result ) {
-                                return walkers[ i + 1 ]( a, b );
+                            if (0 === result) {
+                                return walkers[ i + 1 ](a, b);
                             } else {
                                 return result;
                             }
-                        }
+                        };
 
                     })(i));
                 }
 
             }
 
-            return function(a: object, b: object): number {
+            return function (a: object, b: object): number {
 
-                return walkers[0](
+                return walkers[ 0 ](
                     JQLRow.createFromObject(a),
-                    JQLRow.createFromObject(b)
+                    JQLRow.createFromObject(b),
                 );
 
-            }
+            };
 
 
         })();
 
-        return rows.sort( sortFunction );
+        return rows.sort(sortFunction);
 
     }
 
-    private applyLimit( rows: object[] ): object[] {
+    private applyLimit(rows: object[]): object[] {
 
         let limit = this.statement.getLimit();
 
-        if ( !limit ) {
+        if (!limit) {
             return rows;
         }
 

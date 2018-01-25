@@ -8,10 +8,15 @@ class UnfetchedTable implements IJQLTable {
 
     private db: JQLDatabase;
 
+    private table: JQueryPromise<IJQLTable>;
+
+    private name: string;
+
     constructor(definitions: IJQLBackendTableModel, db: JQLDatabase) {
 
         this.db = db;
 
+        this.name = definitions.name;
         this.remote = definitions.storageEngine === EJQLTableStorageEngine.REMOTE;
         this.storageEngine = definitions.storageEngine;
 
@@ -37,9 +42,62 @@ class UnfetchedTable implements IJQLTable {
     }
 
     public fetch(): JQueryPromise<IJQLTable> {
-        return <any>this.db.getJQuery().Deferred((defer) => {
-            defer.reject(new Error("Not implemented!"));
-        }).promise();
+
+        if (this.table) {
+            return this.table;
+        }
+
+        if (!this.isRemote()) {
+
+            this.table = (($: JQueryStatic, db: JQLDatabase): JQueryPromise<IJQLTable> => {
+
+                return <any>$.Deferred((defer) => {
+
+                    let fetchTableRequest = {
+                        "action": "fetch-table",
+                        "auth":   db.getAuthorizationToken(),
+                        "name":   this.name,
+                    };
+
+                    $.ajax({
+                        type: "POST",
+                        url:  db.getRPCEndpointName(),
+                        data: fetchTableRequest,
+                    }).then(function (result) {
+
+                        defer.resolve(
+                            JQLTable.createFromInMemoryArrayOfObjects(
+                                result,
+                            ),
+                        );
+
+                    }).fail(function (e) {
+
+                        defer.reject(e);
+
+                    });
+
+                }).promise();
+
+            })(this.db.getJQuery(), this.db);
+
+        } else {
+
+            this.table = (($: JQueryStatic, db: JQLDatabase): JQueryPromise<IJQLTable> => {
+
+                return <any>$.Deferred((defer) => {
+
+                    defer.resolve(
+                        JQLTable.createFromRemoteTableDefinition(this.describe()),
+                    );
+
+                }).promise();
+
+            })(this.db.getJQuery(), this.db);
+
+        }
+
+        return this.table;
     }
 
     public getStorageEngine(): EJQLTableStorageEngine {

@@ -23,6 +23,7 @@ class Controller
     const ACTION_EXECUTE_QUERY = 'query';
     const ACTION_CREATE_TABLE_FROM_CSV = 'create-table-from-csv';
     const ACTION_SHOW_TABLES = 'show-tables';
+    const ACTION_FETCH_TABLE = 'fetch-table';
 
 
     /**
@@ -134,6 +135,10 @@ class Controller
 
             case self::ACTION_SHOW_TABLES:
                 return $this->showTablesAction();
+                break;
+
+            case self::ACTION_FETCH_TABLE:
+                return $this->fetchTableAction();
                 break;
 
             default:
@@ -397,6 +402,26 @@ class Controller
         }
 
         return $result;
+
+    }
+
+    /**
+     * @throws AuthorizationException
+     * @throws StorageException
+     */
+    private function fetchTableAction()
+    {
+
+        $token = $this->getAuthorizationService()->getAuthenticationToken();
+
+        $tableName = $this->requestParam('name');
+
+        $rows = $this->getStorageService()->getTableRows(
+            $token,
+            $tableName
+        );
+
+        return $rows;
 
     }
 }

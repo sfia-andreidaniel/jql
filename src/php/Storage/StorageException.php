@@ -12,4 +12,8 @@ class StorageException extends \Exception
     const ERR_TABLE_ALREADY_EXISTS = 5;
     const ERR_CREATE_TABLE_FROM_CSV = 6;
     const ERR_GET_TABLE_BY_ID = 7;
+    const ERR_TABLE_NOT_FOUND = 8;
+    const ERR_GET_TABLE_BY_NAME = 9;
+    const ERR_GET_TABLE_ROWS = 10;
+    const ERR_TABLE_STORAGE_NOT_IN_MEMORY = 11;
 }

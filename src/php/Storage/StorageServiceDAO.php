@@ -190,8 +190,7 @@ class StorageServiceDAO
                     // DDL CAUSES IMPLICIT COMMIT
                     $this->database->query('DROP TABLE `table_' . $tableSchema['id'] . '`');
                     $this->database->query('DELETE FROM jql_tables WHERE id=' . $tableSchema['id']);
-                }
-                else {
+                } else {
                     if ($transaction) {
                         $this->database->query('ROLLBACK');
                     }
@@ -360,6 +359,155 @@ class StorageServiceDAO
         } else {
             return $bindingValue;
         }
+    }
+
+    /**
+     * @param int      $userId
+     * @param int|null $formId
+     * @param string   $tableName
+     *
+     * @return array
+     * @throws StorageException
+     */
+    public function getTableByName($userId, $formId, $tableName)
+    {
+
+        try {
+
+            $self = $this;
+
+            $result = [];
+
+            if ($formId === null) {
+                $where = 'WHERE `name` = :name AND `user_id` = :userId AND `form_id` IS NULL';
+                $bindings = [
+                    ':userId' => $userId,
+                    ':name'   => $tableName,
+                ];
+            } else {
+                $where = 'WHERE `name` = :name AND `user_id` = :userId AND ( `form_id` = :formId OR `form_id` IS NULL )';
+                $bindings = [
+                    ':userId' => $userId,
+                    ':formId' => $formId,
+                    ':name'   => $tableName,
+                ];
+            }
+
+            $this->database->query(
+                '
+                    SELECT `id`                                          AS `id`,
+                           `user_id`                                     AS `userId`,
+                           `form_id`                                     AS `formId`,
+                           `name`                                        AS `name`,
+                           IF ( `form_id` IS NULL, "global", "private" ) AS `namespace`,
+                           UNIX_TIMESTAMP( `created_date` )              AS `createdDate`,
+                           `access_mode`                                 AS `accessMode`,
+                           `storage_engine`                              AS `storageEngine`,
+                           `json_schema`                                 AS `schema`
+                    FROM   jql_tables
+                    ' . $where . '
+                    LIMIT 1',
+                $bindings
+            )->each(function(array $row) use (&$result, $self) {
+                $result[] = $self->normalizeDAORow($row);
+            });
+
+            if (!count($result)) {
+                throw new StorageException(
+                    'Table "' . $tableName . '" not found!',
+                    StorageException::ERR_TABLE_NOT_FOUND
+                );
+            }
+
+            return $result[0];
+
+
+        } catch (\Exception $e) {
+            throw new StorageException(
+                'Failed to fetch user tables!',
+                StorageException::ERR_GET_USER_TABLES,
+                $e
+            );
+        }
+    }
+
+    /**
+     * @param array $tableSchema
+     * @param int   $tableId
+     *
+     * @throws StorageException
+     */
+    public function fetchTableRowsInMemory(array $tableSchema, $tableId)
+    {
+
+        try {
+
+            $result = [];
+
+            $self = $this;
+
+            $this->database->query(
+                'SELECT * FROM table_' . $tableId
+            )->each(function(array $row) use (&$result, $tableSchema, $self) {
+                $result[] = $self->normalizeInMemoryTableRow($row, $tableSchema);
+            });
+
+            return $result;
+
+        } catch (StorageException $e) {
+
+            throw $e;
+
+        } catch (\Exception $e) {
+
+            throw new StorageException(
+                'Failed to fetch table rows in-memory',
+                StorageException::ERR_FETCH_TABLE_ROWS_IN_MEMORY,
+                $e
+            );
+        }
+
+    }
+
+    /**
+     * @param array $row
+     * @param array $tableSchema
+     *
+     * @return array
+     */
+    private function normalizeInMemoryTableRow(array $row, array $tableSchema)
+    {
+        foreach ($row as $columnName => &$value) {
+
+            if (isset($tableSchema[$columnName])) {
+
+                switch ($tableSchema[$columnName]) {
+                    case CSVParser::TYPE_BOOLEAN:
+                        $value = (bool)(int)$value;
+                        break;
+
+                    case CSVParser::TYPE_INT:
+                        $value = (int)$value;
+                        break;
+
+                    case CSVParser::TYPE_FLOAT:
+                        $value = (float)$value;
+                        break;
+
+                    case CSVParser::TYPE_TEXT:
+                    default:
+                        break;
+                }
+
+            } else {
+
+                unset($row[$columnName]);
+
+            }
+
+        }
+
+        return $row;
     }
 
 }

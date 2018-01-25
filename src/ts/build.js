@@ -655,39 +655,57 @@ var JQLDatabaseStatementExecutorSelect = (function () {
         var _this = this;
         return function () {
             return _this.db.getJQuery().Deferred(function (defer) {
-                _this.db.getTable(_this.statement.getTable().getName())
-                    .fetch()
-                    .then(function (table) {
+                var rows;
+                if (_this.statement.getTable()) {
+                    _this.db.getTable(_this.statement.getTable().getName())
+                        .fetch()
+                        .then(function (table) {
+                        try {
+                            rows = _this.applyLimit(_this.applySorting(_this.getStatementCandidateRows(table)));
+                            var result_1 = (new JQLStatementResultSelect()).addRows(rows);
+                            if (_this.statement.getUnion()) {
+                                (new JQLDatabaseStatementExecutorSelect(_this.statement.getUnion(), _this.db)).execute()().then(function (unionResult) {
+                                    result_1.addRows(unionResult.getRows());
+                                    defer.resolve(result_1);
+                                }).fail(function (e) {
+                                    defer.reject(e);
+                                });
+                            }
+                            else {
+                                defer.resolve(result_1);
+                            }
+                        }
+                        catch (e) {
+                            console.error(e);
+                            defer.reject(new Error("Failed to execute INSERT statement!"));
+                        }
+                    })
+                        .fail(function (e) {
+                        console.error(e);
+                        defer.reject(new Error("Failed to fetch table from server!"));
+                    });
+                }
+                else {
                     try {
-                        var rows = void 0;
-                        if (!_this.statement.getTable()) {
-                            rows = [_this.createSingleStatementRow()];
-                        }
-                        else {
-                            rows = _this.applyLimit(_this.applySorting(_this.getStatementCandidateRows()));
-                        }
-                        var result_1 = (new JQLStatementResultSelect()).addRows(rows);
+                        rows = [_this.createSingleStatementRow()];
+                        var result_2 = (new JQLStatementResultSelect()).addRows(rows);
                         if (_this.statement.getUnion()) {
                             (new JQLDatabaseStatementExecutorSelect(_this.statement.getUnion(), _this.db)).execute()().then(function (unionResult) {
-                                result_1.addRows(unionResult.getRows());
-                                defer.resolve(result_1);
+                                result_2.addRows(unionResult.getRows());
+                                defer.resolve(result_2);
                             }).fail(function (e) {
                                 defer.reject(e);
                             });
                         }
                         else {
-                            defer.resolve(result_1);
+                            defer.resolve(result_2);
                         }
                     }
                     catch (e) {
                         console.error(e);
-                        defer.reject(new Error('Failed to execute INSERT statement!'));
+                        defer.reject(new Error("Failed to execute INSERT statement!"));
                     }
-                })
-                    .fail(function (e) {
-                    console.error(e);
-                    defer.reject(new Error('Failed to fetch table from server!'));
-                });
+                }
             }).promise();
         };
     };
@@ -706,8 +724,8 @@ var JQLDatabaseStatementExecutorSelect = (function () {
         }
         return result;
     };
-    JQLDatabaseStatementExecutorSelect.prototype.getStatementCandidateRows = function () {
-        var table = this.db.getTable(this.statement.getTable().getName()), iterator = table.createIterator(), row, result = [], tableFieldsList = table.describe(), statementFieldsList = this.statement.getFields(), isAllFields = statementFieldsList.isSelectingAllFields(), specificFieldsList = statementFieldsList, specificFieldsListCollection, o, exprResult, fieldName, addRow, where = this.statement.getFilter();
+    JQLDatabaseStatementExecutorSelect.prototype.getStatementCandidateRows = function (table) {
+        var iterator = table.createIterator(), row, result = [], tableFieldsList = table.describe(), statementFieldsList = this.statement.getFields(), isAllFields = statementFieldsList.isSelectingAllFields(), specificFieldsList = statementFieldsList, specificFieldsListCollection, o, exprResult, fieldName, addRow, where = this.statement.getFilter();
         if (!isAllFields) {
             specificFieldsListCollection = specificFieldsList.getFields();
         }
@@ -1223,6 +1241,7 @@ var UnfetchedTable = (function () {
     function UnfetchedTable(definitions, db) {
         this.identifiers = [];
         this.db = db;
+        this.name = definitions.name;
         this.remote = definitions.storageEngine === EJQLTableStorageEngine.REMOTE;
         this.storageEngine = definitions.storageEngine;
         this.computeIdentifiers(definitions.schema);
@@ -1242,9 +1261,38 @@ var UnfetchedTable = (function () {
         return this.remote;
     };
     UnfetchedTable.prototype.fetch = function () {
-        return this.db.getJQuery().Deferred(function (defer) {
-            defer.reject(new Error("Not implemented!"));
-        }).promise();
+        var _this = this;
+        if (this.table) {
+            return this.table;
+        }
+        if (!this.isRemote()) {
+            this.table = (function ($, db) {
+                return $.Deferred(function (defer) {
+                    var fetchTableRequest = {
+                        "action": "fetch-table",
+                        "auth": db.getAuthorizationToken(),
+                        "name": _this.name,
+                    };
+                    $.ajax({
+                        type: "POST",
+                        url: db.getRPCEndpointName(),
+                        data: fetchTableRequest,
+                    }).then(function (result) {
+                        defer.resolve(JQLTable.createFromInMemoryArrayOfObjects(result));
+                    }).fail(function (e) {
+                        defer.reject(e);
+                    });
+                }).promise();
+            })(this.db.getJQuery(), this.db);
+        }
+        else {
+            this.table = (function ($, db) {
+                return $.Deferred(function (defer) {
+                    defer.resolve(JQLTable.createFromRemoteTableDefinition(_this.describe()));
+                }).promise();
+            })(this.db.getJQuery(), this.db);
+        }
+        return this.table;
     };
     UnfetchedTable.prototype.getStorageEngine = function () {
         return this.storageEngine;

@@ -2,6 +2,7 @@
 
 namespace JQL\Storage;
 
+use JQL\Assertion\Assertion;
 use JQL\Authorization\AuthorizationService;
 use JQL\Authorization\AuthorizationToken;
 use JQL\CSVParser\CSVParser;
@@ -142,6 +143,86 @@ class StorageService
         }
 
         return $result;
+    }
+
+    /**
+     * @param AuthorizationToken $authorizationToken
+     * @param string             $tableName
+     *
+     * @return TableModel
+     * @throws StorageException
+     */
+    public function getTableByName(
+        AuthorizationToken $authorizationToken,
+        $tableName
+    )
+    {
+        try {
+
+            Assertion::assertIsString($tableName, 'invalid argument: $tableName');
+
+            $result = $this->dao->getTableByName(
+                $authorizationToken->getUserId(),
+                $authorizationToken->getFormId(),
+                $tableName
+            );
+
+            return new TableModel($result);
+
+        } catch (StorageException $e) {
+
+            throw $e;
+
+        } catch (\Exception $e) {
+            throw new StorageException(
+                'Failed to get table by name: ' . $e->getMessage(),
+                StorageException::ERR_GET_TABLE_BY_NAME,
+                $e
+            );
+        }
+    }
+
+    /**
+     * @param AuthorizationToken $token
+     * @param string             $tableName
+     *
+     * @throws StorageException
+     */
+    public function getTableRows(AuthorizationToken $token, $tableName)
+    {
+
+        try {
+
+            $tableModel = $this->getTableByName($token, $tableName);
+
+            if ($tableModel->getStorageEngine() !== StorageService::TABLE_STORAGE_ENGINE_MEMORY) {
+                throw new StorageException(
+                    'Cannot get table rows of tables without in-memory storage engine!',
+                    StorageException::ERR_TABLE_STORAGE_NOT_IN_MEMORY
+                );
+            }
+
+            $rows = $this->dao->fetchTableRowsInMemory(
+                $tableModel->getSchema(),
+                $tableModel->getId()
+            );
+
+            return $rows;
+
+        } catch (StorageException $e) {
+
+            throw $e;
+
+        } catch (\Exception $e) {
+
+            throw new StorageException(
+                'Failed to get table rows',
+                StorageException::ERR_GET_TABLE_ROWS,
+                $e
+            );
+
+        }
+
     }
 
 }
