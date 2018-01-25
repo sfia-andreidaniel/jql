@@ -526,6 +526,9 @@ var JQLDatabase = (function () {
         return this;
     };
     JQLDatabase.prototype.withTablesList = function (tables) {
+        for (var i = 0, len = tables.length; i < len; i++) {
+            this.withTable(tables[i].name, new UnfetchedTable(tables[i], this));
+        }
         return this;
     };
     JQLDatabase.prototype.hasTable = function (tableName) {
@@ -1215,6 +1218,64 @@ var JQLTable = (function () {
         }).promise();
     };
     return JQLTable;
+}());
+var UnfetchedTable = (function () {
+    function UnfetchedTable(definitions, db) {
+        this.identifiers = [];
+        this.db = db;
+        this.remote = definitions.storageEngine === EJQLTableStorageEngine.REMOTE;
+        this.storageEngine = definitions.storageEngine;
+        this.computeIdentifiers(definitions.schema);
+    }
+    UnfetchedTable.prototype.describe = function () {
+        return this.identifiers;
+    };
+    UnfetchedTable.prototype.hasIdentifier = function (identifierName) {
+        for (var i = 0, len = this.identifiers.length; i < len; i++) {
+            if (this.identifiers[i].name === identifierName) {
+                return true;
+            }
+        }
+        return false;
+    };
+    UnfetchedTable.prototype.isRemote = function () {
+        return this.remote;
+    };
+    UnfetchedTable.prototype.fetch = function () {
+        return this.db.getJQuery().Deferred(function (defer) {
+            defer.reject(new Error("Not implemented!"));
+        }).promise();
+    };
+    UnfetchedTable.prototype.getStorageEngine = function () {
+        return this.storageEngine;
+    };
+    UnfetchedTable.prototype.computeIdentifiers = function (schema) {
+        for (var identifierName in schema) {
+            if (schema.hasOwnProperty(identifierName)) {
+                this.identifiers.push({
+                    name: identifierName,
+                    unique: false,
+                    autoIncrement: false,
+                    type: this.castBackendDataTypeToFrontendDataType(schema[identifierName]),
+                    default: null,
+                });
+            }
+        }
+    };
+    UnfetchedTable.prototype.castBackendDataTypeToFrontendDataType = function (dataType) {
+        switch (dataType) {
+            case EJQLBackendTableColumnType.BOOLEAN:
+                return EJQLTableColumnType.BOOLEAN;
+            case EJQLBackendTableColumnType.FLOAT:
+            case EJQLBackendTableColumnType.INT:
+                return EJQLTableColumnType.NUMBER;
+            case EJQLBackendTableColumnType.STRING:
+                return EJQLTableColumnType.STRING;
+            default:
+                return EJQLTableColumnType.NULL;
+        }
+    };
+    return UnfetchedTable;
 }());
 var JQLTableIndex = (function () {
     function JQLTableIndex(table, columns) {

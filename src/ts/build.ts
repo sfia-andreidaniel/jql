@@ -10,6 +10,7 @@
 ///<reference path="./JQL/Database/StatementExecutor/Delete.ts" />
 ///<reference path="./JQL/Database/StatementExecutor/RemoteStatement.ts" />
 ///<reference path="./JQL/Table.ts" />
+///<reference path="./JQL/Table/UnfetchedTable.ts" />
 ///<reference path="./JQL/Table/Index.ts" />
 ///<reference path="./JQL/Table/Index/SingleColumn.ts" />
 ///<reference path="./JQL/Table/StorageEngine/InMemory.ts" />

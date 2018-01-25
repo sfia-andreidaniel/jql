@@ -116,7 +116,12 @@ class JQLDatabase implements IJQLDatabase {
 
     }
 
-    public withTablesList( tables: IJQLBackendTableModel[] ): this {
+    public withTablesList(tables: IJQLBackendTableModel[]): this {
+
+        for (let i = 0, len = tables.length; i < len; i++) {
+            this.withTable(tables[ i ].name, new UnfetchedTable(tables[ i ], this));
+        }
+
         return this;
     }
 
