@@ -2,17 +2,26 @@
 
 namespace JQL;
 
+use JQL\Assertion\Assertion;
+use JQL\Assertion\AssertionException;
 use JQL\Authorization\AuthorizationException;
 use JQL\Authorization\AuthorizationService;
+use JQL\CSVParser\CSVParser;
+use JQL\CSVParser\CSVParserOptions;
 use JQL\Database\Database;
 use JQL\RemoteQuery\RemoteQueryException;
 use JQL\RemoteQuery\RemoteQueryService;
+use JQL\Storage\StorageService;
+use JQL\Storage\StorageServiceDAO;
+use JQL\Storage\TableModelBuilder;
+use JQL\Storage\StorageException;
 
 class Controller
 {
 
     const ACTION_GENERATE_TOKEN = 'token';
     const ACTION_EXECUTE_QUERY = 'query';
+    const ACTION_CREATE_TABLE_FROM_CSV = 'create-table-from-csv';
 
 
     /**
@@ -45,6 +54,18 @@ class Controller
      */
     private $remoteQueryService;
 
+    /**
+     * @var StorageService
+     */
+    private $storageService;
+
+    /**
+     * Controller constructor.
+     *
+     * @param array $get
+     * @param array $post
+     * @param array $config
+     */
     public function __construct(array $get, array $post, array $config)
     {
         $this->_get = $get;
@@ -92,7 +113,7 @@ class Controller
     public function dispatch()
     {
 
-        $action = $this->get('action');
+        $action = $this->requestParam('action');
 
         switch ($action) {
 
@@ -102,6 +123,10 @@ class Controller
 
             case self::ACTION_EXECUTE_QUERY:
                 return $this->executeQueryAction();
+                break;
+
+            case self::ACTION_CREATE_TABLE_FROM_CSV:
+                return $this->createTableFromCSVAction();
                 break;
 
             default:
@@ -248,5 +273,94 @@ class Controller
         return null === $this->database
             ? $this->database = new Database($this, 'default')
             : $this->database;
+    }
+
+    /**
+     * @return StorageService
+     */
+    public function getStorageService()
+    {
+        return null === $this->storageService
+            ? $this->storageService = new StorageService(
+                new StorageServiceDAO(
+                    $this->getDatabase()
+                ),
+                new CSVParser()
+            )
+            : $this->storageService;
+    }
+
+    /**
+     * @return array
+     * @throws AssertionException
+     * @throws AuthorizationException
+     * @throws StorageException
+     */
+    private function createTableFromCSVAction()
+    {
+        $token = $this->getAuthorizationService()->getAuthenticationToken();
+
+        $fileData = isset($_FILES['csvFile'])
+            ? file_get_contents($_FILES['csvFile']['tmp_name'])
+            : null;
+
+        $setting = $this->post('setting');
+
+        Assertion::assertIsString($setting, 'invalid request argument: $setting');
+
+        $settingDecodedFromBase64 = @base64_decode($setting);
+
+        Assertion::assertIsString($settingDecodedFromBase64);
+
+        $settingJSON = @json_decode($settingDecodedFromBase64, true);
+
+        Assertion::assertIsArray($settingJSON, 'invalid request argument: $setting is not array!');
+
+        unset($setting);
+        unset($settingDecodedFromBase64);
+
+        Assertion::assertIsArray($settingJSON['table'], 'invalid request argument: setting.table is not array!');
+
+        Assertion::assertIsStringKey($settingJSON['table'], 'name', 'invalid request argument: setting.table.name is not string');
+        Assertion::assertIsStringKey($settingJSON['table'], 'namespace', 'invalid request argument: setting.table.namespace is not string');
+        Assertion::assertIsStringKey($settingJSON['table'], 'storageEngine', 'invalid request argument: setting.table.storageEngine is not string');
+        Assertion::assertIsStringKey($settingJSON['table'], 'accessMode', 'invalid request argument: setting.table.accessMode is not string');
+
+        Assertion::assertIsArray($settingJSON['csvParser'], 'invalid request argument: setting.csvParser is not array!');
+
+        Assertion::assertIsStringKey($settingJSON['csvParser'], 'enclosure', 'invalid request argument: setting.csvParser.enclosure is not string');
+        Assertion::assertIsBooleanKey($settingJSON['csvParser'], 'encloseAllFields', 'invalid request argument: setting.csvParser.encloseAllFields is not boolean');
+        Assertion::assertIsStringKey($settingJSON['csvParser'], 'delimiter', 'invalid request argument: setting.csvParser.delimiter is not string');
+        Assertion::assertIsStringKey($settingJSON['csvParser'], 'escapeCharacter', 'invalid request argument: setting.csvParser.escapeCharacter is not string');
+        Assertion::assertIsBooleanKey($settingJSON['csvParser'], 'autoTrim', 'invalid request argument: setting.csvParser.autoTrim is not boolean');
+        Assertion::assertIsStringKey($settingJSON['csvParser'], 'lineTerminator', 'invalid request argument: setting.csvParser.lineTerminator is not string');
+
+        $table = (new TableModelBuilder())
+            ->withUserId($token->getUserId())
+            ->withFormId(
+                $settingJSON['table']['namespace'] === StorageService::TABLE_NAMESPACE_PRIVATE
+                    ? $token->getFormId()
+                    : null
+            )
+            ->withAccessMode($settingJSON['table']['accessMode'])
+            ->withName($settingJSON['table']['name'])
+            ->withNamespace($settingJSON['table']['namespace'])
+            ->withStorageEngine($settingJSON['table']['storageEngine'])
+            ->build();
+
+        $csvParserOptions = (new CSVParserOptions())
+            ->withEncloseAllFields($settingJSON['csvParser']['encloseAllFields'])
+            ->withFieldEnclosure($settingJSON['csvParser']['enclosure'])
+            ->withFieldDelimiter($settingJSON['csvParser']['delimiter'])
+            ->withEscapeCharacter($settingJSON['csvParser']['escapeCharacter'])
+            ->withAutoTrim($settingJSON['csvParser']['autoTrim'])
+            ->withLineTerminator($settingJSON['csvParser']['lineTerminator']);
+
+        return $this->getStorageService()->createTableFromCSV(
+            $fileData,
+            $csvParserOptions,
+            $table,
+            $token
+        )->toArray();
     }
 }

@@ -64,3 +64,4 @@
 ///<reference path="./JQL/Statement/Update/DelayedOption.ts" />
 ///<reference path="./JQL/Statement/Delete.ts" />
 
+///<reference path="./demo.ts" />

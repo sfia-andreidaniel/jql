@@ -31,7 +31,7 @@ class JQLDatabase implements IJQLDatabase {
         return this.authorizationToken;
     }
 
-    public withRPCEndpointName( rpcEndpointName: string ): this {
+    public withRPCEndpointName(rpcEndpointName: string): this {
         this.rpcEndpointName = rpcEndpointName;
         return this;
     }
@@ -252,6 +252,58 @@ class JQLDatabase implements IJQLDatabase {
 
         }
 
+    }
+
+    public createTableFromCSVFile(request: IJQLCreateTableFromCSVFileRequest) {
+
+        let data = new FormData();
+
+        data.append("action", "create-table-from-csv");
+        data.append("auth", this.authorizationToken);
+        data.append("csvFile", request.csvFile || '' );
+        data.append("setting", btoa(JSON.stringify({
+            table:     {
+                name:          request.tableName,
+                namespace:     request.tableNamespace,
+                accessMode:    request.tableAccessMode,
+                storageEngine: request.tableStorageEngine,
+            },
+            csvParser: {
+                enclosure:        request.csvFieldEnclosure,
+                encloseAllFields: request.csvEncloseAllFields,
+                delimiter:        request.csvFieldDelimiter,
+                escapeCharacter:  request.csvEscapeCharacter,
+                autoTrim:         request.csvAutoTrim,
+                lineTerminator:   request.csvLineTerminator,
+            },
+        })));
+
+        return (function($: JQueryStatic, self: JQLDatabase){
+
+            return $.Deferred(function(defer){
+
+                $.ajax( {
+                    url: self.rpcEndpointName,
+                    data: data,
+                    type: 'POST',
+                    dataType: 'json',
+                    processData: false,
+                    contentType: false,
+                }).then(function( response ) {
+
+                    defer.resolve( response );
+
+                }).fail(function(e){
+
+                    defer.reject( e );
+
+                });
+
+
+            }).promise();
+
+
+        })(this.jq, this);
     }
 
 }

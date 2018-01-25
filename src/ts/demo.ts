@@ -1,72 +1,41 @@
-let db: JQLDatabase = (new JQLDatabase()).withJQuery(jQuery.noConflict());
+declare var db: JQLDatabase;
 
-db.withTable(
-    'persons',
-    JQLTable.createFromInMemoryArrayOfObjects(
-        [
-            {
-                id: 1,
-                name: "Jack",
-                age: 12,
-            },
-            {
-                id: 2,
-                name: "Jill",
-                age: 14,
-            },
-            {
-                id: 3,
-                name: "Betty",
-                age: 32
-            },
-        ],
-        [
-            {
-                name: "id",
-                type: EJQLTableColumnType.NUMBER,
-                default: null,
-                unique: true,
-                autoIncrement: true,
-            },
-            {
-                name: "name",
-                type: EJQLTableColumnType.STRING,
-                default: "",
-                unique: false,
-            },
-            {
-                name: "age",
-                type: EJQLTableColumnType.NUMBER,
-                default: 0,
-                unique: false,
-            }
-        ]
-    )
-);
+(function ($: JQueryStatic) {
 
-db.withTable(
-    'products',
-    JQLTable.createFromInMemoryArrayOfObjects(
-        [
-            {
-                id: 1,
-                name: "VGA Card",
-                ownerId: 1,
-            },
-            {
-                id: 2,
-                name: "CPU",
-                ownerId: 1,
-            },
-            {
-                id: 4,
-                name: "Computer keyboard",
-                ownerId: 3,
-            }
-        ]
-    )
-);
+    $(function () {
 
-db.withFunction('sum', function (a: number, b: number): number {
-    return a + b;
-});
+        $("#create-table").on("submit", function (e) {
+
+            e.preventDefault();
+            e.stopPropagation();
+
+            let request: IJQLCreateTableFromCSVFileRequest = {
+
+                csvFile:             $(this).find("[name=file]").get(0)['files'][ 0 ] || null,
+                tableName:           $(this).find("[name=name]").val().trim(),
+                tableNamespace:      $(this).find("[name=namespace]").val(),
+                tableAccessMode:     $(this).find("[name=access-mode]").val(),
+                tableStorageEngine:  $(this).find("[name=storage-engine]").val(),
+                csvFieldDelimiter:   $(this).find("[name=field-delimiter]").val(),
+                csvFieldEnclosure:   $(this).find("[name=field-enclosure]").val(),
+                csvEncloseAllFields: $(this).find("[name=enclose-all-fields]").is(":checked"),
+                csvEscapeCharacter:  $(this).find("[name=escape-character]").val(),
+                csvAutoTrim:         $(this).find("[name=auto-trim]").is(":checked"),
+                csvLineTerminator:   $(this).find("[name=line-terminator]").val(),
+            };
+
+            db.createTableFromCSVFile( request ).then(function(t: any){
+
+                alert(JSON.stringify(t) );
+
+            }).fail(function(e){
+
+                console.error(e);
+
+            });
+
+        });
+
+    });
+
+})(jQuery);

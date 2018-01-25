@@ -185,4 +185,178 @@ class Assertion
         );
 
     }
+
+    /**
+     * @param mixed       $var
+     * @param null|string $message
+     *
+     * @throws AssertionException
+     */
+    public static function assertIsNonZeroPositiveInteger($var, $message = null)
+    {
+        if (!is_int($var) || $var < 1) {
+            throw new AssertionException(
+                null === $message
+                    ? 'Expected int > 0!'
+                    : $message,
+                AssertionException::ERR_ASSERTION_FAILED
+            );
+        }
+    }
+
+    /**
+     * @param      $var
+     * @param null $message
+     *
+     * @throws AssertionException
+     */
+    public static function assertIsNonZeroPositiveIntegerOrNull($var, $message = null)
+    {
+        if (!is_null($var) && !(is_int($var) && $var > 0)) {
+            throw new AssertionException(
+                null === $message
+                    ? 'Expected int > 0 | null!'
+                    : $message,
+                AssertionException::ERR_ASSERTION_FAILED
+            );
+        }
+    }
+
+    /**
+     * @param       $var
+     * @param array $oneOf
+     * @param null  $message
+     *
+     * @throws AssertionException
+     */
+    public static function assertValueIsOneOf($var, array $oneOf, $message = null)
+    {
+        if (!in_array($var, $oneOf, true)) {
+            throw new AssertionException(
+                null === $message
+                    ? 'Expected one of "' . implode(',', $oneOf) . '", got ' . json_encode($var)
+                    : $message,
+                AssertionException::ERR_ASSERTION_FAILED
+            );
+        }
+    }
+
+    /**
+     * @param mixed       $var
+     * @param int         $maxLength
+     * @param string|null $message
+     *
+     * @throws AssertionException
+     */
+    public static function assertIsStringWithMaxLength($var, $maxLength, $message = null)
+    {
+        if (!is_string($var) || strlen($var) > $maxLength) {
+            throw new AssertionException(
+                null === $message
+                    ? 'Expected string with max length ' . $maxLength
+                    : $message,
+                AssertionException::ERR_ASSERTION_FAILED
+            );
+        }
+    }
+
+    /**
+     * @param mixed       $var
+     * @param null|string $message
+     *
+     * @throws AssertionException
+     */
+    public static function assertIsBoolean($var, $message = null)
+    {
+        if (!is_bool($var)) {
+            throw new AssertionException(
+                null === $message
+                    ? 'Expected boolean!'
+                    : $message,
+                AssertionException::ERR_ASSERTION_FAILED
+            );
+        }
+    }
+
+    /**
+     * @param mixed       $var
+     * @param int         $length
+     * @param null|string $message
+     *
+     * @throws AssertionException
+     */
+    public static function assertIsStringWithLength($var, $length, $message = null)
+    {
+        if (!is_string($var) || strlen($var) !== $length) {
+            throw new AssertionException(
+                null === $message
+                    ? 'Expected string with length of ' . $length . ' characters'
+                    : $message,
+                AssertionException::ERR_ASSERTION_FAILED
+            );
+        }
+    }
+
+    /**
+     * @param mixed       $var
+     * @param int         $minLength
+     * @param int         $maxLength
+     * @param string|null $message
+     *
+     * @throws AssertionException
+     */
+    public static function assertIsStringWithMinLengthAndMaxLength($var, $minLength, $maxLength, $message = null)
+    {
+        if (is_string($var)) {
+            $len = strlen($var);
+            if ($len >= $minLength && $len <= $maxLength) {
+                return;
+            }
+        }
+
+        throw new AssertionException(
+            null === $message
+                ? 'Expected string with minLength ' . $minLength . ' and maxLength ' . $maxLength
+                : $message,
+            AssertionException::ERR_ASSERTION_FAILED
+        );
+    }
+
+    /**
+     * @param mixed       $var
+     * @param null|string $message
+     *
+     * @throws AssertionException
+     */
+    public static function assertIsArrayOrNull($var, $message = null)
+    {
+
+        if (!($var === null || is_array($var))) {
+            throw new AssertionException(
+                null === $message
+                    ? 'Expected array|null'
+                    : $message,
+                AssertionException::ERR_ASSERTION_FAILED
+            );
+        }
+
+    }
+
+    /**
+     * @param mixed       $var
+     * @param string|null $message
+     *
+     * @throws AssertionException
+     */
+    public static function assertIsIntOrNull($var, $message = null)
+    {
+        if (null !== $var && !is_int($var)) {
+            throw new AssertionException(
+                null === $message
+                    ? 'Expected int|null'
+                    : $message,
+                AssertionException::ERR_ASSERTION_FAILED
+            );
+        }
+    }
 }

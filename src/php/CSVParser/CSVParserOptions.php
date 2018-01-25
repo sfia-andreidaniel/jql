@@ -2,6 +2,9 @@
 
 namespace JQL\CSVParser;
 
+use JQL\Assertion\Assertion;
+use JQL\Assertion\AssertionException;
+
 class CSVParserOptions
 {
     /**
@@ -46,9 +49,11 @@ class CSVParserOptions
      * @param string $fieldDelimiter
      *
      * @return CSVParserOptions
+     * @throws AssertionException
      */
     public function withFieldDelimiter($fieldDelimiter)
     {
+        Assertion::assertIsStringWithLength($fieldDelimiter, 1, 'the length of csv field delimiter must be 1 char');
         $this->fieldDelimiter = $fieldDelimiter;
         return $this;
     }
@@ -65,9 +70,11 @@ class CSVParserOptions
      * @param string $fieldEnclosure
      *
      * @return CSVParserOptions
+     * @throws AssertionException
      */
     public function withFieldEnclosure($fieldEnclosure)
     {
+        Assertion::assertIsStringWithMaxLength($fieldEnclosure, 1, 'the length of csv field enclosure must be max 1 char');
         $this->fieldEnclosure = $fieldEnclosure;
         return $this;
     }
@@ -84,9 +91,11 @@ class CSVParserOptions
      * @param bool $encloseAllFields
      *
      * @return CSVParserOptions
+     * @throws AssertionException
      */
     public function withEncloseAllFields($encloseAllFields)
     {
+        Assertion::assertIsBoolean($encloseAllFields, 'the enclose all fields csv parser parameter must be of type boolean');
         $this->encloseAllFields = $encloseAllFields;
         return $this;
     }
@@ -103,9 +112,11 @@ class CSVParserOptions
      * @param string $escapeCharacter
      *
      * @return CSVParserOptions
+     * @throws AssertionException
      */
     public function withEscapeCharacter($escapeCharacter)
     {
+        Assertion::assertIsStringWithLength($escapeCharacter, 1, 'the length of csv parser escape character must be of 1 char');
         $this->escapeCharacter = $escapeCharacter;
         return $this;
     }
@@ -122,10 +133,25 @@ class CSVParserOptions
      * @param bool $autoTrim
      *
      * @return CSVParserOptions
+     * @throws AssertionException
      */
     public function withAutoTrim($autoTrim)
     {
+        Assertion::assertIsBoolean($autoTrim, 'the parameter csv auto trim must be of type boolean');
         $this->autoTrim = $autoTrim;
+        return $this;
+    }
+
+    /**
+     * @param $lineTerminator
+     *
+     * @return $this
+     * @throws AssertionException
+     */
+    public function withLineTerminator($lineTerminator)
+    {
+        Assertion::assertIsStringWithMinLengthAndMaxLength($lineTerminator, 1, 2, 'csv parser line terminator must be min 1 char max 2 chars');
+        $this->lineTerminator = $lineTerminator;
         return $this;
     }
 
@@ -136,18 +162,5 @@ class CSVParserOptions
     {
         return $this->lineTerminator;
     }
-
-    /**
-     * @param string $lineTerminator
-     *
-     * @return CSVParserOptions
-     */
-    public function setLineTerminator($lineTerminator)
-    {
-        $this->lineTerminator = $lineTerminator;
-        return $this;
-    }
-
-
 
 }

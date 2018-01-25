@@ -15,6 +15,114 @@ $authorizationToken = json_decode(file_get_contents('http://127.0.0.1/?action=to
 
 ?>
 
+<form method="post" id="create-table">
+    <style>
+
+        #create-table {
+            min-width: 500px;
+        }
+
+        #create-table label, #create-table button {
+            display: block;
+            height: 40px;
+            box-sizing: content-box;
+        }
+
+        #create-table label > * {
+            display: inline-block;
+            vertical-align: middle;
+            line-height: 34px;
+        }
+
+        #create-table label > span {
+            display: inline-block;
+            width: 150px;
+        }
+
+        #create-table label > span + input:not([type=checkbox]),
+        #create-table label > span + select {
+            width: 300px;
+            height: 34px;
+            box-sizing: content-box;
+            padding: 0;
+            margin: 0;
+        }
+    </style>
+    <fieldset>
+        <legend>Create table from file:</legend>
+        <label>
+            <span>Table name</span>
+            <input type="text" name="name" placeholder="eg: persons" />
+        </label>
+        <label>
+            <span>Table namespace</span>
+            <select name="namespace">
+                <option value="private">Current form only</option>
+                <option value="global">All forms where CSV connector is enabled</option>
+            </select>
+        </label>
+        <label>
+            <span>Storage engine</span>
+            <select name="storage-engine">
+                <option value="memory">Memory</option>
+                <option value="remote">Server</option>
+            </select>
+        </label>
+        <label>
+            <span>Access mode</span>
+            <select name="access-mode">
+                <option value="r">Read</option>
+                <option value="w">Write</option>
+                <option value="rw">Read/Write</option>
+            </select>
+        </label>
+        <label>
+            <span>CSV File</span>
+            <input type="file" name="file" />
+        </label>
+        <label>
+            <span>Field delimiter</span>
+            <select name="field-delimiter">
+                <option value="\t">TAB</option>
+                <option value=",">,</option>
+                <option value="|">|</option>
+                <option value=";">;</option>
+            </select>
+        </label>
+        <label>
+            <span>Field enclosure</span>
+            <select name="field-enclosure">
+                <option value="&quot;">"</option>
+                <option value="'">'</option>
+            </select>
+        </label>
+        <label>
+            <span>Enclose all fields</span>
+            <input type="checkbox" name="enclose-all-fields" />
+        </label>
+        <label>
+            <span>Escape character</span>
+            <select name="escape-character">
+                <option value="\">\</option>
+                <option value="#">#</option>
+            </select>
+        </label>
+        <label>
+            <span>Auto trim</span>
+            <input type="checkbox" name="auto-trim" />
+        </label>
+        <label>
+            <span>Line terminator</span>
+            <select name="line-terminator">
+                <option value="\r\n">\r\n</option>
+                <option value="\n">\n</option>
+                <option value="\r">\r</option>
+            </select>
+        </label>
+        <button>Create table</button>
+    </fieldset>
+</form>
+
 <script>
 
     (function ($) {

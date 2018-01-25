@@ -396,3 +396,32 @@ interface IJQLPlannerQueueEntry {
 interface IStringMap {
     [ key: string ]: string;
 }
+
+enum EJQLTableAccessMode {
+    READ       = "r",
+    WRITE      = "w",
+    READ_WRITE = "rw",
+}
+
+enum EJQLTableNamespace {
+    FORM   = "form",
+    GLOBAL = "global",
+}
+
+interface IJQLCreateTableFromCSVFileRequest {
+
+    csvFile: File;
+
+    tableName: string;
+    tableNamespace: EJQLTableNamespace;
+    tableAccessMode: EJQLTableAccessMode;
+    tableStorageEngine: EJQLTableStorageEngine;
+
+    csvFieldEnclosure: string;
+    csvEncloseAllFields: boolean;
+    csvFieldDelimiter: string;
+    csvEscapeCharacter: string;
+    csvAutoTrim: boolean;
+    csvLineTerminator: string;
+
+}

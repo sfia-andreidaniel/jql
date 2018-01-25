@@ -85,6 +85,17 @@ var EJQLTableStorageEngine;
     EJQLTableStorageEngine["IN_MEMORY"] = "memory";
     EJQLTableStorageEngine["REMOTE"] = "remote";
 })(EJQLTableStorageEngine || (EJQLTableStorageEngine = {}));
+var EJQLTableAccessMode;
+(function (EJQLTableAccessMode) {
+    EJQLTableAccessMode["READ"] = "r";
+    EJQLTableAccessMode["WRITE"] = "w";
+    EJQLTableAccessMode["READ_WRITE"] = "rw";
+})(EJQLTableAccessMode || (EJQLTableAccessMode = {}));
+var EJQLTableNamespace;
+(function (EJQLTableNamespace) {
+    EJQLTableNamespace["FORM"] = "form";
+    EJQLTableNamespace["GLOBAL"] = "global";
+})(EJQLTableNamespace || (EJQLTableNamespace = {}));
 var JQLLexerFactory = (function () {
     function JQLLexerFactory() {
     }
@@ -544,6 +555,44 @@ var JQLDatabase = (function () {
         else {
             return (new JQLDatabaseStatementExecutorRemoteStatement(statement, this)).execute();
         }
+    };
+    JQLDatabase.prototype.createTableFromCSVFile = function (request) {
+        var data = new FormData();
+        data.append("action", "create-table-from-csv");
+        data.append("auth", this.authorizationToken);
+        data.append("csvFile", request.csvFile || '');
+        data.append("setting", btoa(JSON.stringify({
+            table: {
+                name: request.tableName,
+                namespace: request.tableNamespace,
+                accessMode: request.tableAccessMode,
+                storageEngine: request.tableStorageEngine,
+            },
+            csvParser: {
+                enclosure: request.csvFieldEnclosure,
+                encloseAllFields: request.csvEncloseAllFields,
+                delimiter: request.csvFieldDelimiter,
+                escapeCharacter: request.csvEscapeCharacter,
+                autoTrim: request.csvAutoTrim,
+                lineTerminator: request.csvLineTerminator,
+            },
+        })));
+        return (function ($, self) {
+            return $.Deferred(function (defer) {
+                $.ajax({
+                    url: self.rpcEndpointName,
+                    data: data,
+                    type: 'POST',
+                    dataType: 'json',
+                    processData: false,
+                    contentType: false,
+                }).then(function (response) {
+                    defer.resolve(response);
+                }).fail(function (e) {
+                    defer.reject(e);
+                });
+            }).promise();
+        })(this.jq, this);
     };
     return JQLDatabase;
 }());
@@ -2798,3 +2847,29 @@ var JQLStatementDelete = (function (_super) {
     };
     return JQLStatementDelete;
 }(JQLStatement));
+(function ($) {
+    $(function () {
+        $("#create-table").on("submit", function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var request = {
+                csvFile: $(this).find("[name=file]").get(0)['files'][0] || null,
+                tableName: $(this).find("[name=name]").val().trim(),
+                tableNamespace: $(this).find("[name=namespace]").val(),
+                tableAccessMode: $(this).find("[name=access-mode]").val(),
+                tableStorageEngine: $(this).find("[name=storage-engine]").val(),
+                csvFieldDelimiter: $(this).find("[name=field-delimiter]").val(),
+                csvFieldEnclosure: $(this).find("[name=field-enclosure]").val(),
+                csvEncloseAllFields: $(this).find("[name=enclose-all-fields]").is(":checked"),
+                csvEscapeCharacter: $(this).find("[name=escape-character]").val(),
+                csvAutoTrim: $(this).find("[name=auto-trim]").is(":checked"),
+                csvLineTerminator: $(this).find("[name=line-terminator]").val(),
+            };
+            db.createTableFromCSVFile(request).then(function (t) {
+                alert(JSON.stringify(t));
+            }).fail(function (e) {
+                console.error(e);
+            });
+        });
+    });
+})(jQuery);

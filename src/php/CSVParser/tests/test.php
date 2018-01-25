@@ -8,6 +8,8 @@ require_once __DIR__ . '/../CSVParserOptions.php';
 require_once __DIR__ . '/../CSVParserException.php';
 require_once __DIR__ . '/../ParsedCSVModel.php';
 require_once __DIR__ . '/../StringBuffer.php';
+require_once __DIR__ . '/../../Assertion/Assertion.php';
+require_once __DIR__ . '/../../Assertion/AssertionException.php';
 
 $parser = new CSVParser();
 
