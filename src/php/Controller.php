@@ -22,6 +22,7 @@ class Controller
     const ACTION_GENERATE_TOKEN = 'token';
     const ACTION_EXECUTE_QUERY = 'query';
     const ACTION_CREATE_TABLE_FROM_CSV = 'create-table-from-csv';
+    const ACTION_SHOW_TABLES = 'show-tables';
 
 
     /**
@@ -106,9 +107,11 @@ class Controller
 
     /**
      * @return mixed
+     * @throws AssertionException
      * @throws AuthorizationException
      * @throws ControllerException
      * @throws RemoteQueryException
+     * @throws StorageException
      */
     public function dispatch()
     {
@@ -127,6 +130,10 @@ class Controller
 
             case self::ACTION_CREATE_TABLE_FROM_CSV:
                 return $this->createTableFromCSVAction();
+                break;
+
+            case self::ACTION_SHOW_TABLES:
+                return $this->showTablesAction();
                 break;
 
             default:
@@ -362,5 +369,34 @@ class Controller
             $table,
             $token
         )->toArray();
+    }
+
+    /**
+     * @throws AuthorizationException
+     * @throws StorageException
+     */
+    private function showTablesAction()
+    {
+
+        $token = $this->getAuthorizationService()->getAuthenticationToken();
+
+        $result = [];
+
+        foreach ($this->getStorageService()->getUserTables(
+            $token,
+            $token->getUserId(),
+            $token->getFormId()
+        ) as $tableModel) {
+            $result[] = [
+                'name'          => $tableModel->getName(),
+                'schema'        => $tableModel->getSchema(),
+                'namespace'     => $tableModel->getNamespace(),
+                'accessMode'    => $tableModel->getAccessMode(),
+                'storageEngine' => $tableModel->getStorageEngine(),
+            ];
+        }
+
+        return $result;
+
     }
 }

@@ -136,6 +136,13 @@ abstract class JQLTable implements IJQLTable {
 
     }
 
+    public fetch(): JQueryPromise<IJQLTable> {
+        let $ = jQuery;
+        return <any>$.Deferred((defer) => {
+            defer.resolve(this);
+        }).promise();
+    }
+
     public abstract isTransactional(): boolean;
 
     public abstract startTransaction();

@@ -5,10 +5,10 @@ namespace JQL\CSVParser;
 class CSVParser
 {
 
-    const TYPE_INT     = 'INT';
-    const TYPE_FLOAT   = 'FLOAT';
-    const TYPE_BOOLEAN = 'BOOLEAN';
-    const TYPE_TEXT    = 'TEXT';
+    const TYPE_INT     = 'int';
+    const TYPE_FLOAT   = 'float';
+    const TYPE_BOOLEAN = 'boolean';
+    const TYPE_TEXT    = 'string';
 
 
     /**

@@ -13,6 +13,8 @@
 
 $authorizationToken = json_decode(file_get_contents('http://127.0.0.1/?action=token&token_type=admin&user_id=1&form_id=1'));
 
+$tableSchema = json_decode(file_get_contents('http://127.0.0.1?action=show-tables&auth=' . $authorizationToken), true);
+
 ?>
 
 <form method="post" id="create-table">
@@ -132,60 +134,61 @@ $authorizationToken = json_decode(file_get_contents('http://127.0.0.1/?action=to
         db
             .withAuthorizationToken(<?php echo json_encode($authorizationToken) ?>)
             .withRPCEndpointName("http://127.0.0.1/")
-            .withTable(
-                'persons',
-                JQLTable.createFromInMemoryArrayOfObjects(
-                    [
-                        {id: 1, name: "Jack", age: 12},
-                        {id: 2, name: "Jill", age: 14},
-                        {id: 3, name: "Betty", age: 32}
-                    ],
-                    [
-                        {
-                            name: "id",
-                            type: EJQLTableColumnType.NUMBER,
-                            default: null,
-                            unique: true,
-                            autoIncrement: true
-                        },
-                        {name: "name", type: EJQLTableColumnType.STRING, default: "", unique: false},
-                        {name: "age", type: EJQLTableColumnType.NUMBER, default: 0, unique: false}
-                    ]
-                )
-            )
-            .withTable(
-                'products',
-                JQLTable.createFromInMemoryArrayOfObjects(
-                    [
-                        {id: 1, name: "VGA Card", ownerId: 1},
-                        {id: 2, name: "CPU", ownerId: 1},
-                        {id: 4, name: "Computer keyboard", ownerId: 3}
-                    ]
-                )
-            )
-            .withTable(
-                'remote',
-                JQLTable.createFromRemoteTableDefinition(
-                    [
-                        {
-                            "name": "id",
-                            "type": EJQLTableColumnType.NUMBER,
-                            "default": null,
-                            "unique": true,
-                            "autoIncrement": true
-                        },
-                        {
-                            "name": "email",
-                            "type": EJQLTableColumnType.STRING,
-                            "default": ""
-                        },
-                        {
-                            "name": "age",
-                            "type": EJQLTableColumnType.NUMBER
-                        }
-                    ]
-                )
-            )
+            // .withTable(
+            //     'persons',
+            //     JQLTable.createFromInMemoryArrayOfObjects(
+            //         [
+            //             {id: 1, name: "Jack", age: 12},
+            //             {id: 2, name: "Jill", age: 14},
+            //             {id: 3, name: "Betty", age: 32}
+            //         ],
+            //         [
+            //             {
+            //                 name: "id",
+            //                 type: EJQLTableColumnType.NUMBER,
+            //                 default: null,
+            //                 unique: true,
+            //                 autoIncrement: true
+            //             },
+            //             {name: "name", type: EJQLTableColumnType.STRING, default: "", unique: false},
+            //             {name: "age", type: EJQLTableColumnType.NUMBER, default: 0, unique: false}
+            //         ]
+            //     )
+            // )
+            // .withTable(
+            //     'products',
+            //     JQLTable.createFromInMemoryArrayOfObjects(
+            //         [
+            //             {id: 1, name: "VGA Card", ownerId: 1},
+            //             {id: 2, name: "CPU", ownerId: 1},
+            //             {id: 4, name: "Computer keyboard", ownerId: 3}
+            //         ]
+            //     )
+            // )
+            // .withTable(
+            //     'remote',
+            //     JQLTable.createFromRemoteTableDefinition(
+            //         [
+            //             {
+            //                 "name": "id",
+            //                 "type": EJQLTableColumnType.NUMBER,
+            //                 "default": null,
+            //                 "unique": true,
+            //                 "autoIncrement": true
+            //             },
+            //             {
+            //                 "name": "email",
+            //                 "type": EJQLTableColumnType.STRING,
+            //                 "default": ""
+            //             },
+            //             {
+            //                 "name": "age",
+            //                 "type": EJQLTableColumnType.NUMBER
+            //             }
+            //         ]
+            //     )
+            // )
+            .withTablesList( <?=json_encode($tableSchema);?> )
             .withFunction('sum', function (a, b) {
                 return a + b;
             });

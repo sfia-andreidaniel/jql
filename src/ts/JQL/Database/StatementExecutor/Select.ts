@@ -15,53 +15,64 @@ class JQLDatabaseStatementExecutorSelect implements IDatabaseStatementExecutor {
 
             return <any>this.db.getJQuery().Deferred((defer) => {
 
-                try {
+                this.db.getTable(this.statement.getTable().getName())
+                    .fetch()
+                    .then((table: JQLTableStorageEngineInMemory) => {
 
-                    let rows: object[];
+                        try {
 
-                    // SELECT ROWS
+                            let rows: object[];
 
-                    if (!this.statement.getTable()) {
+                            // SELECT ROWS
 
-                        rows = [this.createSingleStatementRow()];
+                            if (!this.statement.getTable()) {
 
-                    } else {
+                                rows = [this.createSingleStatementRow()];
 
-                        rows = this.applyLimit(this.applySorting(this.getStatementCandidateRows()));
+                            } else {
 
-                    }
+                                rows = this.applyLimit(this.applySorting(this.getStatementCandidateRows()));
 
-                    let result = (new JQLStatementResultSelect()).addRows(rows);
+                            }
 
-                    // EXECUTE UNION
+                            let result = (new JQLStatementResultSelect()).addRows(rows);
 
-                    if (this.statement.getUnion()) {
+                            // EXECUTE UNION
 
-                        (new JQLDatabaseStatementExecutorSelect(this.statement.getUnion(), this.db)).execute()().then(function (unionResult: JQLStatementResultSelect) {
+                            if (this.statement.getUnion()) {
 
-                            result.addRows(unionResult.getRows());
+                                (new JQLDatabaseStatementExecutorSelect(this.statement.getUnion(), this.db)).execute()().then(function (unionResult: JQLStatementResultSelect) {
 
-                            defer.resolve(result);
+                                    result.addRows(unionResult.getRows());
 
-                        }).fail(function (e) {
+                                    defer.resolve(result);
 
-                            defer.reject(e);
+                                }).fail(function (e) {
 
-                        });
+                                    defer.reject(e);
 
-                    } else {
+                                });
 
-                        defer.resolve(result);
+                            } else {
 
-                    }
+                                defer.resolve(result);
 
-                } catch (e) {
+                            }
 
-                    console.error(e);
+                        } catch (e) {
 
-                    defer.reject('Failed to execute INSERT statement!' );
+                            console.error(e);
 
-                }
+                            defer.reject(new Error('Failed to execute INSERT statement!') );
+
+                        }
+
+                    })
+                    .fail((e) => {
+                        console.error(e);
+                        defer.reject( new Error('Failed to fetch table from server!') );
+                    });
+
 
             }).promise();
 

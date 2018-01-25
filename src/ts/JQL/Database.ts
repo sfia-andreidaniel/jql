@@ -116,6 +116,10 @@ class JQLDatabase implements IJQLDatabase {
 
     }
 
+    public withTablesList( tables: IJQLBackendTableModel[] ): this {
+        return this;
+    }
+
     public hasTable(tableName: string): boolean {
         return "string" === typeof tableName && undefined !== this.tables[ tableName ] && this.tables.hasOwnProperty(tableName);
     }
@@ -260,7 +264,7 @@ class JQLDatabase implements IJQLDatabase {
 
         data.append("action", "create-table-from-csv");
         data.append("auth", this.authorizationToken);
-        data.append("csvFile", request.csvFile || '' );
+        data.append("csvFile", request.csvFile || "");
         data.append("setting", btoa(JSON.stringify({
             table:     {
                 name:          request.tableName,
@@ -278,24 +282,24 @@ class JQLDatabase implements IJQLDatabase {
             },
         })));
 
-        return (function($: JQueryStatic, self: JQLDatabase){
+        return (function ($: JQueryStatic, self: JQLDatabase) {
 
-            return $.Deferred(function(defer){
+            return $.Deferred(function (defer) {
 
-                $.ajax( {
-                    url: self.rpcEndpointName,
-                    data: data,
-                    type: 'POST',
-                    dataType: 'json',
+                $.ajax({
+                    url:         self.rpcEndpointName,
+                    data:        data,
+                    type:        "POST",
+                    dataType:    "json",
                     processData: false,
                     contentType: false,
-                }).then(function( response ) {
+                }).then(function (response) {
 
-                    defer.resolve( response );
+                    defer.resolve(response);
 
-                }).fail(function(e){
+                }).fail(function (e) {
 
-                    defer.reject( e );
+                    defer.reject(e);
 
                 });
 

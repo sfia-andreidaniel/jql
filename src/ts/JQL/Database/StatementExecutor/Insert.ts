@@ -13,39 +13,51 @@ class JQLDatabaseStatementExecutorInsert implements IDatabaseStatementExecutor {
         return (): JQueryDeferred<JQLStatementResult> => {
             return <any>this.db.getJQuery().Deferred(( defer ) => {
 
-                let table: JQLTableStorageEngineInMemory = <JQLTableStorageEngineInMemory>this.db.getTable(this.statement.getTable().getName());
+                this.db.getTable(this.statement.getTable().getName())
+                    .fetch()
+                    .then((table: JQLTableStorageEngineInMemory) => {
 
-                if ( table.isTransactional() ) {
-                    table.startTransaction();
-                }
+                        if ( table.isTransactional() ) {
+                            table.startTransaction();
+                        }
 
-                try {
+                        try {
 
-                    let row: JQLRow = JQLRow.createFromTable(table);
+                            let row: JQLRow = JQLRow.createFromTable(table);
 
-                    for (let i = 0, fields = this.statement.getFields(), len = fields.length; i < len; i++) {
-                        row.setColumnValue(fields[i].getFieldName(), fields[i].getExpression().compute(row));
-                    }
+                            for (let i = 0, fields = this.statement.getFields(), len = fields.length; i < len; i++) {
+                                row.setColumnValue(fields[i].getFieldName(), fields[i].getExpression().compute(row));
+                            }
 
-                    table.insertRow(row.getDataAsArray());
+                            table.insertRow(row.getDataAsArray());
 
-                    table.reIndex();
+                            table.reIndex();
 
-                    table.commitTransaction();
+                            table.commitTransaction();
 
-                    defer.resolve( (new JQLStatementResult()).withAffectedRows(1) );
+                            defer.resolve( (new JQLStatementResult()).withAffectedRows(1) );
 
-                } catch (e) {
+                        } catch (e) {
 
-                    if ( table.isTransactional() ) {
-                        table.rollbackTransaction();
-                    }
+                            if ( table.isTransactional() ) {
+                                table.rollbackTransaction();
+                            }
 
-                    console.error(e);
+                            console.error(e);
 
-                    defer.reject( 'Failed to execute INSERT statement' );
+                            defer.reject( new Error('Failed to execute INSERT statement' ) );
 
-                }
+                        }
+
+                    })
+                    .fail((e) => {
+
+                        console.error(e);
+
+                        defer.reject(new Error('Failed to fetch table from server!'));
+
+                    });
+
 
             } ).promise();
         }

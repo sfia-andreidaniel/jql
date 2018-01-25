@@ -306,6 +306,13 @@ enum EJQLTableColumnType {
     NULL    = "null",
 }
 
+enum EJQLBackendTableColumnType {
+    STRING  = "string",
+    INT     = "int",
+    FLOAT   = "float",
+    BOOLEAN = "boolean",
+}
+
 interface IJQLTableColumn {
     name: string;
     type: EJQLTableColumnType;
@@ -330,6 +337,8 @@ interface IJQLTable {
     hasIdentifier(identifierName: string): boolean;
 
     isRemote(): boolean;
+
+    fetch(): JQueryPromise<IJQLTable>;
 
     getStorageEngine(): EJQLTableStorageEngine;
 
@@ -404,7 +413,7 @@ enum EJQLTableAccessMode {
 }
 
 enum EJQLTableNamespace {
-    FORM   = "form",
+    FORM   = "private",
     GLOBAL = "global",
 }
 
@@ -424,4 +433,16 @@ interface IJQLCreateTableFromCSVFileRequest {
     csvAutoTrim: boolean;
     csvLineTerminator: string;
 
+}
+
+interface IJQLTableSchemaHashMap {
+    [ columnName: string ]: EJQLBackendTableColumnType;
+}
+
+interface IJQLBackendTableModel {
+    name: string;
+    schema: IJQLTableSchemaHashMap;
+    namespace: EJQLTableNamespace;
+    accessMode: EJQLTableAccessMode;
+    storageEngine: EJQLTableStorageEngine;
 }

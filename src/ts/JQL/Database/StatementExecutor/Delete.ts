@@ -14,101 +14,109 @@ class JQLDatabaseStatementExecutorDelete implements IDatabaseStatementExecutor {
     public execute(): IJQLQueryExecuteStrategy {
         return (): JQueryDeferred<JQLStatementResult> => {
             return <any>this.db.getJQuery().Deferred(( defer ) => {
-
-                let table: JQLTableStorageEngineInMemory = <JQLTableStorageEngineInMemory>this.db.getTable(this.statement.getTable().getName());
-
-                if ( table.isTransactional() ) {
-                    table.startTransaction();
-                }
-
-                try {
-
-                    this.markedRowsForDelete = [];
-
-                    let iterator                             = table.createIterator(),
-                        row: JQLRow,
-                        addRow: boolean,
-                        where                                = this.statement.getFilter();
-
-                    while (row = iterator.next()) {
-
-                        if (null === where) {
-
-                            addRow = true;
-
-                        } else {
-
-                            addRow = !!where.compute(row);
-
-                        }
-
-                        if (addRow) {
-
-                            this.markedRowsForDelete.push({
-                                rowIndex: row.getRowIndex(),
-                                values: row.getDataAsArray(),
-                            });
-
-                        }
-
-                    }
-
-                    if (!this.markedRowsForDelete.length) {
+                this.db.getTable(this.statement.getTable().getName())
+                    .fetch()
+                    .then( (table: JQLTableStorageEngineInMemory) => {
 
                         if ( table.isTransactional() ) {
-                            table.commitTransaction();
+                            table.startTransaction();
                         }
 
-                        defer.resolve(new JQLStatementResult().withAffectedRows(0));
+                        try {
 
-                        return;
+                            this.markedRowsForDelete = [];
 
-                    }
+                            let iterator                             = table.createIterator(),
+                                row: JQLRow,
+                                addRow: boolean,
+                                where                                = this.statement.getFilter();
 
-                    // APPLY SORTING
+                            while (row = iterator.next()) {
 
-                    this.applySorting();
+                                if (null === where) {
 
-                    // APPLY LIMITS
+                                    addRow = true;
 
-                    this.applyLimits();
+                                } else {
 
-                    if (!this.markedRowsForDelete.length) {
+                                    addRow = !!where.compute(row);
 
-                        if ( table.isTransactional() ) {
-                            table.commitTransaction();
+                                }
+
+                                if (addRow) {
+
+                                    this.markedRowsForDelete.push({
+                                        rowIndex: row.getRowIndex(),
+                                        values: row.getDataAsArray(),
+                                    });
+
+                                }
+
+                            }
+
+                            if (!this.markedRowsForDelete.length) {
+
+                                if ( table.isTransactional() ) {
+                                    table.commitTransaction();
+                                }
+
+                                defer.resolve(new JQLStatementResult().withAffectedRows(0));
+
+                                return;
+
+                            }
+
+                            // APPLY SORTING
+
+                            this.applySorting();
+
+                            // APPLY LIMITS
+
+                            this.applyLimits();
+
+                            if (!this.markedRowsForDelete.length) {
+
+                                if ( table.isTransactional() ) {
+                                    table.commitTransaction();
+                                }
+
+                                defer.resolve(new JQLStatementResult().withAffectedRows(0));
+
+                                return;
+
+                            }
+
+                            for (let i = 0, len = this.markedRowsForDelete.length; i < len; i++) {
+                                table.deleteRow(this.markedRowsForDelete[i].rowIndex);
+                            }
+
+                            table.compact();
+
+                            if ( table.isTransactional() ) {
+                                table.commitTransaction();
+                            }
+
+                            defer.resolve(new JQLStatementResult().withAffectedRows(this.markedRowsForDelete.length));
+
+                        } catch (e) {
+
+                            console.error(e);
+
+                            if ( table.isTransactional() ) {
+                                table.rollbackTransaction();
+                            }
+
+                            defer.reject( new Error('Failed to execute DELETE statement!' ) );
+
                         }
+                    })
+                    .fail((e) => {
 
-                        defer.resolve(new JQLStatementResult().withAffectedRows(0));
+                        console.error(e);
 
-                        return;
+                        defer.reject( new Error('Failed to fetch table from server!') )
 
-                    }
-
-                    for (let i = 0, len = this.markedRowsForDelete.length; i < len; i++) {
-                        table.deleteRow(this.markedRowsForDelete[i].rowIndex);
-                    }
-
-                    table.compact();
-
-                    if ( table.isTransactional() ) {
-                        table.commitTransaction();
-                    }
-
-                    defer.resolve(new JQLStatementResult().withAffectedRows(this.markedRowsForDelete.length));
-
-                } catch (e) {
-
-                    console.error(e);
-
-                    if ( table.isTransactional() ) {
-                        table.rollbackTransaction();
-                    }
-
-                    defer.reject( new Error('Failed to execute DELETE statement!' ) );
-
-                }
-
+                    });
             } ).promise();
         }
     }

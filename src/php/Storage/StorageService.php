@@ -116,7 +116,7 @@ class StorageService
      * @param int                $userId
      * @param int|null           $formId
      *
-     * @return array
+     * @return TableModel[]
      * @throws StorageException
      */
     public function getUserTables(AuthorizationToken $authorizationToken, $userId, $formId)
