@@ -227,7 +227,7 @@ var JQLUtils = (function () {
             }
             else {
                 var t = typeof variable;
-                if (t === 'number') {
+                if (t === "number") {
                     if (isFinite(variable)) {
                         return EJQLTableColumnType.NUMBER;
                     }
@@ -236,11 +236,11 @@ var JQLUtils = (function () {
                     }
                 }
                 else {
-                    if (t === 'boolean') {
+                    if (t === "boolean") {
                         return EJQLTableColumnType.BOOLEAN;
                     }
                     else {
-                        if (t === 'string') {
+                        if (t === "string") {
                             return EJQLTableColumnType.STRING;
                         }
                         else {
@@ -258,7 +258,7 @@ var JQLUtils = (function () {
         }
         else {
             if (t === EJQLTableColumnType.STRING) {
-                if (s !== '-' && s !== '+') {
+                if (s !== "-" && s !== "+") {
                     return /^([\-+])?(0|[1-9]([0-9]+)?)?(\.[0-9]+)?/.test(s);
                 }
             }
@@ -285,14 +285,14 @@ var JQLUtils = (function () {
             if (null !== mappings[k]) {
                 result.push({
                     type: mappings[k],
-                    name: k
+                    name: k,
                 });
             }
         }
         return result;
     };
     JQLUtils.isReservedKeyword = function (k) {
-        return this.RESERVED_KEYWORDS.indexOf(String(k || '')) > -1;
+        return this.RESERVED_KEYWORDS.indexOf(String(k || "")) > -1;
     };
     JQLUtils.shuffleArray = function (a) {
         for (var i = a.length - 1; i > 0; i--) {
@@ -344,10 +344,12 @@ var JQLUtils = (function () {
                 }
                 else {
                     if (aType === EJQLTableColumnType.NULL) {
-                        aToString = '';
+                        aToString = "";
                     }
                     else {
-                        aToString = a ? '1' : '0';
+                        aToString = a
+                            ? "1"
+                            : "0";
                     }
                 }
             }
@@ -360,10 +362,12 @@ var JQLUtils = (function () {
                 }
                 else {
                     if (bType === EJQLTableColumnType.NULL) {
-                        bToString = '';
+                        bToString = "";
                     }
                     else {
-                        bToString = b ? '1' : '0';
+                        bToString = b
+                            ? "1"
+                            : "0";
                     }
                 }
             }
@@ -383,22 +387,55 @@ var JQLUtils = (function () {
             }
         }
     };
+    JQLUtils.parseString = function (s) {
+        var result = "", ch, ch1;
+        for (var i = 0, len = s.length; i < len; i++) {
+            ch = s.charAt(i);
+            if (ch === "\\") {
+                ch1 = s.charAt(i + 1);
+                i++;
+                switch (ch1) {
+                    case "r":
+                        result += "\r";
+                        break;
+                    case "n":
+                        result += "\n";
+                        break;
+                    case "t":
+                        result += "\t";
+                        break;
+                    case "\\":
+                        result += "\\";
+                        break;
+                    case "":
+                        result += "\\";
+                        break;
+                    default:
+                        result += ch1;
+                }
+            }
+            else {
+                result = result + ch;
+            }
+        }
+        return result;
+    };
     JQLUtils.RESERVED_KEYWORDS = [
-        'select',
-        'from',
-        'where',
-        'in',
-        'limit',
-        'order',
-        'by',
-        'asc',
-        'update',
-        'table',
-        'set',
-        'insert',
-        'into',
-        'values',
-        'delete',
+        "select",
+        "from",
+        "where",
+        "in",
+        "limit",
+        "order",
+        "by",
+        "asc",
+        "update",
+        "table",
+        "set",
+        "insert",
+        "into",
+        "values",
+        "delete",
     ];
     return JQLUtils;
 }());
@@ -569,12 +606,12 @@ var JQLDatabase = (function () {
                 storageEngine: request.tableStorageEngine,
             },
             csvParser: {
-                enclosure: request.csvFieldEnclosure,
+                enclosure: JQLUtils.parseString(request.csvFieldEnclosure),
                 encloseAllFields: request.csvEncloseAllFields,
-                delimiter: request.csvFieldDelimiter,
-                escapeCharacter: request.csvEscapeCharacter,
+                delimiter: JQLUtils.parseString(request.csvFieldDelimiter),
+                escapeCharacter: JQLUtils.parseString(request.csvEscapeCharacter),
                 autoTrim: request.csvAutoTrim,
-                lineTerminator: request.csvLineTerminator,
+                lineTerminator: JQLUtils.parseString(request.csvLineTerminator),
             },
         })));
         return (function ($, self) {

@@ -269,12 +269,12 @@ class JQLDatabase implements IJQLDatabase {
                 storageEngine: request.tableStorageEngine,
             },
             csvParser: {
-                enclosure:        request.csvFieldEnclosure,
+                enclosure:        JQLUtils.parseString(request.csvFieldEnclosure),
                 encloseAllFields: request.csvEncloseAllFields,
-                delimiter:        request.csvFieldDelimiter,
-                escapeCharacter:  request.csvEscapeCharacter,
+                delimiter:        JQLUtils.parseString(request.csvFieldDelimiter),
+                escapeCharacter:  JQLUtils.parseString(request.csvEscapeCharacter),
                 autoTrim:         request.csvAutoTrim,
-                lineTerminator:   request.csvLineTerminator,
+                lineTerminator:   JQLUtils.parseString(request.csvLineTerminator),
             },
         })));
 

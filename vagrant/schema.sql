@@ -34,13 +34,12 @@ CREATE TABLE jql_tables (
   name CHAR(64)          NOT NULL,
   created_date           DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-  access_mode            ENUM( 'READ', 'WRITE', 'READ_WRITE' ),
-  storage_engine_type    ENUM( 'in-memory', 'backend' ),
+  access_mode            ENUM( 'r', 'w', 'rw' ),
+  storage_engine         ENUM( 'memory', 'remote' ),
+  json_schema            MEDIUMBLOB,
 
   UNIQUE KEY( form_id, name ),
-
-  CONSTRAINT FK_jql_tables_jql_forms_config_form_id FOREIGN KEY ( form_id, user_id )
-  REFERENCES jql_forms_config(form_id, user_id) ON DELETE CASCADE ON UPDATE CASCADE
+  KEY( user_id, form_id )
 
 ) ENGINE = INNODB, CHARSET utf8;
 

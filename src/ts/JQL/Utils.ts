@@ -1,21 +1,21 @@
 class JQLUtils {
 
     private static readonly RESERVED_KEYWORDS: string[] = [
-        'select',
-        'from',
-        'where',
-        'in',
-        'limit',
-        'order',
-        'by',
-        'asc',
-        'update',
-        'table',
-        'set',
-        'insert',
-        'into',
-        'values',
-        'delete',
+        "select",
+        "from",
+        "where",
+        "in",
+        "limit",
+        "order",
+        "by",
+        "asc",
+        "update",
+        "table",
+        "set",
+        "insert",
+        "into",
+        "values",
+        "delete",
     ];
 
     public static getType(variable: any): EJQLTableColumnType {
@@ -34,7 +34,7 @@ class JQLUtils {
 
                 let t: string = typeof variable;
 
-                if (t === 'number') {
+                if (t === "number") {
 
                     if (isFinite(variable)) {
 
@@ -48,13 +48,13 @@ class JQLUtils {
 
                 } else {
 
-                    if (t === 'boolean') {
+                    if (t === "boolean") {
 
                         return EJQLTableColumnType.BOOLEAN;
 
                     } else {
 
-                        if (t === 'string') {
+                        if (t === "string") {
 
                             return EJQLTableColumnType.STRING;
 
@@ -85,7 +85,7 @@ class JQLUtils {
         } else {
 
             if (t === EJQLTableColumnType.STRING) {
-                if (s !== '-' && s !== '+') {
+                if (s !== "-" && s !== "+") {
                     return /^([\-+])?(0|[1-9]([0-9]+)?)?(\.[0-9]+)?/.test(s);
                 }
             }
@@ -105,13 +105,13 @@ class JQLUtils {
 
             if (y === 0) {
 
-                for (let k in o[y]) {
+                for (let k in o[ y ]) {
 
-                    if (o[y].hasOwnProperty(k)) {
+                    if (o[ y ].hasOwnProperty(k)) {
 
-                        type = this.getType(o[y][k]);
+                        type = this.getType(o[ y ][ k ]);
 
-                        mappings[k] = type;
+                        mappings[ k ] = type;
 
                     }
 
@@ -127,11 +127,11 @@ class JQLUtils {
 
         for (let k in mappings) {
 
-            if (null !== mappings[k]) {
+            if (null !== mappings[ k ]) {
 
                 result.push({
-                    type: mappings[k],
-                    name: k
+                    type: mappings[ k ],
+                    name: k,
                 });
 
             }
@@ -143,7 +143,7 @@ class JQLUtils {
 
     public static isReservedKeyword(k: string): boolean {
 
-        return this.RESERVED_KEYWORDS.indexOf(String(k || '')) > -1;
+        return this.RESERVED_KEYWORDS.indexOf(String(k || "")) > -1;
 
 
     }
@@ -152,7 +152,7 @@ class JQLUtils {
 
         for (let i = a.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
-            [a[i], a[j]] = [a[j], a[i]];
+            [ a[ i ], a[ j ] ] = [ a[ j ], a[ i ] ];
         }
 
         return a;
@@ -221,10 +221,12 @@ class JQLUtils {
 
                     if (aType === EJQLTableColumnType.NULL) {
                         // empty string
-                        aToString = '';
+                        aToString = "";
                     } else {
                         // boolean
-                        aToString = a ? '1' : '0';
+                        aToString = a
+                            ? "1"
+                            : "0";
                     }
                 }
 
@@ -242,10 +244,12 @@ class JQLUtils {
 
                     if (bType === EJQLTableColumnType.NULL) {
                         // empty string
-                        bToString = '';
+                        bToString = "";
                     } else {
                         // boolean
-                        bToString = b ? '1' : '0';
+                        bToString = b
+                            ? "1"
+                            : "0";
                     }
                 }
 
@@ -265,6 +269,47 @@ class JQLUtils {
             }
         }
 
+    }
+
+    public static parseString(s: string): string {
+        let result: string = "",
+            ch: string,
+            ch1: string;
+
+        for (let i = 0, len = s.length; i < len; i++) {
+            ch = s.charAt(i);
+            if (ch === "\\") {
+
+                ch1 = s.charAt(i + 1);
+
+                i++;
+
+                switch (ch1) {
+                    case "r":
+                        result += "\r";
+                        break;
+                    case "n":
+                        result += "\n";
+                        break;
+                    case "t":
+                        result += "\t";
+                        break;
+                    case "\\":
+                        result += "\\";
+                        break;
+                    case "":
+                        result += "\\";
+                        break;
+                    default:
+                        result += ch1;
+                }
+
+            } else {
+                result = result + ch;
+            }
+        }
+
+        return result;
     }
 
 }

@@ -46,7 +46,7 @@ class StorageServiceDAO
                     ':userId' => $userId,
                 ];
             } else {
-                $where = 'WHERE `user_id` = :userId AND `form_id` = :formId';
+                $where = 'WHERE `user_id` = :userId AND ( `form_id` = :formId OR `form_id` IS NULL )';
                 $bindings = [
                     ':userId' => $userId,
                     ':formId' => $formId,
@@ -116,23 +116,24 @@ class StorageServiceDAO
     {
 
         $transaction = null;
+        $tableCreated = false;
 
         try {
 
-            $transaction = $this->database->query('START TRANSACTION');
-
             $tableSchema = $parsedCSV->getComputedColumnTypes();
+
+            $transaction = $this->database->query('START TRANSACTION');
 
             $stmt = $this->database->query(
                 '
                     INSERT INTO jql_tables (
-                      user_id,
-                      form_id,
-                      name,
-                      json_schema,
-                      created_date,
-                      access_mode,
-                      storage_engine
+                      `user_id`,
+                      `form_id`,
+                      `name`,
+                      `json_schema`,
+                      `created_date`,
+                      `access_mode`,
+                      `storage_engine`
                     ) VALUES (
                       :user_id,
                       :form_id,
@@ -155,48 +156,48 @@ class StorageServiceDAO
 
             $tableId = $stmt->lastInsertId();
 
-            $tableModel = $this->getTableById($tableId);
-
             // CREATE TABLE, AND POPULATE IT
 
             $tableCreationStatement = $this->getTableCreationStatementSQL(
-                $tableModel->getId(),
+                $tableId,
                 $tableSchema
             );
 
             $this->database->query($tableCreationStatement);
 
-            $insertionStatement = 'INSERT INTO table_' . $tableModel->getId() .
-                '( `' . implode('`, `', array_keys($tableSchema)) . '` ) VALUES (';
+            $tableCreated = true;
 
-            $bindings = [];
+            $insertionStatement = $this->getTableInsertValuesStatementSQL($tableId, $tableSchema);
 
-            foreach ($tableSchema as $colName => $colValue) {
-                $bindings[] = ':' . $colName;
-            }
-
-            $insertionStatement .= (implode(', ', $bindings) . ')');
-
-            foreach ($parsedCSV->getAssoc() as $row) {
+            foreach ($parsedCSV->getAssocCasted($tableSchema) as $row) {
                 $binding = [];
                 foreach ($row as $k => $v) {
-                    $binding[':' . $k] = $v;
+                    $binding[':' . $k] = $this->castBindingToNativeSQLFormat($v);
                 }
                 $this->database->query($insertionStatement, $binding);
             }
 
             $this->database->query('COMMIT');
 
+            $tableModel = $this->getTableById($tableId);
+
             return $tableModel;
 
         } catch (\Exception $e) {
 
             try {
-                if ($transaction) {
-                    $this->database->query('ROLLBACK');
+                if ($tableCreated) {
+                    // DDL CAUSES IMPLICIT COMMIT
+                    $this->database->query('DROP TABLE `table_' . $tableSchema['id'] . '`');
+                    $this->database->query('DELETE FROM jql_tables WHERE id=' . $tableSchema['id']);
+                }
+                else {
+                    if ($transaction) {
+                        $this->database->query('ROLLBACK');
+                    }
                 }
             } catch (\Exception $e) {
-
+                $a = 2;
             }
 
             throw new StorageException(
@@ -323,6 +324,42 @@ class StorageServiceDAO
 
         return implode(' ', $result);
 
+    }
+
+    /**
+     * @param int   $tableId
+     * @param array $tableSchema
+     *
+     * @return string
+     */
+    private function getTableInsertValuesStatementSQL($tableId, array $tableSchema)
+    {
+        $insertionStatement = 'INSERT INTO `table_' . $tableId .
+            '` ( `' . implode('`, `', array_keys($tableSchema)) . '` ) VALUES (';
+
+        $bindings = [];
+
+        foreach ($tableSchema as $colName => $colValue) {
+            $bindings[] = ':' . $colName;
+        }
+
+        $insertionStatement .= (implode(', ', $bindings) . ')');
+
+        return $insertionStatement;
+    }
+
+    /**
+     * @param mixed $bindingValue
+     *
+     * @return mixed
+     */
+    private function castBindingToNativeSQLFormat($bindingValue)
+    {
+        if (is_bool($bindingValue)) {
+            return (int)$bindingValue;
+        } else {
+            return $bindingValue;
+        }
     }
 
 }

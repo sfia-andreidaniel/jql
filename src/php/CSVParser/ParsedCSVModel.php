@@ -121,6 +121,23 @@ class ParsedCSVModel
         return $result;
     }
 
+    public function getAssocCasted(array $computedColumnTypes)
+    {
+        $result = [];
+
+        for ($i = 0, $len = count($this->rows); $i < $len; $i++) {
+            $row = [];
+            foreach ($this->assocSafeColumnNames as $colIndex => $columnName) {
+                $row[$columnName] = $this->castColum($computedColumnTypes[$columnName], $this->rows[$i][$colIndex]);
+            }
+            $result[] = $row;
+        }
+
+        return $result;
+
+
+    }
+
     private function computeSafeColumnName($columnName)
     {
         $name = trim(preg_replace('/[^a-z0-9A-Z]/', '_', strtolower($columnName)), '_');
@@ -249,6 +266,31 @@ class ParsedCSVModel
     private function isBoolean($value)
     {
         return $value === 'true' || $value === 'false';
+    }
+
+    /**
+     * @param $dataType
+     * @param $uncastedData
+     *
+     * @return bool|float|int|string
+     */
+    private function castColum($dataType, $uncastedData)
+    {
+        switch ($dataType) {
+            case CSVParser::TYPE_FLOAT:
+                return (float)$uncastedData;
+                break;
+            case CSVParser::TYPE_INT:
+                return (int)$uncastedData;
+                break;
+            case CSVParser::TYPE_BOOLEAN:
+                return $uncastedData == 'true';
+                break;
+            case CSVParser::TYPE_TEXT:
+            default:
+                return $uncastedData;
+                break;
+        }
     }
 
 }
