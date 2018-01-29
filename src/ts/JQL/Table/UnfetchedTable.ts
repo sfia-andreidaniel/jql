@@ -2,6 +2,8 @@ class UnfetchedTable implements IJQLTable {
 
     private identifiers: IJQLTableColumn[] = [];
 
+    private indexes: IJQLTableIndexDescriptor[] = [];
+
     private remote: boolean;
 
     private storageEngine: EJQLTableStorageEngine;
@@ -12,6 +14,8 @@ class UnfetchedTable implements IJQLTable {
 
     private name: string;
 
+    private deferredTable: IJQLTable = null;
+
     constructor(definitions: IJQLBackendTableModel, db: JQLDatabase) {
 
         this.db = db;
@@ -21,6 +25,7 @@ class UnfetchedTable implements IJQLTable {
         this.storageEngine = definitions.storageEngine;
 
         this.computeIdentifiers(definitions.schema);
+        this.computeIndexDescriptors(definitions.indexes);
     }
 
     public describe(): IJQLTableColumn[] {
@@ -63,12 +68,16 @@ class UnfetchedTable implements IJQLTable {
                         type: "POST",
                         url:  db.getRPCEndpointName(),
                         data: fetchTableRequest,
-                    }).then(function (result) {
+                    }).then((result: JQLPrimitive[][]) => {
+
+                        this.deferredTable = JQLTable.createFromInMemoryArrayOfObjects(
+                            result,
+                            this.identifiers,
+                            this.indexes,
+                        );
 
                         defer.resolve(
-                            JQLTable.createFromInMemoryArrayOfObjects(
-                                result,
-                            ),
+                            this.deferredTable,
                         );
 
                     }).fail(function (e) {
@@ -87,8 +96,10 @@ class UnfetchedTable implements IJQLTable {
 
                 return <any>$.Deferred((defer) => {
 
+                    this.deferredTable = JQLTable.createFromRemoteTableDefinition(this.describe(), this.indexes);
+
                     defer.resolve(
-                        JQLTable.createFromRemoteTableDefinition(this.describe()),
+                        this.deferredTable,
                     );
 
                 }).promise();
@@ -108,13 +119,25 @@ class UnfetchedTable implements IJQLTable {
         for (let identifierName in schema) {
             if (schema.hasOwnProperty(identifierName)) {
                 this.identifiers.push({
-                    name:          identifierName,
-                    unique:        false,
-                    autoIncrement: false,
-                    type:          this.castBackendDataTypeToFrontendDataType(schema[ identifierName ]),
-                    default:       null,
+                    name:    identifierName,
+                    type:    this.castBackendDataTypeToFrontendDataType(schema[ identifierName ]),
+                    default: null,
                 });
             }
+        }
+    }
+
+    private computeIndexDescriptors(indexes: IJQLTableIndexDescriptor[]) {
+        if (indexes) {
+
+            if (!Array.isArray(indexes)) {
+                throw new Error("Invalid argument: indexes: array expected!");
+            }
+
+            for (let i = 0, len = indexes.length; i < len; i++) {
+                this.indexes.push(indexes[ i ]);
+            }
+
         }
     }
 
@@ -130,5 +153,40 @@ class UnfetchedTable implements IJQLTable {
             default:
                 return EJQLTableColumnType.NULL;
         }
+    }
+
+    private createSchemaFromBackendTableModel(tableModel: IJQLBackendTableModel): IJQLTableColumn[] {
+        let schema: IJQLTableColumn[] = [];
+
+        if (tableModel.schema) {
+
+            for (let columnName in tableModel.schema) {
+                if (tableModel.schema.hasOwnProperty(columnName)) {
+                    schema.push({
+                        name: columnName,
+                        type: this.castBackendDataTypeToFrontendDataType(tableModel.schema[ columnName ]),
+                    });
+                }
+            }
+
+        }
+
+        return schema;
+    }
+
+    public getIndexes(): JQLTableIndex[] {
+
+        if (this.deferredTable) {
+            return this.deferredTable.getIndexes();
+        }
+
+        let result: JQLTableIndex[] = [];
+
+        for (let i = 0, len = this.indexes.length; i < len; i++) {
+            result.push(JQLTableIndex.createFromIndexDescriptor(this, this.indexes[ i ]));
+        }
+
+        return result;
+
     }
 }

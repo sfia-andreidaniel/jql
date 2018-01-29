@@ -8,10 +8,10 @@ class JQLTableIndexSingleColumn extends JQLTableIndex {
 
     private maxAutoIncrement: number = 0;
 
-    constructor(table: JQLTableStorageEngineInMemory, column: IJQLTableColumn) {
-        super(table, [column]);
-        this.unique = !!column.unique;
-        this.autoIncrement = !!column.autoIncrement;
+    constructor(table: JQLTableStorageEngineInMemory, indexDescriptor: IJQLTableIndexDescriptor) {
+        super(table, [indexDescriptor]);
+        this.unique = !!indexDescriptor.unique;
+        this.autoIncrement = !!indexDescriptor.autoIncrement;
     }
 
     public isUnique(): boolean {
@@ -42,8 +42,8 @@ class JQLTableIndexSingleColumn extends JQLTableIndex {
 
         while (row = iterator.next()) {
 
-            if (this.values.indexOf(value = row.getColumnValue(this.columns[0].name)) > -1) {
-                throw new Error('Duplicate key ' + JSON.stringify(this.columns[0].name) + ' found with value ' + JSON.stringify(value) + ' found!');
+            if (this.values.indexOf(value = row.getColumnValue(this.descriptors[0].name)) > -1) {
+                throw new Error('Duplicate key ' + JSON.stringify(this.descriptors[0].name) + ' found with value ' + JSON.stringify(value) + ' found!');
             } else {
                 this.values.push(value);
                 if (this.autoIncrement) {

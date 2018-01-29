@@ -1,27 +1,27 @@
 abstract class JQLTableIndex {
 
-    protected columns: IJQLTableColumn[];
+    protected descriptors: IJQLTableIndexDescriptor[];
 
     protected table: JQLTable;
 
-    constructor( table: JQLTable, columns: IJQLTableColumn[] ) {
+    constructor( table: JQLTable, descriptors: IJQLTableIndexDescriptor[] ) {
         this.table = table;
-        this.columns = ( columns || [] ).slice(0);
+        this.descriptors = ( descriptors || [] ).slice(0);
     }
 
-    public getColumns(): IJQLTableColumn[] {
-        return this.columns;
+    public getDescriptors(): IJQLTableIndexDescriptor[] {
+        return this.descriptors;
     }
 
     public getTable(): JQLTable {
         return this.table;
     }
 
-    public static createFromColumnIdentifier( table: JQLTable, column: IJQLTableColumn ): JQLTableIndex {
+    public static createFromIndexDescriptor(table: IJQLTable, indexDescriptor: IJQLTableIndexDescriptor ): JQLTableIndex {
 
         if ( table.getStorageEngine() === EJQLTableStorageEngine.IN_MEMORY ) {
 
-            return new JQLTableIndexSingleColumn( <JQLTableStorageEngineInMemory>table, column );
+            return new JQLTableIndexSingleColumn( <JQLTableStorageEngineInMemory>table, indexDescriptor );
 
         } else {
 
@@ -42,7 +42,5 @@ abstract class JQLTableIndex {
      * @throws Error if index cannot be performed.
      */
     public abstract index();
-
-
 
 }

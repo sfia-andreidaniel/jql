@@ -1154,6 +1154,8 @@ var JQLTable = (function () {
         this.identifiers = [];
         this.emptyRow = [];
         this.indexes = [];
+        this.autoIncrementColumnIndex = null;
+        this.autoIncrementValue = 1;
         for (var i = 0, idtf = identifiers || [], len = idtf.length; i < len; i++) {
             this.identifiers.push(idtf[i]);
             if (undefined !== idtf[i].default) {
@@ -1179,6 +1181,47 @@ var JQLTable = (function () {
             }
         }
     }
+    JQLTable.prototype.withSingleColumnIndex = function (indexDescriptor) {
+        var index, numberOfAutoIncrementIndexes = 0;
+        if (this.indexes) {
+            for (var i = 0, len = this.indexes.length; i < len; i++) {
+                if (this.indexes[i].isAutoIncrement()) {
+                    numberOfAutoIncrementIndexes++;
+                }
+            }
+        }
+        if ((undefined !== indexDescriptor.unique && indexDescriptor.unique) || (undefined !== indexDescriptor.autoIncrement && indexDescriptor.autoIncrement)) {
+            index = JQLTableIndex.createFromIndexDescriptor(this, indexDescriptor);
+            if (index.isAutoIncrement()) {
+                numberOfAutoIncrementIndexes++;
+                if (index.getDescriptors().length > 1) {
+                    throw new Error("Auto-increment indexes must refer to a single column only!");
+                }
+                if (numberOfAutoIncrementIndexes > 1) {
+                    throw new Error("There can be only a single auto-increment index!");
+                }
+                if (!index.isUnique()) {
+                    throw new Error("Auto-increment indexes must be unique!");
+                }
+                var autoIncrementColumnFound = false;
+                for (var i = 0, len = this.identifiers.length; i < len; i++) {
+                    if (this.identifiers[i].name === indexDescriptor.name) {
+                        this.autoIncrementColumnIndex = i;
+                        autoIncrementColumnFound = true;
+                        if (this.identifiers[i].type !== EJQLTableColumnType.NUMBER) {
+                            throw new Error("Auto-increment index column type must be NUMBER!");
+                        }
+                        break;
+                    }
+                }
+                if (!autoIncrementColumnFound) {
+                    throw new Error("Cannot add a index on a non-existing column!");
+                }
+            }
+            this.indexes.push(index);
+        }
+        return this;
+    };
     JQLTable.prototype.describe = function () {
         return this.identifiers.slice(0);
     };
@@ -1190,10 +1233,10 @@ var JQLTable = (function () {
         }
         return false;
     };
-    JQLTable.createFromInMemoryArrayOfObjects = function (rows, columnDefinitions) {
+    JQLTable.createFromInMemoryArrayOfObjects = function (rows, columnDefinitions, indexes) {
         var identifiers = undefined === columnDefinitions
             ? JQLUtils.getColumnDefinitions(rows)
-            : columnDefinitions, result = [], ncols = identifiers.length, row, v, vType;
+            : columnDefinitions, schema = [], ncols = identifiers.length, row, v, vType;
         if (!identifiers.length) {
             throw new Error("No valid columns were detected in \"in-memory\" array!");
         }
@@ -1207,12 +1250,12 @@ var JQLTable = (function () {
                 }
                 row.push(v);
             }
-            result.push(row);
+            schema.push(row);
         }
-        return new JQLTableStorageEngineInMemory(identifiers, result);
+        return new JQLTableStorageEngineInMemory(identifiers, schema, indexes);
     };
-    JQLTable.createFromRemoteTableDefinition = function (columns) {
-        return new JQLTableStorageEngineRemote(columns);
+    JQLTable.createFromRemoteTableDefinition = function (columns, indexes) {
+        return new JQLTableStorageEngineRemote(columns, indexes);
     };
     JQLTable.prototype.createEmptyRow = function () {
         return this.emptyRow.slice(0);
@@ -1240,11 +1283,14 @@ var JQLTable = (function () {
 var UnfetchedTable = (function () {
     function UnfetchedTable(definitions, db) {
         this.identifiers = [];
+        this.indexes = [];
+        this.deferredTable = null;
         this.db = db;
         this.name = definitions.name;
         this.remote = definitions.storageEngine === EJQLTableStorageEngine.REMOTE;
         this.storageEngine = definitions.storageEngine;
         this.computeIdentifiers(definitions.schema);
+        this.computeIndexDescriptors(definitions.indexes);
     }
     UnfetchedTable.prototype.describe = function () {
         return this.identifiers;
@@ -1278,7 +1324,8 @@ var UnfetchedTable = (function () {
                         url: db.getRPCEndpointName(),
                         data: fetchTableRequest,
                     }).then(function (result) {
-                        defer.resolve(JQLTable.createFromInMemoryArrayOfObjects(result));
+                        _this.deferredTable = JQLTable.createFromInMemoryArrayOfObjects(result, _this.identifiers, _this.indexes);
+                        defer.resolve(_this.deferredTable);
                     }).fail(function (e) {
                         defer.reject(e);
                     });
@@ -1288,7 +1335,8 @@ var UnfetchedTable = (function () {
         else {
             this.table = (function ($, db) {
                 return $.Deferred(function (defer) {
-                    defer.resolve(JQLTable.createFromRemoteTableDefinition(_this.describe()));
+                    _this.deferredTable = JQLTable.createFromRemoteTableDefinition(_this.describe(), _this.indexes);
+                    defer.resolve(_this.deferredTable);
                 }).promise();
             })(this.db.getJQuery(), this.db);
         }
@@ -1302,11 +1350,19 @@ var UnfetchedTable = (function () {
             if (schema.hasOwnProperty(identifierName)) {
                 this.identifiers.push({
                     name: identifierName,
-                    unique: false,
-                    autoIncrement: false,
                     type: this.castBackendDataTypeToFrontendDataType(schema[identifierName]),
                     default: null,
                 });
+            }
+        }
+    };
+    UnfetchedTable.prototype.computeIndexDescriptors = function (indexes) {
+        if (indexes) {
+            if (!Array.isArray(indexes)) {
+                throw new Error("Invalid argument: indexes: array expected!");
+            }
+            for (var i = 0, len = indexes.length; i < len; i++) {
+                this.indexes.push(indexes[i]);
             }
         }
     };
@@ -1323,22 +1379,46 @@ var UnfetchedTable = (function () {
                 return EJQLTableColumnType.NULL;
         }
     };
+    UnfetchedTable.prototype.createSchemaFromBackendTableModel = function (tableModel) {
+        var schema = [];
+        if (tableModel.schema) {
+            for (var columnName in tableModel.schema) {
+                if (tableModel.schema.hasOwnProperty(columnName)) {
+                    schema.push({
+                        name: columnName,
+                        type: this.castBackendDataTypeToFrontendDataType(tableModel.schema[columnName]),
+                    });
+                }
+            }
+        }
+        return schema;
+    };
+    UnfetchedTable.prototype.getIndexes = function () {
+        if (this.deferredTable) {
+            return this.deferredTable.getIndexes();
+        }
+        var result = [];
+        for (var i = 0, len = this.indexes.length; i < len; i++) {
+            result.push(JQLTableIndex.createFromIndexDescriptor(this, this.indexes[i]));
+        }
+        return result;
+    };
     return UnfetchedTable;
 }());
 var JQLTableIndex = (function () {
-    function JQLTableIndex(table, columns) {
+    function JQLTableIndex(table, descriptors) {
         this.table = table;
-        this.columns = (columns || []).slice(0);
+        this.descriptors = (descriptors || []).slice(0);
     }
-    JQLTableIndex.prototype.getColumns = function () {
-        return this.columns;
+    JQLTableIndex.prototype.getDescriptors = function () {
+        return this.descriptors;
     };
     JQLTableIndex.prototype.getTable = function () {
         return this.table;
     };
-    JQLTableIndex.createFromColumnIdentifier = function (table, column) {
+    JQLTableIndex.createFromIndexDescriptor = function (table, indexDescriptor) {
         if (table.getStorageEngine() === EJQLTableStorageEngine.IN_MEMORY) {
-            return new JQLTableIndexSingleColumn(table, column);
+            return new JQLTableIndexSingleColumn(table, indexDescriptor);
         }
         else {
             throw new Error('Backend-side table indexes not supported!');
@@ -1358,11 +1438,11 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var JQLTableIndexSingleColumn = (function (_super) {
     __extends(JQLTableIndexSingleColumn, _super);
-    function JQLTableIndexSingleColumn(table, column) {
-        var _this = _super.call(this, table, [column]) || this;
+    function JQLTableIndexSingleColumn(table, indexDescriptor) {
+        var _this = _super.call(this, table, [indexDescriptor]) || this;
         _this.maxAutoIncrement = 0;
-        _this.unique = !!column.unique;
-        _this.autoIncrement = !!column.autoIncrement;
+        _this.unique = !!indexDescriptor.unique;
+        _this.autoIncrement = !!indexDescriptor.autoIncrement;
         return _this;
     }
     JQLTableIndexSingleColumn.prototype.isUnique = function () {
@@ -1384,8 +1464,8 @@ var JQLTableIndexSingleColumn = (function (_super) {
         var row, iterator = this.table.createIterator(), value;
         this.maxAutoIncrement = 0;
         while (row = iterator.next()) {
-            if (this.values.indexOf(value = row.getColumnValue(this.columns[0].name)) > -1) {
-                throw new Error('Duplicate key ' + JSON.stringify(this.columns[0].name) + ' found with value ' + JSON.stringify(value) + ' found!');
+            if (this.values.indexOf(value = row.getColumnValue(this.descriptors[0].name)) > -1) {
+                throw new Error('Duplicate key ' + JSON.stringify(this.descriptors[0].name) + ' found with value ' + JSON.stringify(value) + ' found!');
             }
             else {
                 this.values.push(value);
@@ -1399,38 +1479,21 @@ var JQLTableIndexSingleColumn = (function (_super) {
 }(JQLTableIndex));
 var JQLTableStorageEngineInMemory = (function (_super) {
     __extends(JQLTableStorageEngineInMemory, _super);
-    function JQLTableStorageEngineInMemory(identifiers, rows) {
+    function JQLTableStorageEngineInMemory(identifiers, rows, indexes) {
         var _this = _super.call(this, identifiers) || this;
         _this.rows = [];
-        _this.autoIncrementColumnIndex = null;
-        _this.autoIncrementValue = 1;
         for (var i = 0, len = rows.length; i < len; i++) {
             _this.rows.push(rows[i]);
         }
-        var index, numberOfAutoIncrementIndexes = 0;
-        for (var idtf = identifiers || [], len = idtf.length, i = 0; i < len; i++) {
-            if ((undefined !== idtf[i].unique && idtf[i].unique) || (undefined !== idtf[i].autoIncrement && idtf[i].autoIncrement)) {
-                index = JQLTableIndex.createFromColumnIdentifier(_this, idtf[i]);
-                if (index.isAutoIncrement()) {
-                    numberOfAutoIncrementIndexes++;
-                    if (index.getColumns().length > 1) {
-                        throw new Error('Auto-increment indexes must refer to a single column only!');
-                    }
-                    if (numberOfAutoIncrementIndexes > 1) {
-                        throw new Error('There can be only a single auto-increment index!');
-                    }
-                    if (index.getColumns()[0].type !== EJQLTableColumnType.NUMBER) {
-                        throw new Error('Auto-increment index column type must be NUMBER!');
-                    }
-                    if (!index.isUnique()) {
-                        throw new Error('Auto-increment indexes must be unique!');
-                    }
-                    _this.autoIncrementColumnIndex = i;
-                }
-                _this.indexes.push(index);
+        if (indexes) {
+            if (!Array.isArray(indexes)) {
+                throw new Error("Invalid class constructor argument: indexes: Expected array!");
             }
+            for (var i = 0, len = indexes.length; i < len; i++) {
+                _this.withSingleColumnIndex(indexes[i]);
+            }
+            _this.reIndex();
         }
-        _this.reIndex();
         return _this;
     }
     JQLTableStorageEngineInMemory.prototype.isRemote = function () {
@@ -1452,7 +1515,7 @@ var JQLTableStorageEngineInMemory = (function (_super) {
             }
         }
         else {
-            throw new Error('Undefined table index: ' + JSON.stringify(index));
+            throw new Error("Undefined table index: " + JSON.stringify(index));
         }
     };
     JQLTableStorageEngineInMemory.prototype.deleteRow = function (rowIndex) {
@@ -1462,10 +1525,10 @@ var JQLTableStorageEngineInMemory = (function (_super) {
     };
     JQLTableStorageEngineInMemory.prototype.insertRow = function (row) {
         if (!row || undefined === row.length) {
-            throw new Error('Invalid argument row: array expected!');
+            throw new Error("Invalid argument row: array expected!");
         }
         if (row.length !== this.identifiers.length) {
-            throw new Error('Row mismatch: Expected ' + this.identifiers.length + ' values, got ' + row.length + ' values!');
+            throw new Error("Row mismatch: Expected " + this.identifiers.length + " values, got " + row.length + " values!");
         }
         if (this.autoIncrementColumnIndex !== null) {
             if (null === row[this.autoIncrementColumnIndex]) {
@@ -1493,7 +1556,7 @@ var JQLTableStorageEngineInMemory = (function (_super) {
             this.lastTransactionSnapshot = undefined;
         }
         else {
-            throw new Error('No transaction started before!"');
+            throw new Error("No transaction started before!\"");
         }
     };
     JQLTableStorageEngineInMemory.prototype.rollbackTransaction = function () {
@@ -1501,21 +1564,21 @@ var JQLTableStorageEngineInMemory = (function (_super) {
             this.rows = JSON.parse(this.lastTransactionSnapshot);
         }
         else {
-            throw new Error('Failed to rollback transaction: No transaction started before!');
+            throw new Error("Failed to rollback transaction: No transaction started before!");
         }
     };
     JQLTableStorageEngineInMemory.prototype.getNextAutoIncrementValue = function () {
         return this.autoIncrementValue + 1;
     };
     JQLTableStorageEngineInMemory.prototype.setNextAutoIncrementValue = function (value) {
-        if ('number' !== typeof value || !isFinite(value)) {
-            throw new Error('Value is not finite!');
+        if ("number" !== typeof value || !isFinite(value)) {
+            throw new Error("Value is not finite!");
         }
         if (value % 1 !== 0) {
-            throw new Error('Value must be integer!');
+            throw new Error("Value must be integer!");
         }
         if (value < 1) {
-            throw new Error('Value must be greater than 0!');
+            throw new Error("Value must be greater than 0!");
         }
         this.autoIncrementValue = value;
     };
@@ -1523,8 +1586,17 @@ var JQLTableStorageEngineInMemory = (function (_super) {
 }(JQLTable));
 var JQLTableStorageEngineRemote = (function (_super) {
     __extends(JQLTableStorageEngineRemote, _super);
-    function JQLTableStorageEngineRemote() {
-        return _super !== null && _super.apply(this, arguments) || this;
+    function JQLTableStorageEngineRemote(identifiers, indexes) {
+        var _this = _super.call(this, identifiers) || this;
+        if (indexes) {
+            if (!Array.isArray(indexes)) {
+                throw new Error("Invalid class constructor argument: indexes: Expected array!");
+            }
+            for (var i = 0, len = indexes.length; i < len; i++) {
+                _this.withSingleColumnIndex(indexes[i]);
+            }
+        }
+        return _this;
     }
     JQLTableStorageEngineRemote.prototype.isRemote = function () {
         return true;

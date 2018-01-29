@@ -1,5 +1,23 @@
 class JQLTableStorageEngineRemote extends JQLTable {
 
+    constructor(identifiers: IJQLTableColumn[], indexes?: IJQLTableIndexDescriptor[]) {
+
+        super( identifiers );
+
+        if (indexes) {
+
+            if (!Array.isArray(indexes)) {
+                throw new Error("Invalid class constructor argument: indexes: Expected array!");
+            }
+
+            for (let i = 0, len = indexes.length; i < len; i++) {
+                this.withSingleColumnIndex(indexes[ i ]);
+            }
+
+        }
+
+    }
+
     public isRemote(): boolean {
         return true;
     }

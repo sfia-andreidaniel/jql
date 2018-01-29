@@ -6,6 +6,10 @@ abstract class JQLTable implements IJQLTable {
 
     protected indexes: JQLTableIndex[] = [];
 
+    protected autoIncrementColumnIndex: number = null;
+
+    protected autoIncrementValue: number = 1;
+
     constructor(identifiers: IJQLTableColumn[]) {
 
         for (let i = 0, idtf = identifiers || [], len = idtf.length; i < len; i++) {
@@ -46,6 +50,70 @@ abstract class JQLTable implements IJQLTable {
         }
     }
 
+    public withSingleColumnIndex(indexDescriptor: IJQLTableIndexDescriptor): this {
+
+        let index: JQLTableIndex,
+            numberOfAutoIncrementIndexes: number = 0;
+
+        if (this.indexes) {
+            for (let i = 0, len = this.indexes.length; i < len; i++) {
+                if (this.indexes[ i ].isAutoIncrement()) {
+                    numberOfAutoIncrementIndexes++;
+                }
+            }
+        }
+
+        if ((undefined !== indexDescriptor.unique && indexDescriptor.unique) || (undefined !== indexDescriptor.autoIncrement && indexDescriptor.autoIncrement)) {
+
+            index = JQLTableIndex.createFromIndexDescriptor(this, indexDescriptor);
+
+            if (index.isAutoIncrement()) {
+
+                numberOfAutoIncrementIndexes++;
+
+                if (index.getDescriptors().length > 1) {
+                    throw new Error("Auto-increment indexes must refer to a single column only!");
+                }
+
+                if (numberOfAutoIncrementIndexes > 1) {
+                    throw new Error("There can be only a single auto-increment index!");
+                }
+
+                if (!index.isUnique()) {
+                    throw new Error("Auto-increment indexes must be unique!");
+                }
+
+                let autoIncrementColumnFound: boolean = false;
+
+                for (let i = 0, len = this.identifiers.length; i < len; i++) {
+
+                    if (this.identifiers[ i ].name === indexDescriptor.name) {
+
+                        this.autoIncrementColumnIndex = i;
+                        autoIncrementColumnFound = true;
+
+                        if (this.identifiers[ i ].type !== EJQLTableColumnType.NUMBER) {
+                            throw new Error("Auto-increment index column type must be NUMBER!");
+                        }
+
+                        break;
+                    }
+
+                }
+
+                if (!autoIncrementColumnFound) {
+                    throw new Error("Cannot add a index on a non-existing column!");
+                }
+
+            }
+
+            this.indexes.push(index);
+
+        }
+
+        return this;
+    }
+
     public describe(): IJQLTableColumn[] {
         return this.identifiers.slice(0);
     }
@@ -65,13 +133,13 @@ abstract class JQLTable implements IJQLTable {
 
     public abstract getStorageEngine(): EJQLTableStorageEngine;
 
-    public static createFromInMemoryArrayOfObjects(rows: object[], columnDefinitions?: IJQLTableColumn[]): JQLTable {
+    public static createFromInMemoryArrayOfObjects(rows: object[], columnDefinitions?: IJQLTableColumn[], indexes?: IJQLTableIndexDescriptor[]): JQLTable {
 
         let identifiers              = undefined === columnDefinitions
             ? JQLUtils.getColumnDefinitions(rows)
             : columnDefinitions,
 
-            result: JQLPrimitive[][] = [],
+            schema: JQLPrimitive[][] = [],
             ncols: number            = identifiers.length,
             row: JQLPrimitive[],
             v: JQLPrimitive,
@@ -101,16 +169,16 @@ abstract class JQLTable implements IJQLTable {
 
             }
 
-            result.push(row);
+            schema.push(row);
 
         }
 
-        return new JQLTableStorageEngineInMemory(identifiers, result);
+        return new JQLTableStorageEngineInMemory(identifiers, schema, indexes);
 
     }
 
-    public static createFromRemoteTableDefinition(columns: IJQLTableColumn[]): JQLTable {
-        return new JQLTableStorageEngineRemote(columns);
+    public static createFromRemoteTableDefinition(columns: IJQLTableColumn[], indexes?: IJQLTableIndexDescriptor[]): JQLTable {
+        return new JQLTableStorageEngineRemote(columns, indexes);
     }
 
     public createEmptyRow(): JQLPrimitive[] {

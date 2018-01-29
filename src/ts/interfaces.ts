@@ -313,12 +313,16 @@ enum EJQLBackendTableColumnType {
     BOOLEAN = "boolean",
 }
 
+interface IJQLTableIndexDescriptor {
+    name: EJQLTableColumnType;
+    unique?: boolean;
+    autoIncrement?: boolean;
+}
+
 interface IJQLTableColumn {
     name: string;
     type: EJQLTableColumnType;
     default?: JQLPrimitive;
-    unique?: boolean;
-    autoIncrement?: boolean;
 }
 
 interface IJQLTableIndex {
@@ -341,6 +345,8 @@ interface IJQLTable {
     fetch(): JQueryPromise<IJQLTable>;
 
     getStorageEngine(): EJQLTableStorageEngine;
+
+    getIndexes(): JQLTableIndex[];
 
 }
 
@@ -442,6 +448,7 @@ interface IJQLTableSchemaHashMap {
 interface IJQLBackendTableModel {
     name: string;
     schema: IJQLTableSchemaHashMap;
+    indexes: IJQLTableIndexDescriptor[];
     namespace: EJQLTableNamespace;
     accessMode: EJQLTableAccessMode;
     storageEngine: EJQLTableStorageEngine;
