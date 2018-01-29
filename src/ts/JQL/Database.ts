@@ -100,7 +100,7 @@ class JQLDatabase implements IJQLDatabase {
         }
     }
 
-    public withTable(tableName: string, table: IJQLTable): this {
+    private withTable(tableName: string, table: IJQLTable): this {
 
         if (!this.isValidIdentifierName(tableName)) {
             throw new Error(JSON.stringify(tableName) + " is not a valid table name!");

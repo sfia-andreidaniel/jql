@@ -364,8 +364,6 @@ interface IJQLDatabase {
 
     withFunction(functionName: string, func: IJQLDatabaseFunction): this;
 
-    withTable(tableName: string, table: IJQLTable): this;
-
     hasTable(tableName: string): boolean;
 
 }

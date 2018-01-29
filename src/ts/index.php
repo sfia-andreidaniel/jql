@@ -6,6 +6,43 @@
     <script src="vendor/jquery-3.2.1.min.js"></script>
     <script src="JQL/Lexer/JQLGrammar.js"></script>
     <script src="build.js"></script>
+    <style>
+        body > form {
+            display: inline-block;
+            vertical-align: top;
+        }
+
+        body > form  {
+            width: 500px;
+        }
+
+        body > form label, body > form button {
+            display: inline-block;
+            height: 40px;
+            box-sizing: content-box;
+        }
+
+        body > form > * {
+            display: inline-block;
+            vertical-align: middle;
+            line-height: 34px;
+        }
+
+        body > form label > span {
+            display: inline-block;
+            width: 150px;
+        }
+
+        body > form label > span + input:not([type=checkbox]),
+        body > form label > span + select {
+            width: 300px;
+            height: 34px;
+            box-sizing: content-box;
+            padding: 0;
+            margin: 0;
+        }
+    </style>
+
 </head>
 <body>
 
@@ -18,43 +55,11 @@ $tableSchema = json_decode(file_get_contents('http://127.0.0.1?action=show-table
 ?>
 
 <form method="post" id="create-table">
-    <style>
-
-        #create-table {
-            min-width: 500px;
-        }
-
-        #create-table label, #create-table button {
-            display: block;
-            height: 40px;
-            box-sizing: content-box;
-        }
-
-        #create-table label > * {
-            display: inline-block;
-            vertical-align: middle;
-            line-height: 34px;
-        }
-
-        #create-table label > span {
-            display: inline-block;
-            width: 150px;
-        }
-
-        #create-table label > span + input:not([type=checkbox]),
-        #create-table label > span + select {
-            width: 300px;
-            height: 34px;
-            box-sizing: content-box;
-            padding: 0;
-            margin: 0;
-        }
-    </style>
     <fieldset>
         <legend>Create table from file:</legend>
         <label>
             <span>Table name</span>
-            <input type="text" name="name" placeholder="eg: persons" />
+            <input type="text" name="name" placeholder="eg: persons"/>
         </label>
         <label>
             <span>Table namespace</span>
@@ -80,7 +85,7 @@ $tableSchema = json_decode(file_get_contents('http://127.0.0.1?action=show-table
         </label>
         <label>
             <span>CSV File</span>
-            <input type="file" name="file" />
+            <input type="file" name="file"/>
         </label>
         <label>
             <span>Field delimiter</span>
@@ -100,7 +105,7 @@ $tableSchema = json_decode(file_get_contents('http://127.0.0.1?action=show-table
         </label>
         <label>
             <span>Enclose all fields</span>
-            <input type="checkbox" name="enclose-all-fields" />
+            <input type="checkbox" name="enclose-all-fields"/>
         </label>
         <label>
             <span>Escape character</span>
@@ -111,7 +116,7 @@ $tableSchema = json_decode(file_get_contents('http://127.0.0.1?action=show-table
         </label>
         <label>
             <span>Auto trim</span>
-            <input type="checkbox" name="auto-trim" />
+            <input type="checkbox" name="auto-trim"/>
         </label>
         <label>
             <span>Line terminator</span>
@@ -125,6 +130,20 @@ $tableSchema = json_decode(file_get_contents('http://127.0.0.1?action=show-table
     </fieldset>
 </form>
 
+<form method="post" id="admin-table">
+    <fieldset>
+        <legend>Tables</legend>
+        <label>
+            <span>Table:</span>
+            <select name="table-list">
+                <option value="">Loading...</option>
+            </select>
+        </label>
+        <button data-role="drop-table">Drop</button>
+        <button data-role="describe">Describe</button>
+    </fieldset>
+</form>
+
 <script>
 
     (function ($) {
@@ -134,60 +153,6 @@ $tableSchema = json_decode(file_get_contents('http://127.0.0.1?action=show-table
         db
             .withAuthorizationToken(<?php echo json_encode($authorizationToken) ?>)
             .withRPCEndpointName("http://127.0.0.1/")
-            // .withTable(
-            //     'persons',
-            //     JQLTable.createFromInMemoryArrayOfObjects(
-            //         [
-            //             {id: 1, name: "Jack", age: 12},
-            //             {id: 2, name: "Jill", age: 14},
-            //             {id: 3, name: "Betty", age: 32}
-            //         ],
-            //         [
-            //             {
-            //                 name: "id",
-            //                 type: EJQLTableColumnType.NUMBER,
-            //                 default: null,
-            //                 unique: true,
-            //                 autoIncrement: true
-            //             },
-            //             {name: "name", type: EJQLTableColumnType.STRING, default: "", unique: false},
-            //             {name: "age", type: EJQLTableColumnType.NUMBER, default: 0, unique: false}
-            //         ]
-            //     )
-            // )
-            // .withTable(
-            //     'products',
-            //     JQLTable.createFromInMemoryArrayOfObjects(
-            //         [
-            //             {id: 1, name: "VGA Card", ownerId: 1},
-            //             {id: 2, name: "CPU", ownerId: 1},
-            //             {id: 4, name: "Computer keyboard", ownerId: 3}
-            //         ]
-            //     )
-            // )
-            // .withTable(
-            //     'remote',
-            //     JQLTable.createFromRemoteTableDefinition(
-            //         [
-            //             {
-            //                 "name": "id",
-            //                 "type": EJQLTableColumnType.NUMBER,
-            //                 "default": null,
-            //                 "unique": true,
-            //                 "autoIncrement": true
-            //             },
-            //             {
-            //                 "name": "email",
-            //                 "type": EJQLTableColumnType.STRING,
-            //                 "default": ""
-            //             },
-            //             {
-            //                 "name": "age",
-            //                 "type": EJQLTableColumnType.NUMBER
-            //             }
-            //         ]
-            //     )
-            // )
             .withTablesList( <?=json_encode($tableSchema);?> )
             .withFunction('sum', function (a, b) {
                 return a + b;
