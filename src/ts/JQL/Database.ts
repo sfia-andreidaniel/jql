@@ -1,4 +1,8 @@
-class JQLDatabase implements IJQLDatabase {
+/**
+ * @triggers:
+ *      "schema-changed" () - When a table is added or removed
+ */
+class JQLDatabase extends EventEmitter implements IJQLDatabase, EventEmitterInterface {
 
     private functions: IJQLFunctionHashMap = {};
 
@@ -120,6 +124,10 @@ class JQLDatabase implements IJQLDatabase {
 
         for (let i = 0, len = tables.length; i < len; i++) {
             this.withTable(tables[ i ].name, new UnfetchedTable(tables[ i ], this));
+        }
+
+        if (tables && tables.length) {
+            this.trigger("schema-changed");
         }
 
         return this;
@@ -331,6 +339,45 @@ class JQLDatabase implements IJQLDatabase {
 
 
         })(this.jq, this);
+    }
+
+    public dropTable(tableName: string) {
+
+        return (function ($: JQueryStatic, self: JQLDatabase) {
+
+            return $.Deferred(function (defer) {
+
+                if (!self.hasTable(tableName)) {
+                    defer.reject(new Error("Table " + JSON.stringify(tableName) + " not found!"));
+                    return;
+                }
+
+                $.ajax({
+                    url:      self.rpcEndpointName,
+                    data:     {
+                        action: "drop-table",
+                        auth:   self.authorizationToken,
+                        name:   tableName,
+                    },
+                    type:     "POST",
+                    dataType: "json",
+                }).then(function (response: boolean) {
+
+                    self.trigger("schema-changed");
+
+                    defer.resolve(response);
+
+                }).fail(function (e) {
+
+                    defer.reject(e);
+
+                });
+
+            }).promise();
+
+
+        })(this.jq, this);
+
     }
 
 }

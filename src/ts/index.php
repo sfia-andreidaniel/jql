@@ -12,7 +12,7 @@
             vertical-align: top;
         }
 
-        body > form  {
+        body > form {
             width: 500px;
         }
 
@@ -150,13 +150,17 @@ $tableSchema = json_decode(file_get_contents('http://127.0.0.1?action=show-table
 
         window.db = (new JQLDatabase()).withJQuery($);
 
-        db
-            .withAuthorizationToken(<?php echo json_encode($authorizationToken) ?>)
-            .withRPCEndpointName("http://127.0.0.1/")
-            .withTablesList( <?=json_encode($tableSchema);?> )
-            .withFunction('sum', function (a, b) {
-                return a + b;
-            });
+        $(function () {
+
+            db
+                .withAuthorizationToken(<?php echo json_encode($authorizationToken) ?>)
+                .withRPCEndpointName("http://127.0.0.1/")
+                .withTablesList( <?=json_encode($tableSchema);?> )
+                .withFunction('sum', function (a, b) {
+                    return a + b;
+                });
+
+        });
 
     })(jQuery.noConflict());
 

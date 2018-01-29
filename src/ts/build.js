@@ -103,6 +103,88 @@ var EJQLTableNamespace;
     EJQLTableNamespace["FORM"] = "private";
     EJQLTableNamespace["GLOBAL"] = "global";
 })(EJQLTableNamespace || (EJQLTableNamespace = {}));
+var EventEmitter = (function () {
+    function EventEmitter() {
+    }
+    EventEmitter.prototype.isEventTriggeringEnabled = function () {
+        return !!!this.disableEventTriggering;
+    };
+    EventEmitter.prototype.on = function (eventName, callback) {
+        if (this.events === undefined) {
+            this.events = {};
+        }
+        if (this.events[eventName] === undefined) {
+            this.events[eventName] = [];
+        }
+        this.events[eventName].push(callback);
+        return this;
+    };
+    EventEmitter.prototype.off = function (eventName, callback) {
+        if (this.events === undefined) {
+            return this;
+        }
+        if (this.events[eventName] === undefined) {
+            return this;
+        }
+        if (callback === undefined) {
+            delete this.events[eventName];
+        }
+        else {
+            for (var i = 0, len = this.events[eventName].length; i < len; i++) {
+                if (this.events[eventName][i] === callback) {
+                    this.events[eventName].splice(i, 1);
+                    break;
+                }
+            }
+            if (this.events[eventName].length === 0) {
+                delete this.events[eventName];
+            }
+        }
+        return this;
+    };
+    EventEmitter.prototype.disableEvents = function () {
+        this.disableEventTriggering = true;
+        return this;
+    };
+    EventEmitter.prototype.enableEvents = function () {
+        this.disableEventTriggering = undefined;
+        return this;
+    };
+    EventEmitter.prototype.enableSyncMode = function () {
+        this.syncMode = true;
+        return this;
+    };
+    EventEmitter.prototype.disableSyncMode = function () {
+        this.syncMode = undefined;
+        return this;
+    };
+    EventEmitter.prototype.trigger = function (eventName) {
+        var eventArgs = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            eventArgs[_i - 1] = arguments[_i];
+        }
+        if (!this.disableEventTriggering && this.events !== undefined) {
+            if (this.events[eventName] !== undefined) {
+                (function (self) {
+                    for (var i = 0, len = self.events[eventName].length; i < len; i++) {
+                        if (self.syncMode) {
+                            self.events[eventName][i].apply(self, eventArgs);
+                        }
+                        else {
+                            (function (callback) {
+                                setTimeout(function () {
+                                    callback.apply(self, eventArgs);
+                                }, 0);
+                            })(self.events[eventName][i]);
+                        }
+                    }
+                })(this);
+            }
+        }
+        return this;
+    };
+    return EventEmitter;
+}());
 var JQLLexerFactory = (function () {
     function JQLLexerFactory() {
     }
@@ -446,10 +528,23 @@ var JQLUtils = (function () {
     ];
     return JQLUtils;
 }());
-var JQLDatabase = (function () {
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var JQLDatabase = (function (_super) {
+    __extends(JQLDatabase, _super);
     function JQLDatabase() {
-        this.functions = {};
-        this.tables = {};
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.functions = {};
+        _this.tables = {};
+        return _this;
     }
     JQLDatabase.prototype.withJQuery = function (jq) {
         this.jq = jq;
@@ -528,6 +623,9 @@ var JQLDatabase = (function () {
     JQLDatabase.prototype.withTablesList = function (tables) {
         for (var i = 0, len = tables.length; i < len; i++) {
             this.withTable(tables[i].name, new UnfetchedTable(tables[i], this));
+        }
+        if (tables && tables.length) {
+            this.trigger("schema-changed");
         }
         return this;
     };
@@ -657,8 +755,33 @@ var JQLDatabase = (function () {
             }).promise();
         })(this.jq, this);
     };
+    JQLDatabase.prototype.dropTable = function (tableName) {
+        return (function ($, self) {
+            return $.Deferred(function (defer) {
+                if (!self.hasTable(tableName)) {
+                    defer.reject(new Error("Table " + JSON.stringify(tableName) + " not found!"));
+                    return;
+                }
+                $.ajax({
+                    url: self.rpcEndpointName,
+                    data: {
+                        action: "drop-table",
+                        auth: self.authorizationToken,
+                        name: tableName,
+                    },
+                    type: "POST",
+                    dataType: "json",
+                }).then(function (response) {
+                    self.trigger("schema-changed");
+                    defer.resolve(response);
+                }).fail(function (e) {
+                    defer.reject(e);
+                });
+            }).promise();
+        })(this.jq, this);
+    };
     return JQLDatabase;
-}());
+}(EventEmitter));
 var JQLDatabaseStatementExecutorSelect = (function () {
     function JQLDatabaseStatementExecutorSelect(statement, db) {
         this.statement = statement;
@@ -1439,16 +1562,6 @@ var JQLTableIndex = (function () {
     };
     return JQLTableIndex;
 }());
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 var JQLTableIndexSingleColumn = (function (_super) {
     __extends(JQLTableIndexSingleColumn, _super);
     function JQLTableIndexSingleColumn(table, indexDescriptor) {
@@ -3126,11 +3239,30 @@ var JQLStatementDelete = (function (_super) {
 }(JQLStatement));
 (function ($) {
     $(function () {
+        var refreshTablesInAdminTableForm = function () {
+            var tables = db.enumerateTables();
+            $("#admin-table [name=table-list]").each(function () {
+                var previousValue = this.value;
+                while (this.options.length > 0) {
+                    this.remove(0);
+                }
+                for (var i = 0, len = tables.length; i < len; i++) {
+                    var opt = document.createElement("option");
+                    opt.text = opt.value = tables[i].name;
+                    this.add(opt);
+                }
+                this.value = previousValue;
+            });
+        };
+        db.on("schema-changed", function () {
+            console.warn("schema-changed");
+            refreshTablesInAdminTableForm();
+        });
         $("#create-table").on("submit", function (e) {
             e.preventDefault();
             e.stopPropagation();
             var request = {
-                csvFile: $(this).find("[name=file]").get(0)['files'][0] || null,
+                csvFile: $(this).find("[name=file]").get(0)["files"][0] || null,
                 tableName: $(this).find("[name=name]").val().trim(),
                 tableNamespace: $(this).find("[name=namespace]").val(),
                 tableAccessMode: $(this).find("[name=access-mode]").val(),
@@ -3146,6 +3278,38 @@ var JQLStatementDelete = (function (_super) {
                 alert(JSON.stringify(t));
             }).fail(function (e) {
                 console.error(e);
+            });
+        });
+        var dropTable = function (tableName) {
+            if (!confirm("Are you sure you want to delete table " + JSON.stringify(tableName) + "?")) {
+                return;
+            }
+            db.dropTable(tableName)
+                .then(function () {
+                alert("Table " + JSON.stringify(tableName) + " has been deleted!");
+            })
+                .fail(function (e) {
+                console.error(e);
+                alert("Failed to delete table " + JSON.stringify(tableName) + ": " + e.toString());
+            });
+        };
+        $("#admin-table").each(function () {
+            $(this).on("submit", function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            });
+            $(this).on("click", "button[data-role]", function (e) {
+                var buttonRole = this.getAttribute("data-role"), selectedTableName = $(this).closest("form").find("[name=table-list]").val();
+                if (!selectedTableName) {
+                    return;
+                }
+                switch (buttonRole) {
+                    case "drop-table":
+                        dropTable(selectedTableName);
+                        break;
+                    case "describe-table":
+                        break;
+                }
             });
         });
     });

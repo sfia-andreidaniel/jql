@@ -1,6 +1,8 @@
 ///<reference path="./interfaces.ts" />
 ///<reference path="./jquery2.d.ts" />
 ///<reference path="./Lexer.d.ts" />
+///<reference path="./EventEmitter.ts" />
+
 ///<reference path="./JQL/Lexer/Factory.ts" />
 ///<reference path="./JQL/Utils.ts" />
 ///<reference path="./JQL/Database.ts" />

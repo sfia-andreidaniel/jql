@@ -456,3 +456,13 @@ interface IJQLTableDescriptor {
     name: string;
     instance: IJQLTable;
 }
+
+interface IEventEmitterCallback {
+    ( ...args: any[] ): void;
+}
+
+interface EventEmitterInterface {
+    on(eventName: string, callback: IEventEmitterCallback): this;
+    off( eventName: string, callback?: IEventEmitterCallback ): this;
+    trigger( eventName, ...eventArgs: any[] ): this;
+}
