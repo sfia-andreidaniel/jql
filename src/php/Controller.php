@@ -441,7 +441,9 @@ class Controller
     }
 
     /**
+     * @return bool
      * @throws AuthorizationException
+     * @throws StorageException
      */
     private function dropTableAction()
     {
@@ -450,7 +452,7 @@ class Controller
 
         $tableName = $this->requestParam('name');
 
-        $this->getStorageService()->dropTable( $token, $tableName );
+        $this->getStorageService()->dropTable($token, $tableName);
 
         return true;
 
