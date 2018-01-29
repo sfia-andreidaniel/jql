@@ -186,6 +186,7 @@ class StorageService
      * @param AuthorizationToken $token
      * @param string             $tableName
      *
+     * @return mixed[]
      * @throws StorageException
      */
     public function getTableRows(AuthorizationToken $token, $tableName)

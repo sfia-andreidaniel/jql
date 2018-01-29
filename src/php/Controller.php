@@ -395,6 +395,7 @@ class Controller
             $result[] = [
                 'name'          => $tableModel->getName(),
                 'schema'        => $tableModel->getSchema(),
+                'indexes'       => $tableModel->getIndexes(),
                 'namespace'     => $tableModel->getNamespace(),
                 'accessMode'    => $tableModel->getAccessMode(),
                 'storageEngine' => $tableModel->getStorageEngine(),

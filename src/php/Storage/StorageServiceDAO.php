@@ -2,7 +2,6 @@
 
 namespace JQL\Storage;
 
-use JQL\Authorization\AuthorizationService;
 use JQL\CSVParser\CSVParser;
 use JQL\CSVParser\ParsedCSVModel;
 use JQL\Database\Database;
@@ -63,7 +62,8 @@ class StorageServiceDAO
                            UNIX_TIMESTAMP( `created_date` )              AS `createdDate`,
                            `access_mode`                                 AS `accessMode`,
                            `storage_engine`                              AS `storageEngine`,
-                           `json_schema`                                 AS `schema`
+                           `json_schema`                                 AS `schema`,
+                           `json_indexes`                                AS `indexes`
                     FROM   jql_tables
                     ' . $where,
                 $bindings
@@ -99,6 +99,9 @@ class StorageServiceDAO
             'accessMode'    => $row['accessMode'],
             'storageEngine' => $row['storageEngine'],
             'schema'        => @json_decode($row['schema'], true),
+            'indexes'       => empty($row['indexes'])
+                ? null
+                : @json_decode($row['indexes'], true),
         ];
 
     }
@@ -122,6 +125,8 @@ class StorageServiceDAO
 
             $tableSchema = $parsedCSV->getComputedColumnTypes();
 
+            $tableIndexes = $tableModel->getIndexes();
+
             $transaction = $this->database->query('START TRANSACTION');
 
             $stmt = $this->database->query(
@@ -131,6 +136,7 @@ class StorageServiceDAO
                       `form_id`,
                       `name`,
                       `json_schema`,
+                      `json_indexes`,
                       `created_date`,
                       `access_mode`,
                       `storage_engine`
@@ -139,6 +145,7 @@ class StorageServiceDAO
                       :form_id,
                       :name,
                       :json_schema,
+                      :json_indexes,
                       NOW(),
                       :access_mode,
                       :storage_engine
@@ -149,6 +156,7 @@ class StorageServiceDAO
                     ':form_id'        => $tableModel->getFormId(),
                     ':name'           => $tableModel->getName(),
                     ':json_schema'    => json_encode($tableSchema),
+                    ':json_indexes'   => json_encode($tableIndexes),
                     ':access_mode'    => $tableModel->getAccessMode(),
                     ':storage_engine' => $tableModel->getStorageEngine(),
                 ]
@@ -232,7 +240,8 @@ class StorageServiceDAO
                            UNIX_TIMESTAMP( `created_date` )              AS `createdDate`,
                            `access_mode`                                 AS `accessMode`,
                            `storage_engine`                              AS `storageEngine`,
-                           `json_schema`                                 AS `schema`
+                           `json_schema`                                 AS `schema`,
+                           `json_indexes`                                AS `indexes`
                     FROM   jql_tables
                     WHERE id = :id
                     LIMIT 1',
@@ -280,7 +289,6 @@ class StorageServiceDAO
 
         $result = [
             'CREATE TABLE `table_' . $tableId . '` (',
-
         ];
 
         $columns = [];
@@ -403,7 +411,8 @@ class StorageServiceDAO
                            UNIX_TIMESTAMP( `created_date` )              AS `createdDate`,
                            `access_mode`                                 AS `accessMode`,
                            `storage_engine`                              AS `storageEngine`,
-                           `json_schema`                                 AS `schema`
+                           `json_schema`                                 AS `schema`,
+                           `json_indexes`                                AS `indexes`
                     FROM   jql_tables
                     ' . $where . '
                     LIMIT 1',
@@ -435,6 +444,7 @@ class StorageServiceDAO
      * @param array $tableSchema
      * @param int   $tableId
      *
+     * @return array
      * @throws StorageException
      */
     public function fetchTableRowsInMemory(array $tableSchema, $tableId)

@@ -31,6 +31,11 @@ class TableModel
     private $schema;
 
     /**
+     * @var array|null
+     */
+    private $indexes;
+
+    /**
      * @var string * ENUM("private", "global" )
      */
     private $namespace;
@@ -57,6 +62,7 @@ class TableModel
         $this->formId = $daoRow['formId'];
         $this->name = $daoRow['name'];
         $this->schema = $daoRow['schema'];
+        $this->indexes = $daoRow['indexes'];
         $this->namespace = $daoRow['namespace'];
         $this->accessMode = $daoRow['accessMode'];
         $this->storageEngine = $daoRow['storageEngine'];
@@ -74,6 +80,7 @@ class TableModel
             'formId'        => $this->formId,
             'name'          => $this->name,
             'schema'        => $this->schema,
+            'indexes'       => $this->indexes,
             'namespace'     => $this->namespace,
             'accessMode'    => $this->accessMode,
             'storageEngine' => $this->storageEngine,
@@ -119,6 +126,14 @@ class TableModel
     public function getSchema()
     {
         return $this->schema;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getIndexes()
+    {
+        return $this->indexes;
     }
 
     /**

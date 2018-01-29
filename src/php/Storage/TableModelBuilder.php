@@ -34,6 +34,11 @@ class TableModelBuilder
     private $schema;
 
     /**
+     * @var array|null
+     */
+    private $indexes;
+
+    /**
      * @var string * ENUM("private", "global" )
      */
     private $namespace;
@@ -102,6 +107,19 @@ class TableModelBuilder
     {
         Assertion::assertIsArrayOrNull($schema, 'schema must either be array, either null');
         $this->schema = $schema;
+        return $this;
+    }
+
+    /**
+     * @param $indexes
+     *
+     * @return TableModelBuilder
+     * @throws AssertionException
+     */
+    public function withIndexes($indexes)
+    {
+        Assertion::assertIsArrayOrNull($indexes, 'table indexes must either be array, either null');
+        $this->indexes = $indexes;
         return $this;
     }
 
@@ -196,6 +214,7 @@ class TableModelBuilder
             'formId'        => $this->formId,
             'name'          => $this->name,
             'schema'        => $this->schema,
+            'indexes'       => $this->indexes,
             'namespace'     => $this->namespace,
             'accessMode'    => $this->accessMode,
             'storageEngine' => $this->storageEngine,

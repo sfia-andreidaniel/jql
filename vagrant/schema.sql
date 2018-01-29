@@ -36,7 +36,9 @@ CREATE TABLE jql_tables (
 
   access_mode            ENUM( 'r', 'w', 'rw' ),
   storage_engine         ENUM( 'memory', 'remote' ),
+
   json_schema            MEDIUMBLOB,
+  json_indexes           MEDIUMBLOB,
 
   UNIQUE KEY( form_id, name ),
   KEY( user_id, form_id )

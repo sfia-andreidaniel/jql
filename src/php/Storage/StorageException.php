@@ -16,4 +16,5 @@ class StorageException extends \Exception
     const ERR_GET_TABLE_BY_NAME = 9;
     const ERR_GET_TABLE_ROWS = 10;
     const ERR_TABLE_STORAGE_NOT_IN_MEMORY = 11;
+    const ERR_FETCH_TABLE_ROWS_IN_MEMORY = 12;
 }
