@@ -3,6 +3,7 @@
 namespace JQL\Storage;
 
 use JQL\Assertion\Assertion;
+use JQL\Authorization\AuthorizationException;
 use JQL\Authorization\AuthorizationService;
 use JQL\Authorization\AuthorizationToken;
 use JQL\CSVParser\CSVParser;
@@ -224,6 +225,45 @@ class StorageService
 
         }
 
+    }
+
+    /**
+     * @param AuthorizationToken $token
+     * @param mixed|string       $tableName
+     *
+     * @throws StorageException
+     */
+    public function dropTable(AuthorizationToken $token, $tableName)
+    {
+
+        try {
+
+            $tableModel = $this->getTableByName($token, $tableName);
+
+            if ($token->getRole() !== AuthorizationService::AUTHORIZATION_TOKEN_ROLE_FORM_ADMIN) {
+                throw new AuthorizationException(
+                    'Forbidden!',
+                    AuthorizationException::ERR_UNAUTHORIZED_REQUEST
+                );
+            }
+
+            $physicalTableName = 'table_' . $tableModel->getId();
+
+            $this->dao->dropTable($physicalTableName, $tableModel->getId());
+
+        } catch (StorageException $e) {
+
+            throw $e;
+
+        } catch (\Exception $e) {
+
+            throw new StorageException(
+                'Failed to drop table',
+                StorageException::ERR_DROP_TABLE,
+                $e
+            );
+
+        }
     }
 
 }

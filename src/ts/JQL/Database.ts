@@ -363,6 +363,8 @@ class JQLDatabase extends EventEmitter implements IJQLDatabase, EventEmitterInte
                     dataType: "json",
                 }).then(function (response: boolean) {
 
+                    delete self.tables[ tableName ];
+
                     self.trigger("schema-changed");
 
                     defer.resolve(response);

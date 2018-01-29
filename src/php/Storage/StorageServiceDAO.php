@@ -520,4 +520,33 @@ class StorageServiceDAO
         return $row;
     }
 
+    /**
+     * @param string $physicalTableName
+     * @param int    $jqlTableId
+     *
+     * @throws StorageException
+     */
+    public function dropTable($physicalTableName, $jqlTableId)
+    {
+
+        try {
+
+            $this->database->query('DELETE FROM jql_tables WHERE id = :id LIMIT 1', [
+                ':id' => $jqlTableId,
+            ]);
+
+            $this->database->query('DROP TABLE IF EXISTS `' . $physicalTableName . '`');
+
+        } catch (\Exception $e) {
+
+            throw new StorageException(
+                'Failed to drop table ' . json_encode($physicalTableName) . ': ' . $e->getMessage(),
+                StorageException::ERR_DROP_TABLE,
+                $e
+            );
+
+        }
+
+    }
+
 }

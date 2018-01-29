@@ -23,6 +23,7 @@ class Controller
     const ACTION_EXECUTE_QUERY = 'query';
     const ACTION_CREATE_TABLE_FROM_CSV = 'create-table-from-csv';
     const ACTION_SHOW_TABLES = 'show-tables';
+    const ACTION_DROP_TABLE = 'drop-table';
     const ACTION_FETCH_TABLE = 'fetch-table';
 
 
@@ -135,6 +136,10 @@ class Controller
 
             case self::ACTION_SHOW_TABLES:
                 return $this->showTablesAction();
+                break;
+
+            case self::ACTION_DROP_TABLE:
+                return $this->dropTableAction();
                 break;
 
             case self::ACTION_FETCH_TABLE:
@@ -432,6 +437,22 @@ class Controller
         );
 
         return $rows;
+
+    }
+
+    /**
+     * @throws AuthorizationException
+     */
+    private function dropTableAction()
+    {
+
+        $token = $this->getAuthorizationService()->getAuthenticationToken();
+
+        $tableName = $this->requestParam('name');
+
+        $this->getStorageService()->dropTable( $token, $tableName );
+
+        return true;
 
     }
 }

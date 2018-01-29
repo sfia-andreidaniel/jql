@@ -772,6 +772,7 @@ var JQLDatabase = (function (_super) {
                     type: "POST",
                     dataType: "json",
                 }).then(function (response) {
+                    delete self.tables[tableName];
                     self.trigger("schema-changed");
                     defer.resolve(response);
                 }).fail(function (e) {
