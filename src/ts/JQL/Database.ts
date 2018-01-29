@@ -129,6 +129,22 @@ class JQLDatabase implements IJQLDatabase {
         return "string" === typeof tableName && undefined !== this.tables[ tableName ] && this.tables.hasOwnProperty(tableName);
     }
 
+    public enumerateTables(): IJQLTableDescriptor[] {
+
+        let result: IJQLTableDescriptor[] = [];
+
+        for (let tableName in this.tables) {
+            if (this.tables.hasOwnProperty(tableName)) {
+                result.push({
+                    name:     tableName,
+                    instance: this.tables[ tableName ],
+                });
+            }
+        }
+
+        return result;
+    }
+
     public getTable(tableName: string): IJQLTable {
 
         if (this.hasTable(tableName)) {
@@ -298,7 +314,9 @@ class JQLDatabase implements IJQLDatabase {
                     dataType:    "json",
                     processData: false,
                     contentType: false,
-                }).then(function (response) {
+                }).then(function (response: IJQLBackendTableModel) {
+
+                    self.withTablesList([ response ]);
 
                     defer.resolve(response);
 

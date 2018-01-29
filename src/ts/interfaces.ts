@@ -453,3 +453,8 @@ interface IJQLBackendTableModel {
     accessMode: EJQLTableAccessMode;
     storageEngine: EJQLTableStorageEngine;
 }
+
+interface IJQLTableDescriptor {
+    name: string;
+    instance: IJQLTable;
+}

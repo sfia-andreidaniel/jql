@@ -534,6 +534,18 @@ var JQLDatabase = (function () {
     JQLDatabase.prototype.hasTable = function (tableName) {
         return "string" === typeof tableName && undefined !== this.tables[tableName] && this.tables.hasOwnProperty(tableName);
     };
+    JQLDatabase.prototype.enumerateTables = function () {
+        var result = [];
+        for (var tableName in this.tables) {
+            if (this.tables.hasOwnProperty(tableName)) {
+                result.push({
+                    name: tableName,
+                    instance: this.tables[tableName],
+                });
+            }
+        }
+        return result;
+    };
     JQLDatabase.prototype.getTable = function (tableName) {
         if (this.hasTable(tableName)) {
             return this.tables[tableName];
@@ -637,6 +649,7 @@ var JQLDatabase = (function () {
                     processData: false,
                     contentType: false,
                 }).then(function (response) {
+                    self.withTablesList([response]);
                     defer.resolve(response);
                 }).fail(function (e) {
                     defer.reject(e);

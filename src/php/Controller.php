@@ -368,12 +368,21 @@ class Controller
             ->withAutoTrim($settingJSON['csvParser']['autoTrim'])
             ->withLineTerminator($settingJSON['csvParser']['lineTerminator']);
 
-        return $this->getStorageService()->createTableFromCSV(
+        $tableModel = $this->getStorageService()->createTableFromCSV(
             $fileData,
             $csvParserOptions,
             $table,
             $token
-        )->toArray();
+        );
+
+        return [
+            'name'          => $tableModel->getName(),
+            'schema'        => $tableModel->getSchema(),
+            'indexes'       => $tableModel->getIndexes(),
+            'namespace'     => $tableModel->getNamespace(),
+            'accessMode'    => $tableModel->getAccessMode(),
+            'storageEngine' => $tableModel->getStorageEngine(),
+        ];
     }
 
     /**
