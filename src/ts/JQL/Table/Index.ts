@@ -25,7 +25,7 @@ abstract class JQLTableIndex {
 
         } else {
 
-            throw new Error('Backend-side table indexes not supported!');
+            return new JQLTableIndexBackend(<JQLTableStorageEngineInMemory>table, indexDescriptor);
 
         }
 

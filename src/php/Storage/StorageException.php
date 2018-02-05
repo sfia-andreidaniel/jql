@@ -24,4 +24,5 @@ class StorageException extends \Exception
     const ERR_APPLY_COLUMN_INDEX = 17;
     const ERR_DROP_COLUMN_INDEX = 18;
     const ERR_DUPLICATE_INDEX = 19;
+    const ERR_APPLY_COLUMN_INDEX_ON_DUPLICATE_VALUES = 20;
 }

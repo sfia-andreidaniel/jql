@@ -55,4 +55,9 @@ class JQLTableStorageEngineRemote extends JQLTable {
         throw new Error('Operation handled by backend!');
     }
 
+    public alterIndexes( indexes: IJQLTableIndexDescriptor[] ): JQueryPromise<boolean> {
+        // is handled by unfetched table
+        return null;
+    }
+
 }

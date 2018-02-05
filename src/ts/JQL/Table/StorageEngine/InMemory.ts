@@ -144,4 +144,9 @@ class JQLTableStorageEngineInMemory extends JQLTable {
 
     }
 
+    public alterIndexes( indexes: IJQLTableIndexDescriptor[] ): JQueryPromise<boolean> {
+        // is handled by unfetched table
+        return null;
+    }
+
 }

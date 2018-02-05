@@ -341,9 +341,9 @@ class JQLDatabase extends EventEmitter implements IJQLDatabase, EventEmitterInte
         })(this.jq, this);
     }
 
-    public dropTable(tableName: string) {
+    public dropTable(tableName: string): JQueryPromise<boolean> {
 
-        return (function ($: JQueryStatic, self: JQLDatabase) {
+        return <any>(function ($: JQueryStatic, self: JQLDatabase) {
 
             return $.Deferred(function (defer) {
 
@@ -377,6 +377,45 @@ class JQLDatabase extends EventEmitter implements IJQLDatabase, EventEmitterInte
 
             }).promise();
 
+
+        })(this.jq, this);
+
+    }
+
+    public alterTableIndexes(tableName: string, indexes: IJQLTableIndexDescriptor[]): JQueryPromise<IJQLBackendTableModel> {
+
+        return <any>(($: JQueryStatic, self: JQLDatabase) => {
+
+            return $.Deferred((defer) => {
+
+                if (!self.hasTable(tableName)) {
+                    defer.reject(new Error("Table " + JSON.stringify(tableName) + " not found!"));
+                    return;
+                }
+
+                $.ajax({
+                    url:      self.rpcEndpointName,
+                    data:     {
+                        action:  "alter-table-indexes",
+                        auth:    self.authorizationToken,
+                        name:    tableName,
+                        indexes: btoa(JSON.stringify(indexes || null)),
+                    },
+                    type:     "POST",
+                    dataType: "json",
+                }).then(function (response: IJQLBackendTableModel) {
+
+                    defer.resolve(response);
+
+                    self.trigger("schema-changed");
+
+                }).fail(function (e) {
+
+                    defer.reject(e);
+
+                });
+
+            }).promise();
 
         })(this.jq, this);
 

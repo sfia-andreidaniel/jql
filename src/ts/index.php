@@ -41,6 +41,46 @@
             padding: 0;
             margin: 0;
         }
+
+        #admin-table #describe-table {
+            margin-top: 15px;
+        }
+
+        #admin-table #describe-table table {
+            border-collapse: collapse;
+            border: 1px solid black;
+        }
+
+        #admin-table #describe-table table thead {
+            background-color: black;
+            color: white;
+        }
+
+        #admin-table tr.footer {
+            display: none;
+        }
+
+        #admin-table tr.footer button {
+            margin: 10px 0;
+        }
+
+        #admin-table table.modified tr.footer {
+            display: table-row;
+        }
+
+        #admin-table a[data-role=drop-index] {
+            float: right;
+            margin-right: 10px;
+        }
+
+        #admin-table span.error {
+            color: red;
+        }
+
+        #admin-table span.success {
+            color: green;
+        }
+
     </style>
 
 </head>
@@ -140,7 +180,9 @@ $tableSchema = json_decode(file_get_contents('http://127.0.0.1?action=show-table
             </select>
         </label>
         <button data-role="drop-table">Drop</button>
-        <button data-role="describe">Describe</button>
+        <div id="describe-table">
+
+        </div>
     </fieldset>
 </form>
 

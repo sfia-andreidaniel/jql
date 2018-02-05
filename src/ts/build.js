@@ -781,6 +781,32 @@ var JQLDatabase = (function (_super) {
             }).promise();
         })(this.jq, this);
     };
+    JQLDatabase.prototype.alterTableIndexes = function (tableName, indexes) {
+        return (function ($, self) {
+            return $.Deferred(function (defer) {
+                if (!self.hasTable(tableName)) {
+                    defer.reject(new Error("Table " + JSON.stringify(tableName) + " not found!"));
+                    return;
+                }
+                $.ajax({
+                    url: self.rpcEndpointName,
+                    data: {
+                        action: "alter-table-indexes",
+                        auth: self.authorizationToken,
+                        name: tableName,
+                        indexes: btoa(JSON.stringify(indexes || null)),
+                    },
+                    type: "POST",
+                    dataType: "json",
+                }).then(function (response) {
+                    defer.resolve(response);
+                    self.trigger("schema-changed");
+                }).fail(function (e) {
+                    defer.reject(e);
+                });
+            }).promise();
+        })(this.jq, this);
+    };
     return JQLDatabase;
 }(EventEmitter));
 var JQLDatabaseStatementExecutorSelect = (function () {
@@ -1535,10 +1561,24 @@ var UnfetchedTable = (function () {
             return this.deferredTable.getIndexes();
         }
         var result = [];
-        for (var i = 0, len = this.indexes.length; i < len; i++) {
+        for (var i = 0, len = (this.indexes || []).length; i < len; i++) {
             result.push(JQLTableIndex.createFromIndexDescriptor(this, this.indexes[i]));
         }
         return result;
+    };
+    UnfetchedTable.prototype.alterIndexes = function (indexes) {
+        var _this = this;
+        return (function ($) {
+            return $.Deferred(function (defer) {
+                _this.db.alterTableIndexes(_this.name, indexes).then(function (tableModel) {
+                    _this.deferredTable = null;
+                    _this.indexes = tableModel.indexes;
+                    defer.resolve(true);
+                }).fail(function (e) {
+                    defer.reject(e);
+                });
+            }).promise();
+        })(this.db.getJQuery());
     };
     return UnfetchedTable;
 }());
@@ -1558,7 +1598,7 @@ var JQLTableIndex = (function () {
             return new JQLTableIndexSingleColumn(table, indexDescriptor);
         }
         else {
-            throw new Error('Backend-side table indexes not supported!');
+            return new JQLTableIndexBackend(table, indexDescriptor);
         }
     };
     return JQLTableIndex;
@@ -1603,6 +1643,24 @@ var JQLTableIndexSingleColumn = (function (_super) {
         }
     };
     return JQLTableIndexSingleColumn;
+}(JQLTableIndex));
+var JQLTableIndexBackend = (function (_super) {
+    __extends(JQLTableIndexBackend, _super);
+    function JQLTableIndexBackend(table, indexDescriptor) {
+        return _super.call(this, table, [indexDescriptor]) || this;
+    }
+    JQLTableIndexBackend.prototype.isUnique = function () {
+        return true;
+    };
+    JQLTableIndexBackend.prototype.isAutoIncrement = function () {
+        return null;
+    };
+    JQLTableIndexBackend.prototype.getNextAutoIncrementValue = function () {
+        return null;
+    };
+    JQLTableIndexBackend.prototype.index = function () {
+    };
+    return JQLTableIndexBackend;
 }(JQLTableIndex));
 var JQLTableStorageEngineInMemory = (function (_super) {
     __extends(JQLTableStorageEngineInMemory, _super);
@@ -1709,6 +1767,9 @@ var JQLTableStorageEngineInMemory = (function (_super) {
         }
         this.autoIncrementValue = value;
     };
+    JQLTableStorageEngineInMemory.prototype.alterIndexes = function (indexes) {
+        return null;
+    };
     return JQLTableStorageEngineInMemory;
 }(JQLTable));
 var JQLTableStorageEngineRemote = (function (_super) {
@@ -1748,6 +1809,9 @@ var JQLTableStorageEngineRemote = (function (_super) {
     };
     JQLTableStorageEngineRemote.prototype.setNextAutoIncrementValue = function (nextAutoIncrementValue) {
         throw new Error('Operation handled by backend!');
+    };
+    JQLTableStorageEngineRemote.prototype.alterIndexes = function (indexes) {
+        return null;
     };
     return JQLTableStorageEngineRemote;
 }(JQLTable));
@@ -3247,12 +3311,19 @@ var JQLStatementDelete = (function (_super) {
                 while (this.options.length > 0) {
                     this.remove(0);
                 }
+                var blankOption = document.createElement("option");
+                blankOption.text = "<select table>";
+                blankOption.value = "";
+                this.add(blankOption);
                 for (var i = 0, len = tables.length; i < len; i++) {
                     var opt = document.createElement("option");
                     opt.text = opt.value = tables[i].name;
                     this.add(opt);
                 }
                 this.value = previousValue;
+                if (this.selectedIndex === -1) {
+                    this.value = "";
+                }
             });
         };
         db.on("schema-changed", function () {
@@ -3294,12 +3365,100 @@ var JQLStatementDelete = (function (_super) {
                 alert("Failed to delete table " + JSON.stringify(tableName) + ": " + e.toString());
             });
         };
+        var describeTable = function (tableName) {
+            if (tableName) {
+                try {
+                    var table = db.getTable(tableName), columns = table.describe(), indexes = table.getIndexes() || [], buffer = "";
+                    buffer += "<p><b>Table name:</b> " + tableName + "</p>";
+                    buffer += "<p><b>Storage engine:</b> " + table.getStorageEngine() + "</p>";
+                    buffer += "<table width=\"100%\"><thead><tr><td>Column</td><td>Type</td><td>Index</td></tr></thead><tbody>";
+                    for (var i = 0, len = columns.length; i < len; i++) {
+                        buffer += "<tr><td>" + columns[i].name + "</td><td>" + columns[i].type + "</td>";
+                        var indexText = "", indexFound = false;
+                        for (var j = 0, n = indexes.length; j < n; j++) {
+                            if (indexes[j].getDescriptors()[0].name !== columns[i].name) {
+                                continue;
+                            }
+                            indexFound = true;
+                            indexText += "<label>UNI: <input type=checkbox name=\"uniq_" + columns[i].name + "\" " + (indexes[j].isUnique()
+                                ? "checked"
+                                : "") + "/></label>";
+                            if (columns[i].type === EJQLTableColumnType.NUMBER) {
+                                indexText += "<label>AUTO: <input type=radio name=\"autoincrement\" value=\"" + columns[i].name + "\" " + (indexes[j].isAutoIncrement()
+                                    ? "checked"
+                                    : "") + "/></label>";
+                            }
+                        }
+                        if (!indexFound) {
+                            indexText += "<label>UNI: <input type=checkbox name=\"uniq_" + columns[i].name + "\" /></label>";
+                            if (columns[i].type === EJQLTableColumnType.NUMBER) {
+                                indexText += "<label>AUTO: <input type=radio name=\"autoincrement\" value=\"" + columns[i].name + "\" /></label>";
+                            }
+                        }
+                        indexText += "<a data-role=\"drop-index\" href=\"javascript:;\">x</a>";
+                        buffer += "<td>" + indexText + "</td></tr>";
+                    }
+                    buffer += "<tr class=\"footer\"><td colspan=\"2\">&nbsp;</td><td><button data-role=\"apply-indexes\">Apply Indexes</button></td></tr>";
+                    buffer += "</tbody></table>";
+                    $("#describe-table").html(buffer);
+                }
+                catch (e) {
+                    $("#describe-table").text(e.toString);
+                    console.error(e);
+                }
+            }
+            else {
+                $("#describe-table").text("");
+            }
+        };
+        var applyTableIndexModifications = function () {
+            var indexes = [], tableName = $("#admin-table select[name=table-list]").val();
+            if (!tableName) {
+                return;
+            }
+            $("#admin-table table").each(function () {
+                var _this = this;
+                $(this).find("tr").each(function () {
+                    var indexName = null, isUnique = null, isAutoIncrement = false;
+                    $(this).find("input[type=checkbox][name^=\"uniq_\"]").each(function () {
+                        indexName = $(this).attr("name").substr(5);
+                        isUnique = this.checked;
+                    });
+                    if (null === indexName) {
+                        return;
+                    }
+                    $(this).find("input[type=radio][name=autoincrement]").each(function () {
+                        isAutoIncrement = this.checked;
+                    });
+                    if (!isUnique && !isAutoIncrement) {
+                        return;
+                    }
+                    if (isAutoIncrement) {
+                        isUnique = true;
+                    }
+                    indexes.push({
+                        name: indexName,
+                        autoIncrement: isAutoIncrement,
+                        unique: isUnique,
+                    });
+                });
+                indexes = indexes.length
+                    ? indexes
+                    : null;
+                db.getTable(tableName).alterIndexes(indexes).then(function () {
+                    $(_this).find("tr.footer > td:first-child").html("<span class=success>SUCCESS</span>");
+                }).fail(function (e) {
+                    $(_this).find("tr.footer > td:first-child").html("<span class=error>FAILED</span>");
+                });
+            });
+        };
         $("#admin-table").each(function () {
-            $(this).on("submit", function (e) {
+            $(this)
+                .on("submit", function (e) {
                 e.preventDefault();
                 e.stopPropagation();
-            });
-            $(this).on("click", "button[data-role]", function (e) {
+            })
+                .on("click", "button[data-role]", function (e) {
                 var buttonRole = this.getAttribute("data-role"), selectedTableName = $(this).closest("form").find("[name=table-list]").val();
                 if (!selectedTableName) {
                     return;
@@ -3308,10 +3467,23 @@ var JQLStatementDelete = (function (_super) {
                     case "drop-table":
                         dropTable(selectedTableName);
                         break;
-                    case "describe-table":
+                    case "apply-indexes":
+                        applyTableIndexModifications();
                         break;
                 }
+            })
+                .on("click", "table input[type=radio], table input[type=checkbox]", function () {
+                $(this).closest("table").addClass("modified");
+            })
+                .on("click", "a[data-role=drop-index]", function () {
+                $(this).closest("td").find("input:checked").each(function () {
+                    this.checked = false;
+                });
+                $(this).closest("table").addClass("modified");
             });
+        });
+        $("body").on("change", "#admin-table [name=table-list]", function () {
+            describeTable(this.value);
         });
     });
 })(jQuery);

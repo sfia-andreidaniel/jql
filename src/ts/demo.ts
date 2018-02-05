@@ -16,6 +16,11 @@ declare var db: JQLDatabase;
                     this.remove(0);
                 }
 
+                let blankOption: HTMLOptionElement = document.createElement("option");
+                blankOption.text = "<select table>";
+                blankOption.value = "";
+                this.add(blankOption);
+
                 for (let i = 0, len = tables.length; i < len; i++) {
                     let opt: HTMLOptionElement = document.createElement("option");
                     opt.text = opt.value = tables[ i ].name;
@@ -23,6 +28,10 @@ declare var db: JQLDatabase;
                 }
 
                 this.value = previousValue;
+
+                if (this.selectedIndex === -1) {
+                    this.value = "";
+                }
 
             });
         };
@@ -66,7 +75,7 @@ declare var db: JQLDatabase;
 
         let dropTable = function (tableName) {
 
-            if (!confirm("Are you sure you want to delete table " + JSON.stringify(tableName)  + "?" )) {
+            if (!confirm("Are you sure you want to delete table " + JSON.stringify(tableName) + "?")) {
                 return;
             }
 
@@ -81,33 +90,200 @@ declare var db: JQLDatabase;
 
         };
 
+        let describeTable = function (tableName) {
+
+            if (tableName) {
+
+                try {
+
+                    let table   = db.getTable(tableName),
+                        columns = table.describe(),
+                        indexes = table.getIndexes() || [],
+                        buffer  = "";
+
+                    buffer += "<p><b>Table name:</b> " + tableName + "</p>";
+
+                    buffer += "<p><b>Storage engine:</b> " + table.getStorageEngine() + "</p>";
+
+                    buffer += `<table width="100%"><thead><tr><td>Column</td><td>Type</td><td>Index</td></tr></thead><tbody>`;
+
+                    for (let i = 0, len = columns.length; i < len; i++) {
+
+                        buffer += `<tr><td>` + columns[ i ].name + `</td><td>` + columns[ i ].type + `</td>`;
+
+                        let indexText           = "",
+                            indexFound: boolean = false;
+
+                        for (let j = 0, n = indexes.length; j < n; j++) {
+
+                            if (indexes[ j ].getDescriptors()[ 0 ].name !== columns[ i ].name) {
+                                continue;
+                            }
+
+                            indexFound = true;
+
+                            indexText += "<label>UNI: <input type=checkbox name=\"uniq_" + columns[ i ].name + "\" " + (indexes[ j ].isUnique()
+                                ? "checked"
+                                : "") + "/></label>";
+
+                            if (columns[ i ].type === EJQLTableColumnType.NUMBER) {
+
+                                indexText += "<label>AUTO: <input type=radio name=\"autoincrement\" value=\"" + columns[ i ].name + "\" " + (indexes[ j ].isAutoIncrement()
+                                    ? "checked"
+                                    : "") + "/></label>";
+
+                            }
+
+                        }
+
+                        if (!indexFound) {
+
+                            indexText += "<label>UNI: <input type=checkbox name=\"uniq_" + columns[ i ].name + "\" /></label>";
+
+                            if (columns[ i ].type === EJQLTableColumnType.NUMBER) {
+
+                                indexText += "<label>AUTO: <input type=radio name=\"autoincrement\" value=\"" + columns[ i ].name + "\" /></label>";
+
+                            }
+
+                        }
+
+                        indexText += "<a data-role=\"drop-index\" href=\"javascript:;\">x</a>";
+
+                        buffer += `<td>${indexText}</td></tr>`;
+
+                    }
+
+                    buffer += "<tr class=\"footer\"><td colspan=\"2\">&nbsp;</td><td><button data-role=\"apply-indexes\">Apply Indexes</button></td></tr>";
+
+                    buffer += `</tbody></table>`;
+
+                    $("#describe-table").html(buffer);
+
+                }
+                catch (e) {
+                    $("#describe-table").text(e.toString);
+                    console.error(e);
+                }
+
+            } else {
+                $("#describe-table").text("");
+
+            }
+        };
+
+        let applyTableIndexModifications = function () {
+
+            let indexes: IJQLTableIndexDescriptor[] = [],
+                tableName: string                   = $("#admin-table select[name=table-list]").val();
+
+            if (!tableName) {
+                return;
+            }
+
+            $("#admin-table table").each(function () {
+
+                $(this).find("tr").each(function () {
+
+                    let indexName: string        = null,
+                        isUnique: boolean        = null,
+                        isAutoIncrement: boolean = false;
+
+                    $(this).find("input[type=checkbox][name^=\"uniq_\"]").each(function () {
+
+                        indexName = $(this).attr("name").substr(5);
+                        isUnique = this.checked;
+
+                    });
+
+                    if (null === indexName) {
+                        return;
+                    }
+
+                    $(this).find("input[type=radio][name=autoincrement]").each(function () {
+                        isAutoIncrement = this.checked;
+                    });
+
+                    if (!isUnique && !isAutoIncrement) {
+                        return;
+                    }
+
+                    if (isAutoIncrement) {
+                        isUnique = true;
+                    }
+
+                    indexes.push({
+                        name:          indexName,
+                        autoIncrement: isAutoIncrement,
+                        unique:        isUnique,
+                    });
+
+                });
+
+                indexes = indexes.length
+                    ? indexes
+                    : null;
+
+                db.getTable(tableName).alterIndexes(indexes).then(() => {
+
+                    $(this).find("tr.footer > td:first-child").html("<span class=success>SUCCESS</span>");
+
+                }).fail((e) => {
+
+                    $(this).find("tr.footer > td:first-child").html("<span class=error>FAILED</span>");
+
+                });
+
+            });
+
+
+        };
+
         $("#admin-table").each(function () {
 
-            $(this).on("submit", function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-            });
+            $(this)
+                .on("submit", function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                })
+                .on("click", "button[data-role]", function (e) {
 
-            $(this).on("click", "button[data-role]", function (e) {
+                    let buttonRole: string        = this.getAttribute("data-role"),
+                        selectedTableName: string = $(this).closest("form").find("[name=table-list]").val();
 
-                let buttonRole: string        = this.getAttribute("data-role"),
-                    selectedTableName: string = $(this).closest("form").find("[name=table-list]").val();
+                    if (!selectedTableName) {
+                        return;
+                    }
 
-                if (!selectedTableName) {
-                    return;
-                }
+                    switch (buttonRole) {
+                        case "drop-table":
+                            dropTable(selectedTableName);
+                            break;
+                        case "apply-indexes":
+                            applyTableIndexModifications();
+                            break;
+                    }
 
-                switch (buttonRole) {
-                    case "drop-table":
-                        dropTable(selectedTableName);
-                        break;
+                })
+                .on("click", "table input[type=radio], table input[type=checkbox]", function () {
 
-                    case "describe-table":
-                        break;
-                }
+                    $(this).closest("table").addClass("modified");
 
-            });
+                })
+                .on("click", "a[data-role=drop-index]", function () {
 
+                    $(this).closest("td").find("input:checked").each(function () {
+                        this.checked = false;
+                    });
+
+                    $(this).closest("table").addClass("modified");
+
+                });
+
+        });
+
+        $("body").on("change", "#admin-table [name=table-list]", function () {
+            describeTable(this.value);
         });
 
     });

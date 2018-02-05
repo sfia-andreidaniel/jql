@@ -182,11 +182,33 @@ class UnfetchedTable implements IJQLTable {
 
         let result: JQLTableIndex[] = [];
 
-        for (let i = 0, len = this.indexes.length; i < len; i++) {
+        for (let i = 0, len = (this.indexes || []).length; i < len; i++) {
             result.push(JQLTableIndex.createFromIndexDescriptor(this, this.indexes[ i ]));
         }
 
         return result;
+
+    }
+
+    public alterIndexes(indexes: IJQLTableIndexDescriptor[]): JQueryPromise<boolean> {
+
+        return (($: JQueryStatic) => {
+
+            return <any>$.Deferred((defer) => {
+
+                this.db.alterTableIndexes(this.name, indexes).then((tableModel: IJQLBackendTableModel) => {
+                    this.deferredTable = null;
+                    this.indexes = tableModel.indexes;
+                    defer.resolve(true);
+                }).fail((e: Error) => {
+                    defer.reject(e);
+                });
+
+            }).promise();
+
+
+        })(this.db.getJQuery());
+
 
     }
 }

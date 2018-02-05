@@ -291,7 +291,7 @@ class StorageService
 
                 foreach ($indexData as $index) {
 
-                    Assertion::assertIsStringKey('name', $index);
+                    Assertion::assertIsStringKey($index, 'name');
 
                     if (isset($seenIndexes[$index['name']])) {
                         throw new StorageException(

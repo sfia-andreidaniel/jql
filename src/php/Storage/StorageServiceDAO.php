@@ -49,8 +49,7 @@ class StorageServiceDAO
                 $bindings = [
                     ':userId' => $userId,
                 ];
-            }
-            else {
+            } else {
                 $where = 'WHERE `user_id` = :userId AND ( `form_id` = :formId OR `form_id` IS NULL )';
                 $bindings = [
                     ':userId' => $userId,
@@ -74,17 +73,16 @@ class StorageServiceDAO
                     ' . $where,
                 $bindings
             )
-                           ->each(
-                               function (array $row) use (&$result, $self) {
-                                   $result[] = $self->normalizeDAORow($row);
-                               }
-                           );
+                ->each(
+                    function(array $row) use (&$result, $self) {
+                        $result[] = $self->normalizeDAORow($row);
+                    }
+                );
 
             return $result;
 
 
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             throw new StorageException(
                 'Failed to fetch user tables!', StorageException::ERR_GET_USER_TABLES, $e
             );
@@ -124,7 +122,8 @@ class StorageServiceDAO
     public function createTableFromParsedCSV(
         TableModel $tableModel,
         ParsedCSVModel $parsedCSV
-    ) {
+    )
+    {
 
         $transaction = null;
         $tableCreated = false;
@@ -199,22 +198,19 @@ class StorageServiceDAO
 
             return $tableModel;
 
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
 
             try {
                 if ($tableCreated) {
                     // DDL CAUSES IMPLICIT COMMIT
                     $this->database->query('DROP TABLE `table_' . $tableSchema['id'] . '`');
                     $this->database->query('DELETE FROM jql_tables WHERE id=' . $tableSchema['id']);
-                }
-                else {
+                } else {
                     if ($transaction) {
                         $this->database->query('ROLLBACK');
                     }
                 }
-            }
-            catch (\Exception $e) {
+            } catch (\Exception $e) {
                 $a = 2;
             }
 
@@ -260,11 +256,11 @@ class StorageServiceDAO
                     ':id' => $tableId,
                 ]
             )
-                           ->each(
-                               function (array $row) use (&$result, $self) {
-                                   $result[] = $self->normalizeDAORow($row);
-                               }
-                           );
+                ->each(
+                    function(array $row) use (&$result, $self) {
+                        $result[] = $self->normalizeDAORow($row);
+                    }
+                );
 
             if (0 === count($result)) {
                 throw new StorageException(
@@ -275,13 +271,11 @@ class StorageServiceDAO
             return $result[0];
 
 
-        }
-        catch (StorageException $e) {
+        } catch (StorageException $e) {
 
             throw $e;
 
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
 
             throw new StorageException(
                 'Failed to fetch table #id = ' . $tableId, StorageException::ERR_GET_TABLE_BY_ID, $e
@@ -379,8 +373,7 @@ class StorageServiceDAO
     {
         if (is_bool($bindingValue)) {
             return (int)$bindingValue;
-        }
-        else {
+        } else {
             return $bindingValue;
         }
     }
@@ -408,8 +401,7 @@ class StorageServiceDAO
                     ':userId' => $userId,
                     ':name'   => $tableName,
                 ];
-            }
-            else {
+            } else {
                 $where = 'WHERE `name` = :name AND `user_id` = :userId AND ( `form_id` = :formId OR `form_id` IS NULL )';
                 $bindings = [
                     ':userId' => $userId,
@@ -435,11 +427,11 @@ class StorageServiceDAO
                     LIMIT 1',
                 $bindings
             )
-                           ->each(
-                               function (array $row) use (&$result, $self) {
-                                   $result[] = $self->normalizeDAORow($row);
-                               }
-                           );
+                ->each(
+                    function(array $row) use (&$result, $self) {
+                        $result[] = $self->normalizeDAORow($row);
+                    }
+                );
 
             if (!count($result)) {
                 throw new StorageException(
@@ -450,8 +442,7 @@ class StorageServiceDAO
             return $result[0];
 
 
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             throw new StorageException(
                 'Failed to fetch user tables!', StorageException::ERR_GET_USER_TABLES, $e
             );
@@ -477,21 +468,19 @@ class StorageServiceDAO
             $this->database->query(
                 'SELECT * FROM table_' . $tableId
             )
-                           ->each(
-                               function (array $row) use (&$result, $tableSchema, $self) {
-                                   $result[] = $self->normalizeInMemoryTableRow($row, $tableSchema);
-                               }
-                           );
+                ->each(
+                    function(array $row) use (&$result, $tableSchema, $self) {
+                        $result[] = $self->normalizeInMemoryTableRow($row, $tableSchema);
+                    }
+                );
 
             return $result;
 
-        }
-        catch (StorageException $e) {
+        } catch (StorageException $e) {
 
             throw $e;
 
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
 
             throw new StorageException(
                 'Failed to fetch table rows in-memory', StorageException::ERR_FETCH_TABLE_ROWS_IN_MEMORY, $e
@@ -530,8 +519,7 @@ class StorageServiceDAO
                         break;
                 }
 
-            }
-            else {
+            } else {
 
                 unset($row[$columnName]);
 
@@ -562,8 +550,7 @@ class StorageServiceDAO
 
             $this->database->query('DROP TABLE IF EXISTS `' . $physicalTableName . '`');
 
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
 
             throw new StorageException(
                 'Failed to drop table ' . json_encode($physicalTableName) . ': ' . $e->getMessage(),
@@ -591,7 +578,8 @@ class StorageServiceDAO
         array $tableSchema,
         $newIndexes,
         $previousIndexes
-    ) {
+    )
+    {
 
         $phase = 'Initializing operation';
 
@@ -657,7 +645,7 @@ class StorageServiceDAO
                 "UPDATE `jql_tables` SET `json_indexes` = :indexes WHERE id = :id LIMIT 1",
                 [
                     ':id'      => $jqlTableId,
-                    ':indexes' => json_encode($newIndexes)
+                    ':indexes' => json_encode($newIndexes),
                 ]
             );
 
@@ -681,8 +669,11 @@ class StorageServiceDAO
             $phase = 'Drop backup physical table';
             $this->database->query('DROP TABLE `' . $tableNameOnMySQLServer . '_bak`');
 
-        }
-        catch (\Exception $e) {
+        } catch (StorageException $e) {
+
+            throw $e;
+
+        } catch (\Exception $e) {
 
             if ($rollbackPreviousIndexes) {
 
@@ -696,15 +687,14 @@ class StorageServiceDAO
                         ]
                     );
 
-                }
-                catch (\Exception $e) {
+                } catch (\Exception $e) {
                     // FAILED TO RESTORE JQL PREVIOUS TABLE INDEXES!!!
                 }
 
             }
 
             throw new StorageException(
-                'Failed to alter table indexes (' . $phase . ')', StorageException::ERR_ALTER_TABLE_INDEXES, $e
+                'Failed to alter table indexes while ' . $phase . ': ' . $e->getMessage(), StorageException::ERR_ALTER_TABLE_INDEXES, $e
             );
 
         }
@@ -725,7 +715,8 @@ class StorageServiceDAO
         $temporaryTableNameOnMySQLServer,
         $index,
         array $tableSchema
-    ) {
+    )
+    {
 
         if (!is_array($index)) {
             throw new StorageException(
@@ -760,8 +751,7 @@ class StorageServiceDAO
                                   AUTO_INCREMENT PRIMARY KEY'
                 );
 
-            }
-            else {
+            } else {
 
                 if ($autoIncrement && $schemaType) {
 
@@ -779,11 +769,27 @@ class StorageServiceDAO
 
             }
 
-        }
-        catch (StorageException $e) {
+        } catch (StorageException $e) {
             throw $e;
-        }
-        catch (\Exception $e) {
+        } catch (DatabaseException $e) {
+
+            if ((int)($e->getPrevious()->getCode()) === 23000) {
+
+                throw new StorageException(
+                    'Cannot add index on column "' . $columnName . '" because it contains non-unique values!',
+                    StorageException::ERR_APPLY_COLUMN_INDEX_ON_DUPLICATE_VALUES,
+                    $e
+                );
+
+            } else {
+
+                throw new StorageException(
+                    'A database error has been encountered while adding index on column ' . $columnName . '. Operation aborted!',
+                    StorageException::ERR_APPLY_COLUMN_INDEX,
+                    $e
+                );
+            }
+        } catch (\Exception $e) {
             throw new StorageException(
                 'Failed to apply index on column "' . $columnName . '". Operation aborted!',
                 StorageException::ERR_APPLY_COLUMN_INDEX,
@@ -824,8 +830,7 @@ class StorageServiceDAO
                                    CHANGE `' . $columnName . '` `' . $columnName . '` INT'
                     );
 
-                }
-                else {
+                } else {
 
                     throw new StorageException(
                         'Unexpected old index setting!', StorageException::ERR_DROP_COLUMN_INDEX
@@ -833,8 +838,7 @@ class StorageServiceDAO
 
                 }
 
-            }
-            else {
+            } else {
 
                 $this->database->query(
                     'ALTER TABLE `' . $temporaryTableNameOnMySQLServer . '` 
@@ -842,11 +846,9 @@ class StorageServiceDAO
                 );
             }
 
-        }
-        catch (StorageException $e) {
+        } catch (StorageException $e) {
             throw $e;
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             throw new StorageException(
                 'Failed to drop table index: ' . $e->getMessage(), StorageException::ERR_DROP_COLUMN_INDEX, $e
             );

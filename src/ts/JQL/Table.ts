@@ -223,4 +223,6 @@ abstract class JQLTable implements IJQLTable {
 
     public abstract setNextAutoIncrementValue(nextAutoIncrementValue: number);
 
+    public abstract alterIndexes( indexes: IJQLTableIndexDescriptor[] ): JQueryPromise<boolean>;
+
 }

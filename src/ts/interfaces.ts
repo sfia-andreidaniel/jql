@@ -314,7 +314,7 @@ enum EJQLBackendTableColumnType {
 }
 
 interface IJQLTableIndexDescriptor {
-    name: EJQLTableColumnType;
+    name: string;
     unique?: boolean;
     autoIncrement?: boolean;
 }
@@ -347,6 +347,8 @@ interface IJQLTable {
     getStorageEngine(): EJQLTableStorageEngine;
 
     getIndexes(): JQLTableIndex[];
+
+    alterIndexes( newIndexes: IJQLTableIndexDescriptor[] ): JQueryPromise<boolean>;
 
 }
 
