@@ -25,6 +25,7 @@ class Controller
     const ACTION_SHOW_TABLES = 'show-tables';
     const ACTION_DROP_TABLE = 'drop-table';
     const ACTION_FETCH_TABLE = 'fetch-table';
+    const ACTION_ALTER_INDEXES = 'alter-table-indexes';
 
 
     /**
@@ -96,8 +97,7 @@ class Controller
             ? $this->_get[$variable]
             : (isset($this->_post[$variable])
                 ? $this->_post[$variable]
-                : $defaultValue
-            );
+                : $defaultValue);
     }
 
     public function config($variable, $defaultValue = null)
@@ -146,10 +146,13 @@ class Controller
                 return $this->fetchTableAction();
                 break;
 
+            case self::ACTION_ALTER_INDEXES:
+                return $this->alterTableIndexesAction();
+                break;
+
             default:
                 throw new ControllerException(
-                    'Invalid action: ' . json_encode($action),
-                    ControllerException::ERR_INVALID_ACTION
+                    'Invalid action: ' . json_encode($action), ControllerException::ERR_INVALID_ACTION
                 );
         }
 
@@ -181,7 +184,8 @@ class Controller
     private function executeQueryAction()
     {
 
-        $auth = $this->getAuthorizationService()->getAuthenticationToken();
+        $auth = $this->getAuthorizationService()
+                     ->getAuthenticationToken();
 
         $queryBase64 = $this->requestParam('query');
 
@@ -257,7 +261,8 @@ class Controller
             );
         }
 
-        $result = $this->getRemoteQueryService()->executeQuery($decodedQuery, $decodedBindings, $auth);
+        $result = $this->getRemoteQueryService()
+                       ->executeQuery($decodedQuery, $decodedBindings, $auth);
 
         return $result;
     }
@@ -301,8 +306,7 @@ class Controller
             ? $this->storageService = new StorageService(
                 new StorageServiceDAO(
                     $this->getDatabase()
-                ),
-                new CSVParser()
+                ), new CSVParser()
             )
             : $this->storageService;
     }
@@ -315,7 +319,8 @@ class Controller
      */
     private function createTableFromCSVAction()
     {
-        $token = $this->getAuthorizationService()->getAuthenticationToken();
+        $token = $this->getAuthorizationService()
+                      ->getAuthenticationToken();
 
         $fileData = isset($_FILES['csvFile'])
             ? file_get_contents($_FILES['csvFile']['tmp_name'])
@@ -338,47 +343,91 @@ class Controller
 
         Assertion::assertIsArray($settingJSON['table'], 'invalid request argument: setting.table is not array!');
 
-        Assertion::assertIsStringKey($settingJSON['table'], 'name', 'invalid request argument: setting.table.name is not string');
-        Assertion::assertIsStringKey($settingJSON['table'], 'namespace', 'invalid request argument: setting.table.namespace is not string');
-        Assertion::assertIsStringKey($settingJSON['table'], 'storageEngine', 'invalid request argument: setting.table.storageEngine is not string');
-        Assertion::assertIsStringKey($settingJSON['table'], 'accessMode', 'invalid request argument: setting.table.accessMode is not string');
-
-        Assertion::assertIsArray($settingJSON['csvParser'], 'invalid request argument: setting.csvParser is not array!');
-
-        Assertion::assertIsStringKey($settingJSON['csvParser'], 'enclosure', 'invalid request argument: setting.csvParser.enclosure is not string');
-        Assertion::assertIsBooleanKey($settingJSON['csvParser'], 'encloseAllFields', 'invalid request argument: setting.csvParser.encloseAllFields is not boolean');
-        Assertion::assertIsStringKey($settingJSON['csvParser'], 'delimiter', 'invalid request argument: setting.csvParser.delimiter is not string');
-        Assertion::assertIsStringKey($settingJSON['csvParser'], 'escapeCharacter', 'invalid request argument: setting.csvParser.escapeCharacter is not string');
-        Assertion::assertIsBooleanKey($settingJSON['csvParser'], 'autoTrim', 'invalid request argument: setting.csvParser.autoTrim is not boolean');
-        Assertion::assertIsStringKey($settingJSON['csvParser'], 'lineTerminator', 'invalid request argument: setting.csvParser.lineTerminator is not string');
-
-        $table = (new TableModelBuilder())
-            ->withUserId($token->getUserId())
-            ->withFormId(
-                $settingJSON['table']['namespace'] === StorageService::TABLE_NAMESPACE_PRIVATE
-                    ? $token->getFormId()
-                    : null
-            )
-            ->withAccessMode($settingJSON['table']['accessMode'])
-            ->withName($settingJSON['table']['name'])
-            ->withNamespace($settingJSON['table']['namespace'])
-            ->withStorageEngine($settingJSON['table']['storageEngine'])
-            ->build();
-
-        $csvParserOptions = (new CSVParserOptions())
-            ->withEncloseAllFields($settingJSON['csvParser']['encloseAllFields'])
-            ->withFieldEnclosure($settingJSON['csvParser']['enclosure'])
-            ->withFieldDelimiter($settingJSON['csvParser']['delimiter'])
-            ->withEscapeCharacter($settingJSON['csvParser']['escapeCharacter'])
-            ->withAutoTrim($settingJSON['csvParser']['autoTrim'])
-            ->withLineTerminator($settingJSON['csvParser']['lineTerminator']);
-
-        $tableModel = $this->getStorageService()->createTableFromCSV(
-            $fileData,
-            $csvParserOptions,
-            $table,
-            $token
+        Assertion::assertIsStringKey(
+            $settingJSON['table'],
+            'name',
+            'invalid request argument: setting.table.name is not string'
         );
+        Assertion::assertIsStringKey(
+            $settingJSON['table'],
+            'namespace',
+            'invalid request argument: setting.table.namespace is not string'
+        );
+        Assertion::assertIsStringKey(
+            $settingJSON['table'],
+            'storageEngine',
+            'invalid request argument: setting.table.storageEngine is not string'
+        );
+        Assertion::assertIsStringKey(
+            $settingJSON['table'],
+            'accessMode',
+            'invalid request argument: setting.table.accessMode is not string'
+        );
+
+        Assertion::assertIsArray(
+            $settingJSON['csvParser'],
+            'invalid request argument: setting.csvParser is not array!'
+        );
+
+        Assertion::assertIsStringKey(
+            $settingJSON['csvParser'],
+            'enclosure',
+            'invalid request argument: setting.csvParser.enclosure is not string'
+        );
+        Assertion::assertIsBooleanKey(
+            $settingJSON['csvParser'],
+            'encloseAllFields',
+            'invalid request argument: setting.csvParser.encloseAllFields is not boolean'
+        );
+        Assertion::assertIsStringKey(
+            $settingJSON['csvParser'],
+            'delimiter',
+            'invalid request argument: setting.csvParser.delimiter is not string'
+        );
+        Assertion::assertIsStringKey(
+            $settingJSON['csvParser'],
+            'escapeCharacter',
+            'invalid request argument: setting.csvParser.escapeCharacter is not string'
+        );
+        Assertion::assertIsBooleanKey(
+            $settingJSON['csvParser'],
+            'autoTrim',
+            'invalid request argument: setting.csvParser.autoTrim is not boolean'
+        );
+        Assertion::assertIsStringKey(
+            $settingJSON['csvParser'],
+            'lineTerminator',
+            'invalid request argument: setting.csvParser.lineTerminator is not string'
+        );
+
+        $table = (new TableModelBuilder())->withUserId($token->getUserId())
+                                          ->withFormId(
+                                              $settingJSON['table']['namespace'] === StorageService::TABLE_NAMESPACE_PRIVATE
+                                                  ? $token->getFormId()
+                                                  : null
+                                          )
+                                          ->withAccessMode($settingJSON['table']['accessMode'])
+                                          ->withName($settingJSON['table']['name'])
+                                          ->withNamespace($settingJSON['table']['namespace'])
+                                          ->withStorageEngine($settingJSON['table']['storageEngine'])
+                                          ->build();
+
+        $csvParserOptions = (new CSVParserOptions())->withEncloseAllFields(
+            $settingJSON['csvParser']['encloseAllFields']
+        )
+                                                    ->withFieldEnclosure($settingJSON['csvParser']['enclosure'])
+                                                    ->withFieldDelimiter($settingJSON['csvParser']['delimiter'])
+                                                    ->withEscapeCharacter($settingJSON['csvParser']['escapeCharacter'])
+                                                    ->withAutoTrim($settingJSON['csvParser']['autoTrim'])
+                                                    ->withLineTerminator($settingJSON['csvParser']['lineTerminator']);
+
+        $tableModel = $this->getStorageService()
+                           ->createTableFromCSV(
+                               $fileData,
+                               $csvParserOptions,
+                               $table,
+                               $token
+                           );
 
         return [
             'name'          => $tableModel->getName(),
@@ -397,15 +446,17 @@ class Controller
     private function showTablesAction()
     {
 
-        $token = $this->getAuthorizationService()->getAuthenticationToken();
+        $token = $this->getAuthorizationService()
+                      ->getAuthenticationToken();
 
         $result = [];
 
-        foreach ($this->getStorageService()->getUserTables(
-            $token,
-            $token->getUserId(),
-            $token->getFormId()
-        ) as $tableModel) {
+        foreach ($this->getStorageService()
+                      ->getUserTables(
+                          $token,
+                          $token->getUserId(),
+                          $token->getFormId()
+                      ) as $tableModel) {
             $result[] = [
                 'name'          => $tableModel->getName(),
                 'schema'        => $tableModel->getSchema(),
@@ -427,14 +478,16 @@ class Controller
     private function fetchTableAction()
     {
 
-        $token = $this->getAuthorizationService()->getAuthenticationToken();
+        $token = $this->getAuthorizationService()
+                      ->getAuthenticationToken();
 
         $tableName = $this->requestParam('name');
 
-        $rows = $this->getStorageService()->getTableRows(
-            $token,
-            $tableName
-        );
+        $rows = $this->getStorageService()
+                     ->getTableRows(
+                         $token,
+                         $tableName
+                     );
 
         return $rows;
 
@@ -448,13 +501,78 @@ class Controller
     private function dropTableAction()
     {
 
-        $token = $this->getAuthorizationService()->getAuthenticationToken();
+        $token = $this->getAuthorizationService()
+                      ->getAuthenticationToken();
 
         $tableName = $this->requestParam('name');
 
-        $this->getStorageService()->dropTable($token, $tableName);
+        $this->getStorageService()
+             ->dropTable($token, $tableName);
 
         return true;
+
+    }
+
+    /**
+     * @throws ControllerException
+     * @throws StorageException
+     * @throws AuthorizationException
+     *
+     * @return array
+     */
+    private function alterTableIndexesAction()
+    {
+
+        $token = $this->getAuthorizationService()
+                      ->getAuthenticationToken();
+
+        try {
+
+            $tableName = $this->requestParam('name');
+
+            $indexesDataEncodedAsBase64 = $this->post('indexes');
+
+            Assertion::assertIsString($indexesDataEncodedAsBase64);
+
+            $indexDataEncodedAsJSON = @base64_decode($indexesDataEncodedAsBase64);
+
+            Assertion::assertIsString(
+                $indexDataEncodedAsJSON,
+                'Invalid argument: $indexes. Cannot decode data as JSON string'
+            );
+
+            $indexData = @json_decode($indexDataEncodedAsJSON, true);
+
+            if (json_last_error()) {
+                throw new ControllerException(
+                    'Failed to decode index data as json!', ControllerException::ERR_INVALID_REQUEST_ARGUMENT
+                );
+            }
+
+            if (null !== $indexData) {
+                Assertion::assertIsArray($indexData, 'Invalid decoded JSON data: null|array expected');
+            }
+
+            $tableModel = $this->getStorageService()
+                               ->alterTableIndexes($token, $tableName, $indexData);
+
+            return [
+                'name'          => $tableModel->getName(),
+                'schema'        => $tableModel->getSchema(),
+                'indexes'       => $tableModel->getIndexes(),
+                'namespace'     => $tableModel->getNamespace(),
+                'accessMode'    => $tableModel->getAccessMode(),
+                'storageEngine' => $tableModel->getStorageEngine(),
+            ];
+
+        }
+        catch (AssertionException $e) {
+
+            throw new ControllerException(
+                'Failed to alter table indexes: ' . $e->getMessage(), StorageException::ERR_ALTER_TABLE_INDEXES, $e
+            );
+
+        }
 
     }
 }

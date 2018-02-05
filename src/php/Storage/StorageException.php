@@ -18,4 +18,10 @@ class StorageException extends \Exception
     const ERR_TABLE_STORAGE_NOT_IN_MEMORY = 11;
     const ERR_FETCH_TABLE_ROWS_IN_MEMORY = 12;
     const ERR_DROP_TABLE = 13;
+    const ERR_ALTER_TABLE_INDEXES = 14;
+    const ERR_INVALID_ARGUMENT = 15;
+    const ERR_AUTOINCREMENT_FIELD_NOT_INT = 16;
+    const ERR_APPLY_COLUMN_INDEX = 17;
+    const ERR_DROP_COLUMN_INDEX = 18;
+    const ERR_DUPLICATE_INDEX = 19;
 }

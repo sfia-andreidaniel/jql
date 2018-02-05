@@ -359,4 +359,21 @@ class Assertion
             );
         }
     }
+
+    /**
+     * @param $mixed
+     * @param $message
+     *
+     * @throws AssertionException
+     */
+    public static function assertTrue($mixed, $message = null)
+    {
+        if ( !is_bool( $mixed) || $mixed !== true ) {
+            throw new AssertionException(
+                null === $message
+                    ? 'Expected true got ' . json_encode($mixed)
+                    : $message
+            );
+        }
+    }
 }

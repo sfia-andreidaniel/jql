@@ -2,12 +2,17 @@
 
 namespace JQL\Storage;
 
+use JQL\Assertion\Assertion;
+use JQL\Assertion\AssertionException;
 use JQL\CSVParser\CSVParser;
 use JQL\CSVParser\ParsedCSVModel;
 use JQL\Database\Database;
+use JQL\Database\DatabaseException;
+use JQL\Tokenizer\EJQLLexerFieldTypes;
 
 class StorageServiceDAO
 {
+
     /**
      * @var Database
      */
@@ -44,7 +49,8 @@ class StorageServiceDAO
                 $bindings = [
                     ':userId' => $userId,
                 ];
-            } else {
+            }
+            else {
                 $where = 'WHERE `user_id` = :userId AND ( `form_id` = :formId OR `form_id` IS NULL )';
                 $bindings = [
                     ':userId' => $userId,
@@ -67,18 +73,20 @@ class StorageServiceDAO
                     FROM   jql_tables
                     ' . $where,
                 $bindings
-            )->each(function(array $row) use (&$result, $self) {
-                $result[] = $self->normalizeDAORow($row);
-            });
+            )
+                           ->each(
+                               function (array $row) use (&$result, $self) {
+                                   $result[] = $self->normalizeDAORow($row);
+                               }
+                           );
 
             return $result;
 
 
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
             throw new StorageException(
-                'Failed to fetch user tables!',
-                StorageException::ERR_GET_USER_TABLES,
-                $e
+                'Failed to fetch user tables!', StorageException::ERR_GET_USER_TABLES, $e
             );
         }
 
@@ -115,8 +123,8 @@ class StorageServiceDAO
      */
     public function createTableFromParsedCSV(
         TableModel $tableModel,
-        ParsedCSVModel $parsedCSV)
-    {
+        ParsedCSVModel $parsedCSV
+    ) {
 
         $transaction = null;
         $tableCreated = false;
@@ -191,19 +199,22 @@ class StorageServiceDAO
 
             return $tableModel;
 
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
 
             try {
                 if ($tableCreated) {
                     // DDL CAUSES IMPLICIT COMMIT
                     $this->database->query('DROP TABLE `table_' . $tableSchema['id'] . '`');
                     $this->database->query('DELETE FROM jql_tables WHERE id=' . $tableSchema['id']);
-                } else {
+                }
+                else {
                     if ($transaction) {
                         $this->database->query('ROLLBACK');
                     }
                 }
-            } catch (\Exception $e) {
+            }
+            catch (\Exception $e) {
                 $a = 2;
             }
 
@@ -248,30 +259,32 @@ class StorageServiceDAO
                 [
                     ':id' => $tableId,
                 ]
-            )->each(function(array $row) use (&$result, $self) {
-                $result[] = $self->normalizeDAORow($row);
-            });
+            )
+                           ->each(
+                               function (array $row) use (&$result, $self) {
+                                   $result[] = $self->normalizeDAORow($row);
+                               }
+                           );
 
             if (0 === count($result)) {
                 throw new StorageException(
-                    'Failed to get table #' . $tableId . ': table not found!',
-                    StorageException::ERR_GET_TABLE_BY_ID
+                    'Failed to get table #' . $tableId . ': table not found!', StorageException::ERR_GET_TABLE_BY_ID
                 );
             }
 
             return $result[0];
 
 
-        } catch (StorageException $e) {
+        }
+        catch (StorageException $e) {
 
             throw $e;
 
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
 
             throw new StorageException(
-                'Failed to fetch table #id = ' . $tableId,
-                StorageException::ERR_GET_TABLE_BY_ID,
-                $e
+                'Failed to fetch table #id = ' . $tableId, StorageException::ERR_GET_TABLE_BY_ID, $e
             );
 
         }
@@ -341,8 +354,10 @@ class StorageServiceDAO
      */
     private function getTableInsertValuesStatementSQL($tableId, array $tableSchema)
     {
-        $insertionStatement = 'INSERT INTO `table_' . $tableId .
-            '` ( `' . implode('`, `', array_keys($tableSchema)) . '` ) VALUES (';
+        $insertionStatement = 'INSERT INTO `table_' . $tableId . '` ( `' . implode(
+                '`, `',
+                array_keys($tableSchema)
+            ) . '` ) VALUES (';
 
         $bindings = [];
 
@@ -364,7 +379,8 @@ class StorageServiceDAO
     {
         if (is_bool($bindingValue)) {
             return (int)$bindingValue;
-        } else {
+        }
+        else {
             return $bindingValue;
         }
     }
@@ -392,7 +408,8 @@ class StorageServiceDAO
                     ':userId' => $userId,
                     ':name'   => $tableName,
                 ];
-            } else {
+            }
+            else {
                 $where = 'WHERE `name` = :name AND `user_id` = :userId AND ( `form_id` = :formId OR `form_id` IS NULL )';
                 $bindings = [
                     ':userId' => $userId,
@@ -417,25 +434,26 @@ class StorageServiceDAO
                     ' . $where . '
                     LIMIT 1',
                 $bindings
-            )->each(function(array $row) use (&$result, $self) {
-                $result[] = $self->normalizeDAORow($row);
-            });
+            )
+                           ->each(
+                               function (array $row) use (&$result, $self) {
+                                   $result[] = $self->normalizeDAORow($row);
+                               }
+                           );
 
             if (!count($result)) {
                 throw new StorageException(
-                    'Table "' . $tableName . '" not found!',
-                    StorageException::ERR_TABLE_NOT_FOUND
+                    'Table "' . $tableName . '" not found!', StorageException::ERR_TABLE_NOT_FOUND
                 );
             }
 
             return $result[0];
 
 
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
             throw new StorageException(
-                'Failed to fetch user tables!',
-                StorageException::ERR_GET_USER_TABLES,
-                $e
+                'Failed to fetch user tables!', StorageException::ERR_GET_USER_TABLES, $e
             );
         }
     }
@@ -458,22 +476,25 @@ class StorageServiceDAO
 
             $this->database->query(
                 'SELECT * FROM table_' . $tableId
-            )->each(function(array $row) use (&$result, $tableSchema, $self) {
-                $result[] = $self->normalizeInMemoryTableRow($row, $tableSchema);
-            });
+            )
+                           ->each(
+                               function (array $row) use (&$result, $tableSchema, $self) {
+                                   $result[] = $self->normalizeInMemoryTableRow($row, $tableSchema);
+                               }
+                           );
 
             return $result;
 
-        } catch (StorageException $e) {
+        }
+        catch (StorageException $e) {
 
             throw $e;
 
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
 
             throw new StorageException(
-                'Failed to fetch table rows in-memory',
-                StorageException::ERR_FETCH_TABLE_ROWS_IN_MEMORY,
-                $e
+                'Failed to fetch table rows in-memory', StorageException::ERR_FETCH_TABLE_ROWS_IN_MEMORY, $e
             );
         }
 
@@ -509,7 +530,8 @@ class StorageServiceDAO
                         break;
                 }
 
-            } else {
+            }
+            else {
 
                 unset($row[$columnName]);
 
@@ -531,13 +553,17 @@ class StorageServiceDAO
 
         try {
 
-            $this->database->query('DELETE FROM jql_tables WHERE id = :id LIMIT 1', [
-                ':id' => $jqlTableId,
-            ]);
+            $this->database->query(
+                'DELETE FROM jql_tables WHERE id = :id LIMIT 1',
+                [
+                    ':id' => $jqlTableId,
+                ]
+            );
 
             $this->database->query('DROP TABLE IF EXISTS `' . $physicalTableName . '`');
 
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
 
             throw new StorageException(
                 'Failed to drop table ' . json_encode($physicalTableName) . ': ' . $e->getMessage(),
@@ -545,6 +571,285 @@ class StorageServiceDAO
                 $e
             );
 
+        }
+
+    }
+
+    /**
+     * @param int        $jqlTableId
+     * @param string     $tableNameOnMySQLServer
+     * @param array      $tableSchema
+     * @param array|null $newIndexes
+     * @param array|null $previousIndexes
+     *
+     * @return array
+     * @throws StorageException
+     */
+    public function alterTableIndexes(
+        $jqlTableId,
+        $tableNameOnMySQLServer,
+        array $tableSchema,
+        $newIndexes,
+        $previousIndexes
+    ) {
+
+        $phase = 'Initializing operation';
+
+        $rollbackPreviousIndexes = false;
+
+        try {
+
+            if ((null === $newIndexes && null === $previousIndexes) || (json_encode($newIndexes) === json_encode(
+                        $previousIndexes
+                    ))) {
+                // NO CHANGES. ABORT
+                return $this->getTableById($jqlTableId);
+            }
+
+            // CREATE A COPY OF ORIGINAL TABLE
+
+            $temporaryTableNameOnMySQLServer = $tableNameOnMySQLServer . '_tmp_' . time();
+
+            $phase = 'Creating copy of original table';
+
+            $this->database->query(
+                'CREATE TEMPORARY TABLE ' . $temporaryTableNameOnMySQLServer . ' LIKE ' . $tableNameOnMySQLServer
+            );
+
+            // REMOVE ALL PREVIOUS INDEXES FROM TEMPORARY TABLE
+
+            $phase = 'Dropping previously added indexes';
+
+            if (null !== $previousIndexes) {
+
+                foreach ($previousIndexes as $index) {
+
+                    $this->dropPhysicalTableIndex($temporaryTableNameOnMySQLServer, $index, $tableSchema);
+
+                }
+
+            }
+
+            // INSERT ALL EXISTING DATA IN TEMPORARY TABLE
+
+            $phase = 'Inserting original data in table copy';
+
+            $this->database->query(
+                'INSERT INTO ' . $temporaryTableNameOnMySQLServer . ' SELECT * FROM ' . $tableNameOnMySQLServer
+            );
+
+            // ADD NEW TABLE INDEXES TO TEMPORARY  TABLE
+
+            if (null !== $newIndexes) {
+
+                $phase = 'Adding new indexes';
+
+                foreach ($newIndexes as $index) {
+
+                    $this->addPhysicalTableIndex($temporaryTableNameOnMySQLServer, $index, $tableSchema);
+
+                }
+
+            }
+
+            $phase = 'Update jql_tables indexes for table ' . $jqlTableId;
+            $this->database->query(
+                "UPDATE `jql_tables` SET `json_indexes` = :indexes WHERE id = :id LIMIT 1",
+                [
+                    ':id'      => $jqlTableId,
+                    ':indexes' => json_encode($newIndexes)
+                ]
+            );
+
+            $rollbackPreviousIndexes = true;
+
+            // RENAME ORIGINAL TABLE TO "table_xx_back"
+            $phase = 'Create physical backup of original table';
+            $this->database->query("RENAME TABLE `$tableNameOnMySQLServer` TO `$tableNameOnMySQLServer" . "_bak`");
+
+            // RE-CREATE ORIGINAL TABLE
+            $phase = 'Re-create original table from temporary table';
+            $this->database->query("CREATE TABLE `$tableNameOnMySQLServer` LIKE `$temporaryTableNameOnMySQLServer`");
+
+            // RE-INSERT TEMPORARY DATA
+            $phase = 'Re-insert data in original table from temporary table';
+            $this->database->query(
+                "INSERT INTO `$tableNameOnMySQLServer` SELECT * FROM `$temporaryTableNameOnMySQLServer`"
+            );
+
+            // DROP BACKUP TABLE
+            $phase = 'Drop backup physical table';
+            $this->database->query('DROP TABLE `' . $tableNameOnMySQLServer . '_bak`');
+
+        }
+        catch (\Exception $e) {
+
+            if ($rollbackPreviousIndexes) {
+
+                try {
+
+                    $this->database->query(
+                        "UPDATE jql_tables SET `json_indexes` = :indexes WHERE id = :id LIMIT 1",
+                        [
+                            ':indexes' => json_encode($previousIndexes),
+                            ':id'      => $jqlTableId,
+                        ]
+                    );
+
+                }
+                catch (\Exception $e) {
+                    // FAILED TO RESTORE JQL PREVIOUS TABLE INDEXES!!!
+                }
+
+            }
+
+            throw new StorageException(
+                'Failed to alter table indexes (' . $phase . ')', StorageException::ERR_ALTER_TABLE_INDEXES, $e
+            );
+
+        }
+
+        return $this->getTableById($jqlTableId);
+
+    }
+
+    /**
+     * @param string      $temporaryTableNameOnMySQLServer
+     * @param array|mixed $index
+     * @param array       $tableSchema
+     *
+     * @throws StorageException
+     * @throws AssertionException
+     */
+    private function addPhysicalTableIndex(
+        $temporaryTableNameOnMySQLServer,
+        $index,
+        array $tableSchema
+    ) {
+
+        if (!is_array($index)) {
+            throw new StorageException(
+                'Invalid argument: $index: array expected', StorageException::ERR_INVALID_ARGUMENT
+            );
+        }
+
+        Assertion::assertIsStringKey($index, 'name', 'Invalid argument: non-string key "name" in index definition');
+        Assertion::assertIsValidIdentifierName($index['name'], 'Invalid index column name!');
+        Assertion::assertTrue(
+            array_key_exists($index['name'], $tableSchema),
+            'Column ' . json_encode($index['name']) . ' is not defined in table schema!'
+        );
+
+        $schemaType = $tableSchema[$index['name']];
+        $columnName = $index['name'];
+
+        $autoIncrement = false;
+
+        if (isset($index['autoIncrement'])) {
+            Assertion::assertIsBoolean($index['autoIncrement'], 'index auto increment property should be boolean!');
+            $autoIncrement = $index['autoIncrement'];
+        }
+
+        try {
+
+            if ($schemaType === CSVParser::TYPE_INT && $autoIncrement) {
+
+                $this->database->query(
+                    'ALTER TABLE `' . $temporaryTableNameOnMySQLServer . '` 
+                                  CHANGE `' . $columnName . '` `' . $columnName . '` INT 
+                                  AUTO_INCREMENT PRIMARY KEY'
+                );
+
+            }
+            else {
+
+                if ($autoIncrement && $schemaType) {
+
+                    throw new StorageException(
+                        'Auto-Increment fields must be of type integer!',
+                        StorageException::ERR_AUTOINCREMENT_FIELD_NOT_INT
+                    );
+
+                }
+
+                $this->database->query(
+                    'ALTER TABLE `' . $temporaryTableNameOnMySQLServer . '`
+                                ADD UNIQUE KEY `index_____' . $columnName . '` ( `' . $columnName . '` )'
+                );
+
+            }
+
+        }
+        catch (StorageException $e) {
+            throw $e;
+        }
+        catch (\Exception $e) {
+            throw new StorageException(
+                'Failed to apply index on column "' . $columnName . '". Operation aborted!',
+                StorageException::ERR_APPLY_COLUMN_INDEX,
+                $e
+            );
+        }
+    }
+
+    /**
+     * @param string $temporaryTableNameOnMySQLServer
+     * @param array  $index
+     * @param array  $tableSchema
+     *
+     * @throws StorageException
+     */
+    private function dropPhysicalTableIndex($temporaryTableNameOnMySQLServer, array $index, array $tableSchema)
+    {
+
+        try {
+
+            Assertion::assertIsStringKey(
+                $tableSchema,
+                $index['name'],
+                'Column ' . $index['name'] . ' not present in table schema!'
+            );
+
+            $autoIncrement = isset($index['autoIncrement']) && true === $index['autoIncrement'];
+
+            $columnName = $index['name'];
+
+            if ($autoIncrement) {
+
+                if ($index['type'] !== CSVParser::TYPE_INT) {
+
+                    $this->database->query(
+                        'ALTER TABLE `' . $temporaryTableNameOnMySQLServer . '`
+                                   DROP PRIMARY KEY,
+                                   CHANGE `' . $columnName . '` `' . $columnName . '` INT'
+                    );
+
+                }
+                else {
+
+                    throw new StorageException(
+                        'Unexpected old index setting!', StorageException::ERR_DROP_COLUMN_INDEX
+                    );
+
+                }
+
+            }
+            else {
+
+                $this->database->query(
+                    'ALTER TABLE `' . $temporaryTableNameOnMySQLServer . '` 
+                                DROP INDEX `index_____' . $columnName . '`'
+                );
+            }
+
+        }
+        catch (StorageException $e) {
+            throw $e;
+        }
+        catch (\Exception $e) {
+            throw new StorageException(
+                'Failed to drop table index: ' . $e->getMessage(), StorageException::ERR_DROP_COLUMN_INDEX, $e
+            );
         }
 
     }

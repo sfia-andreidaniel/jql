@@ -58,21 +58,20 @@ class StorageService
         CSVParserOptions $csvParserOptions,
         TableModel $tableModel,
         AuthorizationToken $authorizationToken
-    )
-    {
+    ) {
 
         try {
 
             if ($authorizationToken->getRole() !== AuthorizationService::AUTHORIZATION_TOKEN_ROLE_FORM_ADMIN) {
                 throw new StorageException(
-                    'Not enough permissions to create table!',
-                    StorageException::ERR_NOT_ENOUGH_PERMISSIONS
+                    'Not enough permissions to create table!', StorageException::ERR_NOT_ENOUGH_PERMISSIONS
                 );
             }
 
             if ($authorizationToken->getUserId() !== $tableModel->getUserId()) {
                 throw new StorageException(
-                    'User #' . $authorizationToken->getUserId() . ' is not allowed to create tables for user #' . $tableModel->getUserId(),
+                    'User #' . $authorizationToken->getUserId(
+                    ) . ' is not allowed to create tables for user #' . $tableModel->getUserId(),
                     StorageException::ERR_USER_ID_FORBIDDEN
                 );
             }
@@ -86,8 +85,7 @@ class StorageService
             foreach ($tables as $table) {
                 if (strtolower($table->getName()) === strtolower($tableModel->getName())) {
                     throw new StorageException(
-                        'Table "' . $table->getName() . '" already exists!',
-                        StorageException::ERR_TABLE_ALREADY_EXISTS
+                        'Table "' . $table->getName() . '" already exists!', StorageException::ERR_TABLE_ALREADY_EXISTS
                     );
                 }
             }
@@ -98,16 +96,16 @@ class StorageService
 
             return new TableModel($result);
 
-        } catch (StorageException $e) {
+        }
+        catch (StorageException $e) {
 
             throw $e;
 
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
 
             throw new StorageException(
-                'Failed to create table from CSV',
-                StorageException::ERR_CREATE_TABLE_FROM_CSV,
-                $e
+                'Failed to create table from CSV', StorageException::ERR_CREATE_TABLE_FROM_CSV, $e
             );
 
         }
@@ -127,15 +125,13 @@ class StorageService
 
         if ($authorizationToken->getUserId() !== $userId) {
             throw new StorageException(
-                'Access not allowed - user id mismatch!',
-                StorageException::ERR_USER_ID_FORBIDDEN
+                'Access not allowed - user id mismatch!', StorageException::ERR_USER_ID_FORBIDDEN
             );
         }
 
         if (null !== $formId && $formId !== $authorizationToken->getFormId()) {
             throw new StorageException(
-                'Access not allowed - form id mismatch!',
-                StorageException::ERR_FORM_ID_FORBIDDEN
+                'Access not allowed - form id mismatch!', StorageException::ERR_FORM_ID_FORBIDDEN
             );
         }
 
@@ -156,8 +152,7 @@ class StorageService
     public function getTableByName(
         AuthorizationToken $authorizationToken,
         $tableName
-    )
-    {
+    ) {
         try {
 
             Assertion::assertIsString($tableName, 'invalid argument: $tableName');
@@ -170,15 +165,15 @@ class StorageService
 
             return new TableModel($result);
 
-        } catch (StorageException $e) {
+        }
+        catch (StorageException $e) {
 
             throw $e;
 
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
             throw new StorageException(
-                'Failed to get table by name: ' . $e->getMessage(),
-                StorageException::ERR_GET_TABLE_BY_NAME,
-                $e
+                'Failed to get table by name: ' . $e->getMessage(), StorageException::ERR_GET_TABLE_BY_NAME, $e
             );
         }
     }
@@ -211,16 +206,16 @@ class StorageService
 
             return $rows;
 
-        } catch (StorageException $e) {
+        }
+        catch (StorageException $e) {
 
             throw $e;
 
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
 
             throw new StorageException(
-                'Failed to get table rows',
-                StorageException::ERR_GET_TABLE_ROWS,
-                $e
+                'Failed to get table rows', StorageException::ERR_GET_TABLE_ROWS, $e
             );
 
         }
@@ -242,8 +237,7 @@ class StorageService
 
             if ($token->getRole() !== AuthorizationService::AUTHORIZATION_TOKEN_ROLE_FORM_ADMIN) {
                 throw new AuthorizationException(
-                    'Forbidden!',
-                    AuthorizationException::ERR_UNAUTHORIZED_REQUEST
+                    'Forbidden!', AuthorizationException::ERR_UNAUTHORIZED_REQUEST
                 );
             }
 
@@ -251,19 +245,97 @@ class StorageService
 
             $this->dao->dropTable($physicalTableName, $tableModel->getId());
 
-        } catch (StorageException $e) {
+        }
+        catch (StorageException $e) {
 
             throw $e;
 
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
 
             throw new StorageException(
-                'Failed to drop table',
-                StorageException::ERR_DROP_TABLE,
-                $e
+                'Failed to drop table', StorageException::ERR_DROP_TABLE, $e
             );
 
         }
+    }
+
+    /**
+     * @param AuthorizationToken $token
+     * @param string             $tableName
+     * @param array              $indexData
+     *
+     * @return TableModel
+     * @throws StorageException
+     */
+    public function alterTableIndexes(AuthorizationToken $token, $tableName, array $indexData = null)
+    {
+
+        try {
+
+            Assertion::assertIsValidIdentifierName(
+                $tableName,
+                'Invalid argument: $tableName: Expected a valid table name!'
+            );
+
+            if ($token->getRole() !== AuthorizationService::AUTHORIZATION_TOKEN_ROLE_FORM_ADMIN) {
+                throw new StorageException(
+                    'Not enough privileges to complete alter-table indexes operation',
+                    StorageException::ERR_NOT_ENOUGH_PERMISSIONS
+                );
+            }
+
+            if (null !== $indexData) {
+
+                $seenIndexes = [];
+
+                foreach ($indexData as $index) {
+
+                    Assertion::assertIsStringKey('name', $index);
+
+                    if (isset($seenIndexes[$index['name']])) {
+                        throw new StorageException(
+                            "Duplicate index column " . $index['name'],
+                            StorageException::ERR_DUPLICATE_INDEX
+                        );
+                    }
+                    else {
+                        $seenIndexes[$index['name']] = true;
+                    }
+
+                }
+
+            }
+
+            $tableModel = $this->getTableByName(
+                $token,
+                $tableName
+            );
+
+            return new TableModel(
+                $this->dao->alterTableIndexes(
+                    $tableModel->getId(),
+                    'table_' . $tableModel->getId(),
+                    $tableModel->getSchema(),
+                    $indexData,
+                    $tableModel->getIndexes()
+                )
+            );
+
+        }
+        catch (StorageException $e) {
+
+            throw $e;
+
+        }
+        catch (\Exception $e) {
+
+            throw new StorageException(
+                'Failed to alter table indexes: ' . $e->getMessage(), StorageException::ERR_ALTER_TABLE_INDEXES, $e
+            );
+
+        }
+
     }
 
 }
