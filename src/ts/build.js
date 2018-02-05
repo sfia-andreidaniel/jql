@@ -1631,7 +1631,8 @@ var JQLTableIndexSingleColumn = (function (_super) {
         var row, iterator = this.table.createIterator(), value;
         this.maxAutoIncrement = 0;
         while (row = iterator.next()) {
-            if (this.values.indexOf(value = row.getColumnValue(this.descriptors[0].name)) > -1) {
+            var rowIndexedValue = String(row.getColumnValue(this.descriptors[0].name)).toLowerCase();
+            if (this.values.indexOf(value = rowIndexedValue) > -1) {
                 throw new Error('Duplicate key ' + JSON.stringify(this.descriptors[0].name) + ' found with value ' + JSON.stringify(value) + ' found!');
             }
             else {
@@ -3549,7 +3550,7 @@ var JQLStatementDelete = (function (_super) {
                         $('#sql-result').append(dumpSQLResult(result));
                     }
                 }).fail(function (e) {
-                    $("#sql-result").html("<div class=error>" + nl2br(JSON.stringify(e)) + "</div>");
+                    $("#sql-result").html("<div class=error>" + nl2br(e instanceof Error ? e.toString() : JSON.stringify(e)) + "</div>");
                 });
             });
         });

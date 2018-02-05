@@ -377,7 +377,7 @@ declare var db: JQLDatabase;
 
                 }).fail(function(e){
 
-                    $("#sql-result").html("<div class=error>" + nl2br(JSON.stringify(e)) + "</div>");
+                    $("#sql-result").html("<div class=error>" + nl2br(e instanceof Error ? e.toString() : JSON.stringify(e)) + "</div>");
 
                 });
 

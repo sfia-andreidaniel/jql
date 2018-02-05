@@ -42,7 +42,9 @@ class JQLTableIndexSingleColumn extends JQLTableIndex {
 
         while (row = iterator.next()) {
 
-            if (this.values.indexOf(value = row.getColumnValue(this.descriptors[0].name)) > -1) {
+            let rowIndexedValue: string = String(row.getColumnValue(this.descriptors[0].name)).toLowerCase();
+
+            if (this.values.indexOf(value = rowIndexedValue) > -1) {
                 throw new Error('Duplicate key ' + JSON.stringify(this.descriptors[0].name) + ' found with value ' + JSON.stringify(value) + ' found!');
             } else {
                 this.values.push(value);
