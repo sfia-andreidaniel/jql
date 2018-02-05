@@ -6,11 +6,15 @@ class JQLStatementResultSelect extends JQLStatementResult {
 
         if (rows && rows.length) {
             for (let i = 0, len = rows.length; i < len; i++) {
-                this.rows.push(rows[i]);
+                this.rows.push(rows[ i ]);
             }
         }
 
         return this;
+    }
+
+    public hasRows(): boolean {
+        return true;
     }
 
     public getAffectedRows(): number {
@@ -37,13 +41,13 @@ class JQLStatementResultSelect extends JQLStatementResult {
 
             row = [];
 
-            keys = Object.keys(this.rows[i])
+            keys = Object.keys(this.rows[ i ]);
 
             numKeys = keys.length;
 
             for (let j = 0; j < numKeys; j++) {
 
-                v = this.rows[i][keys[j]];
+                v = this.rows[ i ][ keys[ j ] ];
 
                 if (undefined === v) {
                     v = null;

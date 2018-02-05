@@ -694,7 +694,7 @@ var JQLDatabase = (function (_super) {
         return stmt;
     };
     JQLDatabase.prototype.executeStatement = function (statement, bindings) {
-        statement.bind(bindings);
+        statement.bind(bindings || {});
         return this.planner.scheduleStatement(statement, this.createExecutionStrategy(statement));
     };
     JQLDatabase.prototype.createExecutionStrategy = function (statement) {
@@ -2753,6 +2753,7 @@ var JQLLimit = (function (_super) {
 }(JQLOpcode));
 var JQLStatementResult = (function () {
     function JQLStatementResult() {
+        this.affectingRows = false;
     }
     JQLStatementResult.prototype.getAffectedRows = function () {
         return this.affectedRows;
@@ -2760,6 +2761,9 @@ var JQLStatementResult = (function () {
     JQLStatementResult.prototype.withAffectedRows = function (affectedRowsCount) {
         this.affectedRows = ~~affectedRowsCount;
         return this;
+    };
+    JQLStatementResult.prototype.hasRows = function () {
+        return false;
     };
     return JQLStatementResult;
 }());
@@ -2777,6 +2781,9 @@ var JQLStatementResultSelect = (function (_super) {
             }
         }
         return this;
+    };
+    JQLStatementResultSelect.prototype.hasRows = function () {
+        return true;
     };
     JQLStatementResultSelect.prototype.getAffectedRows = function () {
         return this.rows.length;
@@ -3484,6 +3491,67 @@ var JQLStatementDelete = (function (_super) {
         });
         $("body").on("change", "#admin-table [name=table-list]", function () {
             describeTable(this.value);
+        });
+        var nl2br = function (s) {
+            return String(s || "")
+                .replace(/[\r\n]+/g, "\n")
+                .split("\n").join("<br />");
+        };
+        var htmlentities = (function () {
+            var escaper = document.createElement('div');
+            return function (s) {
+                escaper.textContent = String(s || '');
+                return escaper.innerHTML;
+            };
+        })();
+        var dumpSQLResult = function (result) {
+            var buffer = '<table style="width: 100%"><thead><tr>', rows = result.getRows(), cols = [];
+            if (!rows.length) {
+                return '0 rows';
+            }
+            var firstRow = rows[0];
+            for (var colName in firstRow) {
+                buffer += '<td>' + htmlentities(colName) + '</td>';
+                cols.push(colName);
+            }
+            buffer += '</tr></thead><tbody>';
+            for (var i = 0, len = rows.length; i < len; i++) {
+                buffer += '<tr>';
+                for (var j = 0, n = cols.length; j < n; j++) {
+                    buffer += '<td>' + htmlentities(rows[i][cols[j]]) + '</td>';
+                }
+                buffer += '</tr>';
+            }
+            buffer += '</tbody></table>';
+            return buffer;
+        };
+        $("#query").each(function () {
+            $(this).on("submit", function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                $("#sql-result").html('');
+                var statement;
+                try {
+                    statement = db.createStatement($(this).find("[name=jql]").val());
+                }
+                catch (e) {
+                    $("#sql-result").html("<div class=error>" + nl2br(e.toString()) + "</div>");
+                    return;
+                }
+                $("#sql-result").html('executing...');
+                var queryStartTime = +new Date;
+                db.executeStatement(statement).then(function (result) {
+                    $('#sql-result').html('<div class=success>Completed in ' + ((+new Date - queryStartTime)) + ' milliseconds');
+                    if (!result.hasRows()) {
+                        $('#sql-result').append(result.getAffectedRows() + ' rows affected');
+                    }
+                    else {
+                        $('#sql-result').append(dumpSQLResult(result));
+                    }
+                }).fail(function (e) {
+                    $("#sql-result").html("<div class=error>" + nl2br(JSON.stringify(e)) + "</div>");
+                });
+            });
         });
     });
 })(jQuery);

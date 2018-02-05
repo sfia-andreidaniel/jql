@@ -89,9 +89,6 @@ case 1:
                                                                     this.$ = $$[$0-1];
                                                                     this.$.remote = true;
                                                                     return this.$;
-                                                                    //php this.$ = $$[$0-1];
-                                                                    //php this.$['remote'] = true;
-                                                                    //php return this.$;
                                                                
 break;
 case 2:
@@ -100,17 +97,12 @@ case 2:
                                                                     this.$ = $$[$0-1];
                                                                     this.$.remote = false;
                                                                     return this.$;
-                                                                    //php AST::trace(0);
-                                                                    //php this.$ = $$[$0-1];
-                                                                    //php this.$['remote'] = false;
-                                                                    //php return this.$;
                                                                
 break;
 case 3: case 4: case 5: case 6: case 12: case 14: case 15: case 16: case 17: case 25: case 29: case 30: case 38: case 40: case 41: case 74:
 
                                                                     //js
                                                                     this.$ = $$[$0];
-                                                                    //php this.$ = $$[$0];
                                                                
 break;
 case 7:
@@ -121,10 +113,6 @@ case 7:
                                                                         type:         AST.STATEMENT_TYPES.SELECT,
                                                                         fields:       $$[$0]
                                                                     };
-                                                                    //php this.$ = [];
-                                                                    //php this.$['op'] = AST::$TOKEN_TYPES['STATEMENT'];
-                                                                    //php this.$['type'] = AST::$STATEMENT_TYPES['SELECT'];
-                                                                    //php this.$['fields'] = $$[$0];
                                                                
 break;
 case 8:
@@ -132,8 +120,6 @@ case 8:
                                                                     //js
                                                                     this.$ = $$[$0-2];
                                                                     this.$.table = $$[$0]
-                                                                    //php this.$ = $$[$0-2];
-                                                                    //php this.$['table'] = $$[$0];
                                                                
 break;
 case 9: case 24: case 35:
@@ -141,14 +127,11 @@ case 9: case 24: case 35:
                                                                     //js
                                                                     this.$ = $$[$0-2];
                                                                     this.$.where = $$[$0];
-                                                                    //php this.$ = $$[$0-2];
-                                                                    //php this.$['where'] = $$[$0];
                                                                
 break;
 case 10: case 36:
 
                                                                     this.$ = $$[$0];
-                                                                    //php this.$ = $$[$0];
                                                                
 break;
 case 11: case 26: case 37:
@@ -156,17 +139,13 @@ case 11: case 26: case 37:
                                                                     //js
                                                                     this.$ = $$[$0-3];
                                                                     this.$.orderBy = $$[$0];
-                                                                    //php this.$ = $$[$0-3];
-                                                                    //php this.$['orderBy'] = $$[$0];
                                                                
 break;
-case 13:
+case 13: case 28: case 39:
 
                                                                     //js
                                                                     this.$ = $$[$0-2];
                                                                     this.$.limit = $$[$0];
-                                                                    //php this.$ = $$[$0-2];
-                                                                    //php AST::setKey(this.$, limit, $$[$0]);
                                                                
 break;
 case 18:
@@ -174,8 +153,6 @@ case 18:
                                                                     //js
                                                                     this.$ = $$[$0-2];
                                                                     this.$.union = $$[$0];
-                                                                    //php this.$ = $$[$0-2];
-                                                                    //php this.$['union'] = $$[$0];
                                                                
 break;
 case 19:
@@ -186,10 +163,6 @@ case 19:
                                                                         type:         AST.STATEMENT_TYPES.UPDATE,
                                                                         delayed: $$[$0]
                                                                     };
-                                                                    //php this.$ = [];
-                                                                    //php this.$['op'] = AST::$TOKEN_TYPES['STATEMENT'];
-                                                                    //php this.$['type'] = AST::$STATEMENT_TYPES['UPDATE'];
-                                                                    //php this.$['delayed'] = $$[$0];
                                                                
 break;
 case 20:
@@ -199,9 +172,6 @@ case 20:
                                                                         op:           AST.TOKEN_TYPES.STATEMENT,
                                                                         type:         AST.STATEMENT_TYPES.UPDATE
                                                                     };
-                                                                    //php this.$ = [];
-                                                                    //php this.$['op'] = AST::$TOKEN_TYPES['STATEMENT'];
-                                                                    //php this.$['type'] = AST::$STATEMENT_TYPES['UPDATE'];
                                                                
 break;
 case 21:
@@ -211,9 +181,6 @@ case 21:
                                                                         op:           AST.TOKEN_TYPES.OPTION_DELAYED,
                                                                         timer:        AST.parseNumber($$[$0])
                                                                     };
-                                                                    //php this.$ = [];
-                                                                    //php this.$['op'] =  AST::$TOKEN_TYPES['OPTION_DELAYED'];
-                                                                    //php this.$['timer'] = AST::parseNumber($$[$0]);
                                                                
 break;
 case 22:
@@ -223,9 +190,6 @@ case 22:
                                                                         op:           AST.TOKEN_TYPES.OPTION_DELAYED,
                                                                         timer:        null
                                                                     };
-                                                                    //php this.$ = [];
-                                                                    //php this.$['op'] = AST::$TOKEN_TYPES['OPTION_DELAYED'];
-                                                                    //php this.$['timer'] = null;
                                                                
 break;
 case 23:
@@ -234,18 +198,6 @@ case 23:
                                                                     this.$ = $$[$0-3];
                                                                     this.$.table = $$[$0-2];
                                                                     this.$.fields = $$[$0];
-                                                                    //php this.$ = $$[$0-3];
-                                                                    //php this.$['table'] = $$[$0-2];
-                                                                    //php this.$['fields'] = $$[$0];
-                                                               
-break;
-case 28: case 39:
-
-                                                                    //js
-                                                                    this.$ = $$[$0-2];
-                                                                    this.$.limit = $$[$0];
-                                                                    //php this.$ = $$[$0-2];
-                                                                    //php this.$['limit'] = $$[$0];
                                                                
 break;
 case 31:
@@ -256,10 +208,6 @@ case 31:
                                                                         type:         AST.STATEMENT_TYPES.INSERT,
                                                                         ignoreDuplicates: true
                                                                     };
-                                                                    //php this.$ = [];
-                                                                    //php this.$['op'] = AST::$TOKEN_TYPES['STATEMENT'];
-                                                                    //php this.$['type'] = AST::$STATEMENT_TYPES['INSERT'];
-                                                                    //php this.$['ignoreDuplicates'] = true;
                                                                
 break;
 case 32:
@@ -269,9 +217,6 @@ case 32:
                                                                         op:           AST.TOKEN_TYPES.STATEMENT,
                                                                         type:         AST.STATEMENT_TYPES.INSERT
                                                                     };
-                                                                    //php this.$ = [];
-                                                                    //php this.$['op'] = AST::$TOKEN_TYPES['STATEMENT'];
-                                                                    //php this.$['type'] = AST::$STATEMENT_TYPES['INSERT'];
                                                                
 break;
 case 33:
@@ -280,9 +225,6 @@ case 33:
                                                                     this.$ = $$[$0-4];
                                                                     this.$.table = $$[$0-2];
                                                                     this.$.fields = $$[$0];
-                                                                    //php this.$ = $$[$0-4];
-                                                                    //php this.$['table'] = $$[$0-2];
-                                                                    //php this.$['fields'] = $$[$0];
                                                                
 break;
 case 34:
@@ -293,10 +235,6 @@ case 34:
                                                                         type:         AST.STATEMENT_TYPES.DELETE,
                                                                         table:        $$[$0]
                                                                     };
-                                                                    //php this.$ = [];
-                                                                    //php this.$['op'] = AST::$TOKEN_TYPES['STATEMENT'];
-                                                                    //php this.$['type'] = AST::$STATEMENT_TYPES['DELETE'];
-                                                                    //php this.$['table'] = $$[$0];
                                                                
 break;
 case 42:
@@ -306,9 +244,6 @@ case 42:
                                                                         op:           AST.TOKEN_TYPES.TABLE_REFERENCE,
                                                                         name:         $$[$0]
                                                                     };
-                                                                    //php this.$ = [];
-                                                                    //php this.$['op'] = AST::$TOKEN_TYPES['TABLE_REFERENCE'];
-                                                                    //php this.$['name'] = $$[$0];
                                                                
 break;
 case 43:
@@ -318,9 +253,6 @@ case 43:
                                                                         op:           AST.TOKEN_TYPES.TABLE_REFERENCE,
                                                                         name:         AST.unescapeIdentifier( $$[$0] )
                                                                     };
-                                                                    //php this.$ = [];
-                                                                    //php this.$['op'] = AST::$TOKEN_TYPES['TABLE_REFERENCE'];
-                                                                    //php this.$['name'] = AST::unescapeIdentifier($$[$0]);
                                                                
 break;
 case 44:
@@ -330,9 +262,6 @@ case 44:
                                                                          op:          AST.TOKEN_TYPES.FIELDS_LIST,
                                                                          type:        AST.FIELD_TYPES.ALL_FIELDS
                                                                     };
-                                                                    //php this.$ = [];
-                                                                    //php this.$['op'] = AST::$TOKEN_TYPES['FIELDS_LIST'];
-                                                                    //php this.$['type'] = AST::$FIELD_TYPES['ALL_FIELDS'];
                                                                
 break;
 case 45:
@@ -342,24 +271,18 @@ case 45:
                                                                         type:         AST.FIELD_TYPES.SPECIFIC_FIELDS,
                                                                         fields:       $$[$0]
                                                                     };
-                                                                    //php this.$ = [];
-                                                                    //php this.$['op'] = AST::$TOKEN_TYPES['FIELDS_LIST'];
-                                                                    //php this.$['type'] = AST::$FIELD_TYPES['SPECIFIC_FIELDS'];
-                                                                    //php this.$['fields'] = $$[$0];
                                                                
 break;
 case 46: case 51: case 81: case 85:
 
                                                                     //js
                                                                     this.$ = [ $$[$0] ];
-                                                                    //php this.$ = [ $$[$0] ];
                                                                
 break;
-case 47:
+case 47: case 52: case 53: case 82: case 86:
 
                                                                     //js
                                                                     this.$ = $$[$0-2].concat($$[$0]);
-                                                                    //php $$[$0-2][] = $$[$0]; this.$ = $$[$0-2];
                                                                
 break;
 case 48:
@@ -370,10 +293,6 @@ case 48:
                                                                          literal:     AST.createFieldAliasFromExpression($$[$0]),
                                                                          expression:  $$[$0]
                                                                      };
-                                                                    //php this.$ = [];
-                                                                    //php this.$['op'] = AST::$TOKEN_TYPES['FIELD'];
-                                                                    //php this.$['literal'] = AST::createFieldAliasFromExpression($$[$0]);
-                                                                    //php this.$['expression'] = $$[$0];
                                                                
 break;
 case 49:
@@ -384,10 +303,6 @@ case 49:
                                                                         literal:      $$[$0],
                                                                         expression:   $$[$0-2]
                                                                     };
-                                                                    //php this.$ = [];
-                                                                    //php this.$['op'] = AST::$TOKEN_TYPES['FIELD'];
-                                                                    //php this.$['literal'] = $$[$0];
-                                                                    //php this.$['expression'] = $$[$0-2];
                                                                
 break;
 case 50:
@@ -398,18 +313,6 @@ case 50:
                                                                         literal:      AST.unescapeIdentifier($$[$0]),
                                                                         expression:   $$[$0-2]
                                                                     };
-                                                                    //php this.$ = [];
-                                                                    //php this.$['op'] = AST::$TOKEN_TYPES['FIELD'];
-                                                                    //php this.$['literal'] = AST::unescapeIdentifier($$[$0]);
-                                                                    //php this.$['expression'] = $$[$0-2];
-                                                               
-break;
-case 52: case 53: case 82: case 86:
-
-                                                                    //js
-                                                                    this.$ = $$[$0-2].concat($$[$0]);
-                                                                    //php $$[$0-2][] = $$[$0];
-                                                                    //php this.$ = $$[$0-2];
                                                                
 break;
 case 54:
@@ -420,10 +323,6 @@ case 54:
                                                                         name:         $$[$0-2],
                                                                         expression:   $$[$0]
                                                                     };
-                                                                    //php this.$ = [];
-                                                                    //php this.$['op'] = AST::$TOKEN_TYPES['UPDATE_FIELD'];
-                                                                    //php this.$['name'] = $$[$0-2];
-                                                                    //php this.$['expression'] = $$[$0];
                                                                
 break;
 case 55:
@@ -434,10 +333,6 @@ case 55:
                                                                         name:         AST.unescapeIdentifier($$[$0-2]),
                                                                         expression:   $$[$0]
                                                                     };
-                                                                    //php this.$ = [];
-                                                                    //php this.$['op'] = AST::$TOKEN_TYPES['UPDATE_FIELD'];
-                                                                    //php this.$['name'] = AST::unescapeIdentifier($$[$0-2]);
-                                                                    //php this.$['expression'] = $$[$0];
                                                                
 break;
 case 56:
@@ -448,10 +343,6 @@ case 56:
                                                                         type:         AST.EXPRESSION.NUMBER,
                                                                         value:        AST.parseNumber( $$[$0] )
                                                                     };
-                                                                    //php this.$ = [];
-                                                                    //php this.$['op'] = AST::$TOKEN_TYPES['EXPRESSION'];
-                                                                    //php this.$['type'] = AST::$EXPRESSION['NUMBER'];
-                                                                    //php this.$['value'] = AST::parseNumber($$[$0]);
                                                                
 break;
 case 57:
@@ -462,10 +353,6 @@ case 57:
                                                                         type:         AST.EXPRESSION.BOOLEAN,
                                                                         value:        AST.parseBoolean( $$[$0] )
                                                                     };
-                                                                    //php this.$ = [];
-                                                                    //php this.$['op'] = AST::$TOKEN_TYPES['EXPRESSION'];
-                                                                    //php this.$['type'] = AST::$EXPRESSION['BOOLEAN'];
-                                                                    //php this.$['value'] = AST::parseBoolean( $$[$0] );
                                                                
 break;
 case 58:
@@ -475,9 +362,6 @@ case 58:
                                                                         op:           AST.TOKEN_TYPES.EXPRESSION,
                                                                         type:         AST.EXPRESSION.NULL
                                                                     };
-                                                                    //php this.$ = [];
-                                                                    //php this.$['op'] = AST::$TOKEN_TYPES['EXPRESSION'];
-                                                                    //php this.$['type'] = AST::$EXPRESSION['NULL'];
                                                                
 break;
 case 59:
@@ -488,10 +372,6 @@ case 59:
                                                                         type:         AST.EXPRESSION.STRING,
                                                                         value:        AST.parseString( $$[$0] )
                                                                     };
-                                                                    //php this.$ = [];
-                                                                    //php this.$['op'] = AST::$TOKEN_TYPES['EXPRESSION'];
-                                                                    //php this.$['type'] = AST::$EXPRESSION['STRING'];
-                                                                    //php this.$['value'] = AST::parseString($$[$0]);
                                                                
 break;
 case 60:
@@ -503,11 +383,6 @@ case 60:
                                                                         operator:     AST.OPERATOR.NOT,
                                                                         left:         $$[$0]
                                                                     };
-                                                                    //php this.$ = [];
-                                                                    //php this.$['op'] = AST::$TOKEN_TYPES['EXPRESSION'];
-                                                                    //php this.$['type'] = AST::$EXPRESSION['UNARY'];
-                                                                    //php this.$['operator'] = AST::$OPERATOR['NOT'];
-                                                                    //php this.$['left'] = $$[$0];
                                                                
 break;
 case 61:
@@ -519,11 +394,6 @@ case 61:
                                                                         operator:     AST.OPERATOR.INVERT,
                                                                         left:         $$[$0]
                                                                     };
-                                                                    //php this.$ = [];
-                                                                    //php this.$['op'] = AST::$TOKEN_TYPES['EXPRESSION'];
-                                                                    //php this.$['type'] = AST::$EXPRESSION['UNARY'];
-                                                                    //php this.$['operator'] = AST::$OPERATOR['INVERT'];
-                                                                    //php this.$['left'] = $$[$0];
                                                                
 break;
 case 62:
@@ -536,12 +406,6 @@ case 62:
                                                                         left:         $$[$0-2],
                                                                         right:        $$[$0]
                                                                     };
-                                                                    //php this.$ = [];
-                                                                    //php this.$['op'] = AST::$TOKEN_TYPES['EXPRESSION'];
-                                                                    //php this.$['type'] = AST::$EXPRESSION['LOGICAL'];
-                                                                    //php this.$['operator'] = AST::$OPERATOR['OR'];
-                                                                    //php this.$['left'] = $$[$0-2];
-                                                                    //php this.$['right'] = $$[$0];
                                                                
 break;
 case 63:
@@ -554,12 +418,6 @@ case 63:
                                                                         left:         $$[$0-2],
                                                                         right:        $$[$0]
                                                                     };
-                                                                    //php this.$ = [];
-                                                                    //php this.$['op'] = AST::$TOKEN_TYPES['EXPRESSION'];
-                                                                    //php this.$['type'] = AST::$EXPRESSION['LOGICAL'];
-                                                                    //php this.$['operator'] = AST::$OPERATOR['AND'];
-                                                                    //php this.$['left'] = $$[$0-2];
-                                                                    //php this.$['right'] = $$[$0];
                                                                
 break;
 case 64:
@@ -572,12 +430,6 @@ case 64:
                                                                         left:         $$[$0-2],
                                                                         right:        $$[$0]
                                                                     };
-                                                                    //php this.$ = [];
-                                                                    //php this.$['op'] = AST::$TOKEN_TYPES['EXPRESSION'];
-                                                                    //php this.$['type'] = AST::$EXPRESSION['LOGICAL'];
-                                                                    //php this.$['operator'] = AST::$OPERATOR['EQUALS'];
-                                                                    //php this.$['left'] = $$[$0-2];
-                                                                    //php this.$['right'] = $$[$0];
                                                                
 break;
 case 65:
@@ -590,12 +442,6 @@ case 65:
                                                                         left:         $$[$0-2],
                                                                         right:        $$[$0]
                                                                     };
-                                                                    //php this.$ = [];
-                                                                    //php this.$['op'] = AST::$TOKEN_TYPES['EXPRESSION'];
-                                                                    //php this.$['type'] = AST::$EXPRESSION['LOGICAL'];
-                                                                    //php this.$['operator'] = AST::$OPERATOR['LIKE'];
-                                                                    //php this.$['left'] = $$[$0-2];
-                                                                    //php this.$['right'] = $$[$0];
                                                                
 break;
 case 66:
@@ -608,12 +454,6 @@ case 66:
                                                                         left:         $$[$0-2],
                                                                         right:        $$[$0]
                                                                     };
-                                                                    //php this.$ = [];
-                                                                    //php this.$['op'] = AST::$TOKEN_TYPES['EXPRESSION'];
-                                                                    //php this.$['type'] = AST::$EXPRESSION['LOGICAL'];
-                                                                    //php this.$['operator'] =  AST::$OPERATOR['type'];
-                                                                    //php this.$['left'] = $$[$0-2];
-                                                                    //php this.$['right'] = $$[$0];
                                                                
 break;
 case 67:
@@ -626,12 +466,6 @@ case 67:
                                                                         left:         $$[$0-2],
                                                                         right:        $$[$0]
                                                                     };
-                                                                    //php this.$ = [];
-                                                                    //php this.$['op'] = AST::$TOKEN_TYPES['EXPRESSION'];
-                                                                    //php this.$['type'] = AST::$EXPRESSION['LOGICAL'];
-                                                                    //php this.$['operator'] = AST::$OPERATOR['LT'];
-                                                                    //php this.$['left'] = $$[$0-2];
-                                                                    //php this.$['right'] = $$[$0];
                                                                
 break;
 case 68:
@@ -644,12 +478,6 @@ case 68:
                                                                         left:         $$[$0-2],
                                                                         right:        $$[$0]
                                                                     };
-                                                                    //php this.$ = [];
-                                                                    //php this.$['op'] = AST::$TOKEN_TYPES['EXPRESSION'];
-                                                                    //php this.$['type'] = AST::$EXPRESSION['LOGICAL'];
-                                                                    //php this.$['operator'] = AST::$OPERATOR['GTE'];
-                                                                    //php this.$['left'] = $$[$0-2];
-                                                                    //php this.$['right'] = $$[$0];
                                                                
 break;
 case 69:
@@ -662,12 +490,6 @@ case 69:
                                                                         left:         $$[$0-2],
                                                                         right:        $$[$0]
                                                                     };
-                                                                    //php this.$ = [];
-                                                                    //php this.$['op'] = AST::$TOKEN_TYPES['EXPRESSION'];
-                                                                    //php this.$['type'] = AST::$EXPRESSION['LOGICAL'];
-                                                                    //php this.$['operator'] = AST::$OPERATOR['GT'];
-                                                                    //php this.$['left'] = $$[$0-2];
-                                                                    //php this.$['right'] = $$[$0];
                                                                
 break;
 case 70:
@@ -680,12 +502,6 @@ case 70:
                                                                         left:         $$[$0-2],
                                                                         right:        $$[$0]
                                                                     };
-                                                                    //php this.$ = [];
-                                                                    //php this.$['op'] = AST::$TOKEN_TYPES['EXPRESSION'];
-                                                                    //php this.$['type'] = AST::$EXPRESSION['MATH'];
-                                                                    //php this.$['operator'] = AST::$OPERATOR['MULTIPLY'];
-                                                                    //php this.$['left'] = $$[$0-2];
-                                                                    //php this.$['right'] = $$[$0];
                                                                
 break;
 case 71:
@@ -694,16 +510,10 @@ case 71:
                                                                     this.$ = {
                                                                         op:           AST.TOKEN_TYPES.EXPRESSION,
                                                                         type:         AST.EXPRESSION.MATH,
-                                                                        operand:      AST.OPERATOR.DIVISION,
+                                                                        operator:      AST.OPERATOR.DIVISION,
                                                                         left:         $$[$0-2],
                                                                         right:        $$[$0]
                                                                     };
-                                                                    //php this.$ = [];
-                                                                    //php this.$['op'] = AST::$TOKEN_TYPES['EXPRESSION'];
-                                                                    //php this.$['type'] = AST::$EXPRESSION['MATH'];
-                                                                    //php this.$['operator'] = AST::$OPERATOR['DIVISION'];
-                                                                    //php this.$['left'] = $$[$0-2];
-                                                                    //php this.$['right'] = $$[$0];
                                                                
 break;
 case 72:
@@ -716,12 +526,6 @@ case 72:
                                                                         left:         $$[$0-2],
                                                                         right:        $$[$0]
                                                                     };
-                                                                    //php this.$ = [];
-                                                                    //php this.$['op'] = AST::$TOKEN_TYPES['EXPRESSION'];
-                                                                    //php this.$['type'] = AST::$EXPRESSION['MATH'];
-                                                                    //php this.$['operator'] = AST::$OPERATOR['ADDITION'];
-                                                                    //php this.$['left'] = $$[$0-2];
-                                                                    //php this.$['right'] = $$[$0];
                                                                
 break;
 case 73:
@@ -734,12 +538,6 @@ case 73:
                                                                         left:         $$[$0-2],
                                                                         right:        $$[$0]
                                                                     };
-                                                                    //php this.$ = [];
-                                                                    //php this.$['op'] = AST::$TOKEN_TYPES['EXPRESSION'];
-                                                                    //php this.$['type'] = AST::$EXPRESSION['MATH'];
-                                                                    //php this.$['operator'] = AST::$OPERATOR['DIFFERENCE'];
-                                                                    //php this.$['left'] = $$[$0-2];
-                                                                    //php this.$['right'] = $$[$0];
                                                                
 break;
 case 75:
@@ -750,10 +548,6 @@ case 75:
                                                                         type:         AST.EXPRESSION.GROUP,
                                                                         expression:   $$[$0-1]
                                                                     };
-                                                                    //php this.$ = [];
-                                                                    //php this.$['op'] = AST::$TOKEN_TYPES['EXPRESSION'];
-                                                                    //php this.$['type'] = AST::$EXPRESSION['GROUP'];
-                                                                    //php this.$['expression'] = $$[$0-1];
                                                                
 break;
 case 76:
@@ -764,10 +558,6 @@ case 76:
                                                                         type:         AST.EXPRESSION.IDENTIFIER,
                                                                         name:         $$[$0]
                                                                     };
-                                                                    //php this.$ = [];
-                                                                    //php this.$['op'] = AST::$TOKEN_TYPES['EXPRESSION'];
-                                                                    //php this.$['type'] = AST::$EXPRESSION['IDENTIFIER'];
-                                                                    //php this.$['name'] = $$[$0];
                                                                
 break;
 case 77:
@@ -778,10 +568,6 @@ case 77:
                                                                         type:         AST.EXPRESSION.IDENTIFIER,
                                                                         name:         AST.unescapeIdentifier($$[$0])
                                                                     };
-                                                                    //php this.$ = [];
-                                                                    //php this.$['op'] = AST::$TOKEN_TYPES['EXPRESSION'];
-                                                                    //php this.$['type'] = AST::$EXPRESSION['IDENTIFIER'];
-                                                                    //php this.$['name'] = AST::unescapeIdentifier($$[$0]);
                                                                
 break;
 case 78:
@@ -792,10 +578,6 @@ case 78:
                                                                         type:         AST.EXPRESSION.BINDING,
                                                                         name:         AST.unescapeBindingName($$[$0])
                                                                     };
-                                                                    //php this.$ = [];
-                                                                    //php this.$['op'] = AST::$TOKEN_TYPES['EXPRESSION'];
-                                                                    //php this.$['type'] = AST::$EXPRESSION['BINDING'];
-                                                                    //php this.$['name'] = AST::unescapeBindingName($$[$0]);
                                                                
 break;
 case 79:
@@ -807,11 +589,6 @@ case 79:
                                                                         function_name: $$[$0-2],
                                                                         arguments:    []
                                                                     };
-                                                                    //php this.$ = [];
-                                                                    //php this.$['op'] = AST::$TOKEN_TYPES['EXPRESSION'];
-                                                                    //php this.$['type'] = AST::$EXPRESSION['FUNCTION_CALL'];
-                                                                    //php this.$['function_name'] = $$[$0-2];
-                                                                    //php this.$['arguments'] = [];
                                                                
 break;
 case 80:
@@ -823,11 +600,6 @@ case 80:
                                                                         function_name: $$[$0-3],
                                                                         arguments:    $$[$0-1]
                                                                     };
-                                                                    //php this.$ = [];
-                                                                    //php this.$['op'] = AST::$TOKEN_TYPES['EXPRESSION'];
-                                                                    //php this.$['type'] = AST::$EXPRESSION['FUNCTION_CALL'];
-                                                                    //php this.$['function_name'] = $$[$0-3];
-                                                                    //php this.$['arguments'] = $$[$0-1];
                                                                
 break;
 case 83:
@@ -837,9 +609,6 @@ case 83:
                                                                         op:           AST.TOKEN_TYPES.OPTION_ORDERING,
                                                                         type:         AST.ORDERING_STRATEGY.RANDOM
                                                                     };
-                                                                    //php this.$ = [];
-                                                                    //php this.$['op'] = AST::$TOKEN_TYPES['OPTION_ORDERING'];
-                                                                    //php this.$['type'] = AST::$ORDERING_STRATEGY['RANDOM'];
                                                                
 break;
 case 84:
@@ -850,10 +619,6 @@ case 84:
                                                                         type:         AST.ORDERING_STRATEGY.ORDERED,
                                                                         fields:       $$[$0]
                                                                     };
-                                                                    //php this.$ = [];
-                                                                    //php this.$['op'] = AST::$TOKEN_TYPES['OPTION_ORDERING'];
-                                                                    //php this.$['type'] = AST::$ORDERING_STRATEGY['ORDERED'];
-                                                                    //php this.$['fields'] = $$[$0];
                                                                
 break;
 case 87:
@@ -864,10 +629,6 @@ case 87:
                                                                         expression:   $$[$0-1],
                                                                         direction:    AST.ORDER_DIRECTION.ASCENDING
                                                                     };
-                                                                    //php this.$ = [];
-                                                                    //php this.$['op'] = AST::$TOKEN_TYPES['ORDER_EXPRESSION'];
-                                                                    //php this.$['expression'] = $$[$0-1];
-                                                                    //php this.$['direction'] = AST::$ORDER_DIRECTION['ASCENDING'];
                                                                
 break;
 case 88:
@@ -878,10 +639,6 @@ case 88:
                                                                         expression:   $$[$0-1],
                                                                         direction:    AST.ORDER_DIRECTION.DESCENDING
                                                                     };
-                                                                    //php this.$ = [];
-                                                                    //php this.$['op'] = AST::$TOKEN_TYPES['ORDER_EXPRESSION'];
-                                                                    //php this.$['expression'] = $$[$0-1];
-                                                                    //php this.$['direction'] = AST::$ORDER_DIRECTION['DESCENDING'];
                                                                
 break;
 case 89:
@@ -892,10 +649,6 @@ case 89:
                                                                         expression:   $$[$0],
                                                                         direction:    AST.ORDER_DIRECTION.ASCENDING
                                                                     };
-                                                                    //php this.$ = [];
-                                                                    //php this.$['op'] = AST::$TOKEN_TYPES['ORDER_EXPRESSION'];
-                                                                    //php this.$['expression'] = $$[$0];
-                                                                    //php this.$['direction'] = AST::$ORDER_DIRECTION['ASCENDING'];
                                                                
 break;
 case 90:
@@ -906,10 +659,6 @@ case 90:
                                                                         limit:        AST.parseNumber( $$[$0] ),
                                                                         skip:         0
                                                                     };
-                                                                    //php this.$ = [];
-                                                                    //php this.$['op'] = AST::$TOKEN_TYPES['OPTION_LIMIT'];
-                                                                    //php this.$['limit'] = AST::parseNumber($$[$0]);
-                                                                    //php this.$['skip'] = 0;
                                                                
 break;
 case 91:
@@ -920,10 +669,6 @@ case 91:
                                                                         limit:        AST.parseNumber( $$[$0] ),
                                                                         skip:         AST.parseNumber( $$[$0-2] )
                                                                     };
-                                                                    //php this.$ = [];
-                                                                    //php this.$['op'] = AST::$TOKEN_TYPES['OPTION_LIMIT'];
-                                                                    //php this.$['limit'] = AST::parseNumber( $$[$0] );
-                                                                    //php this.$['skip'] = AST::parseNumber($$[$0-2]);
                                                                
 break;
 }

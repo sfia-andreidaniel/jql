@@ -830,7 +830,7 @@ Expression
                                                                     $$ = {
                                                                         op:           AST.TOKEN_TYPES.EXPRESSION,
                                                                         type:         AST.EXPRESSION.MATH,
-                                                                        operand:      AST.OPERATOR.DIVISION,
+                                                                        operator:      AST.OPERATOR.DIVISION,
                                                                         left:         $1,
                                                                         right:        $3
                                                                     };

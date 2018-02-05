@@ -1,1 +1,1 @@
-node jison JQLGrammar.jison
+jison JQLGrammar.jison

@@ -286,6 +286,106 @@ declare var db: JQLDatabase;
             describeTable(this.value);
         });
 
+        let nl2br = function (s: string): string {
+            return String(s || "")
+                .replace(/[\r\n]+/g, "\n")
+                .split("\n").join("<br />");
+        };
+
+        let htmlentities = (function() {
+
+            let escaper = document.createElement('div');
+
+            return function(s: string): string {
+                escaper.textContent = String(s || '');
+                return escaper.innerHTML;
+            }
+
+        })();
+
+        let dumpSQLResult = function( result: JQLStatementResultSelect ): string {
+
+            let buffer: string = '<table style="width: 100%"><thead><tr>',
+                rows = result.getRows(),
+                cols: string[] = [];
+
+            if ( !rows.length ) {
+                return '0 rows';
+            }
+
+            let firstRow = rows[0];
+
+            for ( let colName in firstRow ) {
+                buffer += '<td>' + htmlentities( colName ) + '</td>';
+                cols.push(colName);
+            }
+
+            buffer += '</tr></thead><tbody>';
+
+            for ( let i=0, len = rows.length; i<len; i++ ) {
+                buffer += '<tr>';
+                for ( let j=0, n = cols.length; j<n; j++ ) {
+                    buffer += '<td>' + htmlentities( rows[i][ cols[j] ] ) + '</td>';
+                }
+                buffer += '</tr>';
+            }
+
+            buffer += '</tbody></table>';
+
+            return buffer;
+
+        };
+
+        $("#query").each(function () {
+
+            $(this).on("submit", function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                $("#sql-result").html('');
+
+                let statement: JQLStatement;
+
+                try {
+                    statement = db.createStatement($(this).find("[name=jql]").val());
+                }
+                catch (e) {
+
+                    $("#sql-result").html("<div class=error>" + nl2br(e.toString()) + "</div>");
+                    return;
+
+                }
+
+                $("#sql-result").html('executing...');
+
+
+                let queryStartTime = +new Date;
+
+                db.executeStatement(statement).then(function(result: JQLStatementResult){
+
+                    $('#sql-result').html('<div class=success>Completed in ' + ( ( +new Date - queryStartTime ) ) + ' milliseconds' );
+
+                    if ( !result.hasRows() ) {
+
+                        $('#sql-result').append( result.getAffectedRows() + ' rows affected' );
+
+                    } else {
+
+                        $('#sql-result').append(dumpSQLResult( <JQLStatementResultSelect>result ));
+
+                    }
+
+                }).fail(function(e){
+
+                    $("#sql-result").html("<div class=error>" + nl2br(JSON.stringify(e)) + "</div>");
+
+                });
+
+            });
+
+        });
+
     });
+
 
 })(jQuery);

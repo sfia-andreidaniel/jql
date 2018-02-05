@@ -251,7 +251,7 @@ class JQLDatabase extends EventEmitter implements IJQLDatabase, EventEmitterInte
 
     public executeStatement(statement: JQLStatement, bindings?: IJQLBindData): JQueryPromise<JQLStatementResult> {
 
-        statement.bind(bindings);
+        statement.bind(bindings || {});
 
         return this.planner.scheduleStatement(statement, this.createExecutionStrategy(statement));
 

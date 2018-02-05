@@ -18,7 +18,7 @@
 
         body > form label, body > form button {
             display: inline-block;
-            height: 40px;
+            min-height: 40px;
             box-sizing: content-box;
         }
 
@@ -31,15 +31,18 @@
         body > form label > span {
             display: inline-block;
             width: 150px;
+            vertical-align: middle;
         }
 
         body > form label > span + input:not([type=checkbox]),
-        body > form label > span + select {
+        body > form label > span + select,
+        body > form label > span + textarea {
             width: 300px;
             height: 34px;
             box-sizing: content-box;
             padding: 0;
             margin: 0;
+            vertical-align: middle;
         }
 
         #admin-table #describe-table {
@@ -73,12 +76,24 @@
             margin-right: 10px;
         }
 
-        #admin-table span.error {
+        form *.error {
             color: red;
+            font-family: "Courier New";
+            font-size: 12px;
+            line-height: 1.2em;
         }
 
-        #admin-table span.success {
+        form *.success {
             color: green;
+        }
+
+        #sql-result {
+            margin-top: 20px;
+        }
+
+        #sql-result thead {
+            color: white;
+            background-color: black;
         }
 
     </style>
@@ -183,6 +198,18 @@ $tableSchema = json_decode(file_get_contents('http://127.0.0.1?action=show-table
         <div id="describe-table">
 
         </div>
+    </fieldset>
+</form>
+
+<form method="post" id="query">
+    <fieldset>
+        <legend>Execute JQL Query:</legend>
+        <label>
+            <span>JQL</span>
+            <textarea style="height: 100px" name="jql" placeholder="SELECT * FROM foo WHERE foo=bar ORDER BY moo DESC, car ASC LIMIT 2"></textarea>
+        </label>
+        <button data-role="run-query">Run</button>
+        <div id="sql-result"></div>
     </fieldset>
 </form>
 
