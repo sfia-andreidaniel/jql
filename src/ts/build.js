@@ -2350,8 +2350,11 @@ var JQLExpressionLogicalEquals = (function (_super) {
         return EJQL_LEXER_OPERATOR_COMPARISION_TYPE.EQUALS;
     };
     JQLExpressionLogicalEquals.prototype.compute = function (context) {
-        console.warn('TODO: Properly implement "Logical =" operator');
-        return this.left.compute(context) == this.right.compute(context);
+        var computedLeft = this.left.compute(context), computedRight = this.right.compute(context);
+        if ((computedLeft === null && computedRight !== null) || (computedLeft !== null && computedRight === null)) {
+            return null;
+        }
+        return computedLeft == computedRight;
     };
     JQLExpressionLogicalEquals.prototype.toString = function () {
         return this.left.toString() + " = " + this.right.toString();
@@ -2367,8 +2370,11 @@ var JQLExpressionLogicalDifferent = (function (_super) {
         return EJQL_LEXER_OPERATOR_COMPARISION_TYPE.EQUALS;
     };
     JQLExpressionLogicalDifferent.prototype.compute = function (context) {
-        console.warn('TODO: Properly implement "Logical <>" operator');
-        return this.left.compute(context) != this.right.compute(context);
+        var computedLeft = this.left.compute(context), computedRight = this.right.compute(context);
+        if ((computedLeft === null && computedRight !== null) || (computedLeft !== null && computedRight === null)) {
+            return null;
+        }
+        return computedLeft != computedRight;
     };
     JQLExpressionLogicalDifferent.prototype.toString = function () {
         return this.left.toString() + " <> " + this.right.toString();

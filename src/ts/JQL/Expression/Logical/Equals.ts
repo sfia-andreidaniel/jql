@@ -6,9 +6,15 @@ class JQLExpressionLogicalEquals extends JQLExpressionLogical {
 
     public compute(context: IJQLTableRow): JQLPrimitive {
 
-        console.warn('TODO: Properly implement "Logical =" operator');
+        let computedLeft  = this.left.compute(context),
+            computedRight = this.right.compute(context);
 
-        return this.left.compute(context) == this.right.compute(context);
+        if ((computedLeft === null && computedRight !== null) || (computedLeft !== null && computedRight === null)) {
+            return null;
+        }
+
+        return computedLeft == computedRight;
+
     }
 
     public toString(): string {
