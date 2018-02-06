@@ -16,18 +16,18 @@ class JQLDatabaseStatementExecutorRemoteStatement implements IDatabaseStatementE
             return <any>this.db.getJQuery().Deferred((defer) => {
 
                 let rpcEndpointName: string = this.db.getRPCEndpointName(),
-                    query: IStringMap = {
+                    query: IStringMap       = {
                         //"action":   "query",
-                        "auth": this.db.getAuthorizationToken(),
-                        "query": btoa(JSON.stringify(this.statement.getTokenizedStatement())),
+                        "auth":     this.db.getAuthorizationToken(),
+                        "query":    btoa(JSON.stringify(this.statement.getTokenizedStatement())),
                         "bindings": btoa(JSON.stringify(this.statement.getBindingData())),
                     };
 
                 this.db.getJQuery().ajax({
-                    url: this.db.getRPCEndpointName() + "?action=query",
-                    type: "POST",
+                    url:      this.db.getRPCEndpointName() + "?action=query",
+                    type:     "POST",
                     dataType: "json",
-                    data: query,
+                    data:     query,
                 }).then((result: object) => {
 
                     defer.resolve(this.createStatementResult(result));
@@ -47,11 +47,11 @@ class JQLDatabaseStatementExecutorRemoteStatement implements IDatabaseStatementE
     private createStatementResult(serverResponse: any): JQLStatementResult {
 
         if (!(serverResponse instanceof Object)) {
-            throw new Error('Object expected!');
+            throw new Error("Object expected!");
         }
 
         if (undefined === serverResponse.resultType) {
-            throw new Error('Property "resultType" expected!');
+            throw new Error("Property \"resultType\" expected!");
         }
 
         switch (serverResponse.resultType) {
@@ -64,11 +64,14 @@ class JQLDatabaseStatementExecutorRemoteStatement implements IDatabaseStatementE
 
             case EJQL_LEXER_STATEMENT_TYPES.UPDATE:
 
-                throw new Error('Update server response not implemented!');
+                throw new Error("Update server response not implemented!");
 
             case EJQL_LEXER_STATEMENT_TYPES.INSERT:
 
-                throw new Error('Insert server response not implemented!');
+                let insertResult = new JQLStatementResultInsert();
+                insertResult.withLastInsertId(parseInt(serverResponse.lastInsertId) || 0);
+                insertResult.withAffectedRows(1);
+                return insertResult;
 
             case EJQL_LEXER_STATEMENT_TYPES.DELETE:
 
@@ -77,7 +80,7 @@ class JQLDatabaseStatementExecutorRemoteStatement implements IDatabaseStatementE
                 return deleteResult;
 
             default:
-                throw new Error('Invalid server response resultType: ' + JSON.stringify(serverResponse.resultType));
+                throw new Error("Invalid server response resultType: " + JSON.stringify(serverResponse.resultType));
         }
 
     }

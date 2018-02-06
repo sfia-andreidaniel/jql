@@ -1307,10 +1307,10 @@ var JQLDatabaseStatementExecutorRemoteStatement = (function () {
     };
     JQLDatabaseStatementExecutorRemoteStatement.prototype.createStatementResult = function (serverResponse) {
         if (!(serverResponse instanceof Object)) {
-            throw new Error('Object expected!');
+            throw new Error("Object expected!");
         }
         if (undefined === serverResponse.resultType) {
-            throw new Error('Property "resultType" expected!');
+            throw new Error("Property \"resultType\" expected!");
         }
         switch (serverResponse.resultType) {
             case EJQL_LEXER_STATEMENT_TYPES.SELECT:
@@ -1318,15 +1318,18 @@ var JQLDatabaseStatementExecutorRemoteStatement = (function () {
                 selectResult.addRows(serverResponse.rows);
                 return selectResult;
             case EJQL_LEXER_STATEMENT_TYPES.UPDATE:
-                throw new Error('Update server response not implemented!');
+                throw new Error("Update server response not implemented!");
             case EJQL_LEXER_STATEMENT_TYPES.INSERT:
-                throw new Error('Insert server response not implemented!');
+                var insertResult = new JQLStatementResultInsert();
+                insertResult.withLastInsertId(parseInt(serverResponse.lastInsertId) || 0);
+                insertResult.withAffectedRows(1);
+                return insertResult;
             case EJQL_LEXER_STATEMENT_TYPES.DELETE:
                 var deleteResult = new JQLStatementResult();
                 deleteResult.withAffectedRows(~~serverResponse.affectedRows);
                 return deleteResult;
             default:
-                throw new Error('Invalid server response resultType: ' + JSON.stringify(serverResponse.resultType));
+                throw new Error("Invalid server response resultType: " + JSON.stringify(serverResponse.resultType));
         }
     };
     return JQLDatabaseStatementExecutorRemoteStatement;
@@ -2832,6 +2835,20 @@ var JQLStatementResultSelect = (function (_super) {
         return result;
     };
     return JQLStatementResultSelect;
+}(JQLStatementResult));
+var JQLStatementResultInsert = (function (_super) {
+    __extends(JQLStatementResultInsert, _super);
+    function JQLStatementResultInsert() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    JQLStatementResultInsert.prototype.getLastInsertId = function () {
+        return this.lastInsertId;
+    };
+    JQLStatementResultInsert.prototype.withLastInsertId = function (lastInsertId) {
+        this.lastInsertId = lastInsertId;
+        return this;
+    };
+    return JQLStatementResultInsert;
 }(JQLStatementResult));
 var JQLStatementSelect = (function (_super) {
     __extends(JQLStatementSelect, _super);

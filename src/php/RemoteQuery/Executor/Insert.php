@@ -45,12 +45,35 @@ class Insert implements RemoteQueryExecutorInterface
     public function execute(AuthorizationToken $authorization)
     {
 
-        $this->performAuthorization($authorization);
+        try {
 
-        return [
-            'resultType' => EJQLLexerStatementTypes::INSERT,
-            'query'      => $this->statement->toString(EJQLQueryExecutionContext::SERVER_SIDE),
-        ];
+            $this->performAuthorization($authorization);
+
+            $statementAsString = $this->stringifyStatement($authorization, $this->statement);
+
+            $stmt = $this->controller->getDatabase()->query($statementAsString);
+
+            $insertId = $stmt->lastInsertId();
+
+            return [
+                'resultType'   => EJQLLexerStatementTypes::INSERT,
+                'query'        => $statementAsString,
+                'lastInsertId' => (int)$insertId,
+            ];
+
+        } catch (RemoteQueryException $e) {
+
+            throw $e;
+
+        } catch (\Exception $e) {
+
+            throw new RemoteQueryException(
+                'Failed to execute INSERT statement!',
+                RemoteQueryException::ERR_EXECUTING_QUERY,
+                $e
+            );
+
+        }
     }
 
     /**
@@ -67,6 +90,31 @@ class Insert implements RemoteQueryExecutorInterface
                 RemoteQueryException::ERR_NOT_ENOUGH_PRIVILEGES
             );
         }
+
+    }
+
+    /**
+     * @param AuthorizationToken $authorizationToken
+     * @param JQLStatementInsert $insertStatement
+     *
+     * @return string
+     * @throws \JQL\Storage\StorageException
+     */
+    private function stringifyStatement(AuthorizationToken $authorizationToken, JQLStatementInsert $insertStatement)
+    {
+
+        $tableName = $insertStatement->getTable()
+            ->getName();
+
+        $tableModel = $this->controller->getStorageService()
+            ->getTableByName($authorizationToken, $tableName);
+
+        $insertStatement->getTable()
+            ->withName('table_' . $tableModel->getId());
+
+        $result = $insertStatement->toString(EJQLQueryExecutionContext::SERVER_SIDE);
+
+        return $result;
 
     }
 }

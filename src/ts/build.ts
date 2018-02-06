@@ -57,6 +57,7 @@
 ///<reference path="./JQL/Limit.ts" />
 ///<reference path="./JQL/StatementResult.ts" />
 ///<reference path="./JQL/StatementResult/Select.ts" />
+///<reference path="./JQL/StatementResult/Insert.ts" />
 ///<reference path="./JQL/Statement/Select.ts" />
 ///<reference path="./JQL/Statement/Select/Field.ts" />
 ///<reference path="./JQL/Statement/Select/FieldsList.ts" />

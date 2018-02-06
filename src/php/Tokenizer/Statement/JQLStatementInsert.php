@@ -30,6 +30,7 @@ class JQLStatementInsert extends JQLStatement
      * @param array $token
      *
      * @throws \JQL\Tokenizer\TokenizerException
+     * @throws \JQL\Assertion\AssertionException
      */
     public function __construct(array $token)
     {
@@ -76,7 +77,7 @@ class JQLStatementInsert extends JQLStatement
 
         for ($i = 0, $len = count($this->fields); $i < $len; $i++) {
             for ($j = 0, $bindings = $this->fields[$i]->getExpression()
-                                                      ->getBindings(), $n = count($bindings); $j < $n; $j++) {
+                ->getBindings(), $n = count($bindings); $j < $n; $j++) {
                 $result[] = $bindings[$j];
             }
         }
@@ -94,7 +95,7 @@ class JQLStatementInsert extends JQLStatement
 
         for ($i = 0, $len = count($this->fields); $i < $len; $i++) {
             for ($j = 0, $functions = $this->fields[$i]->getExpression()
-                                                       ->getFunctions(), $n = count($functions); $j < $n; $j++) {
+                ->getFunctions(), $n = count($functions); $j < $n; $j++) {
                 $result[] = $functions[$j];
             }
         }
@@ -111,9 +112,9 @@ class JQLStatementInsert extends JQLStatement
         $result = [];
 
         for ($i = 0, $len = count($this->fields); $i < $len; $i++) {
-            for ($j = 0, $identifiers = $this->fields[ $i ]->getExpression()->getIdentifiers(), $n = count($identifiers); $j < $n; $j++) {
-            $result[] = $identifiers[ $j ];
-        }
+            for ($j = 0, $identifiers = $this->fields[$i]->getExpression()->getIdentifiers(), $n = count($identifiers); $j < $n; $j++) {
+                $result[] = $identifiers[$j];
+            }
         }
 
         return $result;
@@ -127,6 +128,16 @@ class JQLStatementInsert extends JQLStatement
      */
     public function toString($queryExecutionContext)
     {
-        return 'INSERT';
+        $result = ['INSERT INTO ' . $this->table->toString($queryExecutionContext) . ' SET '];
+
+        $subResult = [];
+
+        foreach ($this->fields as $field) {
+            $subResult[] = $field->toString($queryExecutionContext);
+        }
+
+        $result[] = implode( ', ', $subResult );
+
+        return implode(' ', $result );
     }
 }
