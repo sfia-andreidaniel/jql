@@ -22,17 +22,23 @@ class Update implements RemoteQueryExecutorInterface
      * @var JQLStatementUpdate
      */
     private $statement;
+    /**
+     * @var array
+     */
+    private $bindings;
 
     /**
      * Select constructor.
      *
      * @param Controller         $controller
      * @param JQLStatementUpdate $statement
+     * @param array              $bindings
      */
-    public function __construct(Controller $controller, JQLStatementUpdate $statement)
+    public function __construct(Controller $controller, JQLStatementUpdate $statement, array $bindings )
     {
         $this->controller = $controller;
         $this->statement = $statement;
+        $this->bindings = $bindings;
     }
 
     /**
@@ -50,7 +56,7 @@ class Update implements RemoteQueryExecutorInterface
 
             $statementAsString = $this->stringifyStatement($authorization, $this->statement);
 
-            $stmt = $this->controller->getDatabase()->query($statementAsString);
+            $stmt = $this->controller->getDatabase()->query($statementAsString, $this->bindings);
 
             return [
                 'resultType'   => EJQLLexerStatementTypes::UPDATE,

@@ -29,18 +29,26 @@ class Select implements RemoteQueryExecutorInterface
     private $statement;
 
     /**
+     * @var array
+     */
+    private $bindings;
+
+    /**
      * Select constructor.
      *
      * @param Controller         $controller
      * @param JQLStatementSelect $statement
+     * @param array              $bindings
      */
     public function __construct(
         Controller $controller,
-        JQLStatementSelect $statement
+        JQLStatementSelect $statement,
+        array $bindings
     ) {
 
         $this->controller = $controller;
         $this->statement = $statement;
+        $this->bindings = $bindings;
     }
 
     /**
@@ -65,7 +73,7 @@ class Select implements RemoteQueryExecutorInterface
 
             $self = $this;
 
-            $database->query($statementAsString)
+            $database->query($statementAsString, $this->bindings)
                      ->each(
                          function (array $row) use (&$result, $self) {
 

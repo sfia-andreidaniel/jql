@@ -60,7 +60,7 @@ class RemoteQueryService
             }
 
             /** @var JQLStatement $statement */
-            return $this->queryExecutor->createExecutorFromParsedJQLStatement($statement)
+            return $this->queryExecutor->createExecutorFromParsedJQLStatement($statement, $queryBindings)
                 ->execute($auth);
 
         } catch (RemoteQueryException $e) {

@@ -23,17 +23,23 @@ class Insert implements RemoteQueryExecutorInterface
      * @var JQLStatementInsert
      */
     private $statement;
+    /**
+     * @var array
+     */
+    private $bindings;
 
     /**
      * Insert constructor.
      *
      * @param Controller         $controller
      * @param JQLStatementInsert $statement
+     * @param array              $bindings
      */
-    public function __construct(Controller $controller, JQLStatementInsert $statement)
+    public function __construct(Controller $controller, JQLStatementInsert $statement, array $bindings)
     {
         $this->controller = $controller;
         $this->statement = $statement;
+        $this->bindings = $bindings;
     }
 
     /**
@@ -51,7 +57,7 @@ class Insert implements RemoteQueryExecutorInterface
 
             $statementAsString = $this->stringifyStatement($authorization, $this->statement);
 
-            $stmt = $this->controller->getDatabase()->query($statementAsString);
+            $stmt = $this->controller->getDatabase()->query($statementAsString, $this->bindings);
 
             $insertId = $stmt->lastInsertId();
 

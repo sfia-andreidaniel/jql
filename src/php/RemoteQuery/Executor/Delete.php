@@ -23,18 +23,24 @@ class Delete implements RemoteQueryExecutorInterface
      * @var JQLStatementDelete
      */
     private $statement;
+    /**
+     * @var array
+     */
+    private $bindings;
 
     /**
      * Delete constructor.
      *
      * @param Controller         $controller
      * @param JQLStatementDelete $statement
+     * @param array              $bindings
      */
-    public function __construct(Controller $controller, JQLStatementDelete $statement)
+    public function __construct(Controller $controller, JQLStatementDelete $statement, array $bindings)
     {
 
         $this->controller = $controller;
         $this->statement = $statement;
+        $this->bindings = $bindings;
     }
 
     /**
@@ -53,7 +59,7 @@ class Delete implements RemoteQueryExecutorInterface
             $statementAsString = $this->stringifyStatement($authorization, $this->statement);
 
             $stmt = $this->controller->getDatabase()
-                                     ->query($statementAsString);
+                ->query($statementAsString, $this->bindings);
 
             return [
                 'resultType'   => EJQLLexerStatementTypes::DELETE,
@@ -61,13 +67,11 @@ class Delete implements RemoteQueryExecutorInterface
                 'affectedRows' => $stmt->getRowCount(),
             ];
 
-        }
-        catch (RemoteQueryException $e) {
+        } catch (RemoteQueryException $e) {
 
             throw $e;
 
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
 
             throw new RemoteQueryException(
                 'Failed to execute DELETE statement!', RemoteQueryException::ERR_EXECUTING_QUERY, $e
@@ -106,13 +110,13 @@ class Delete implements RemoteQueryExecutorInterface
     {
 
         $tableName = $deleteStatement->getTable()
-                                     ->getName();
+            ->getName();
 
         $tableModel = $this->controller->getStorageService()
-                                       ->getTableByName($authorizationToken, $tableName);
+            ->getTableByName($authorizationToken, $tableName);
 
         $deleteStatement->getTable()
-                        ->withName('table_' . $tableModel->getId());
+            ->withName('table_' . $tableModel->getId());
 
         $result = $deleteStatement->toString(EJQLQueryExecutionContext::SERVER_SIDE);
 

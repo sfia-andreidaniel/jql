@@ -368,12 +368,31 @@ class Assertion
      */
     public static function assertTrue($mixed, $message = null)
     {
-        if ( !is_bool( $mixed) || $mixed !== true ) {
+        if (!is_bool($mixed) || $mixed !== true) {
             throw new AssertionException(
                 null === $message
                     ? 'Expected true got ' . json_encode($mixed)
                     : $message
             );
         }
+    }
+
+    /**
+     * @param mixed $bindingValue
+     * @param null  $message
+     *
+     * @throws AssertionException
+     */
+    public static function assertIsPrimitive($bindingValue, $message = null)
+    {
+
+        if (!is_string($bindingValue) && !is_bool($bindingValue) && !is_int($bindingValue) && !is_float($bindingValue) && !is_null($bindingValue)) {
+            throw new AssertionException(
+                null === $message
+                    ? 'Expected primitive value (int|float|null|bool|string)'
+                    : $message
+            );
+        }
+
     }
 }
