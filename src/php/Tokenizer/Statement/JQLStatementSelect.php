@@ -314,8 +314,7 @@ class JQLStatementSelect extends JQLStatement
 
         if (null !== $this->union) {
 
-            $result[] = ['UNION'];
-            $result[] = $this->union->toString($queryExecutionContext);
+            $result[] = 'UNION ' . $this->union->toString($queryExecutionContext);
 
         }
 

@@ -55,7 +55,9 @@ abstract class JQLExpression extends JQLOpcode
             return $this->literal;
         }
         else {
-            $this->literal = preg_replace('/["\']+/g', '', trim($this->toString($queryExecutionContext)));
+            $this->literal = trim($this->toString($queryExecutionContext));
+            $this->literal = str_replace('"', '', $this->literal);
+            $this->literal = str_replace( "'", '', $this->literal);
             return $this->literal;
         }
     }

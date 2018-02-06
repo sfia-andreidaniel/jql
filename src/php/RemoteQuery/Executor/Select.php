@@ -38,6 +38,7 @@ class Select implements RemoteQueryExecutorInterface
         Controller $controller,
         JQLStatementSelect $statement
     ) {
+
         $this->controller = $controller;
         $this->statement = $statement;
     }
@@ -67,6 +68,7 @@ class Select implements RemoteQueryExecutorInterface
             $database->query($statementAsString)
                      ->each(
                          function (array $row) use (&$result, $self) {
+
                              $result[] = $row;
                          }
                      );
@@ -127,20 +129,28 @@ class Select implements RemoteQueryExecutorInterface
     private function stringifyStatement(AuthorizationToken $authorizationToken, JQLStatementSelect $statementSelect)
     {
 
-        if (null !== $statementSelect->getTable()) {
+        $cursor = $statementSelect;
 
-            $tableName = $statementSelect->getTable()
-                                         ->getName();
+        do {
 
-            $tableModel = $this->controller->getStorageService()
-                                           ->getTableByName($authorizationToken, $tableName);
+            if (null !== $cursor->getTable()) {
 
-            $statementSelect->getTable()
-                            ->withName('table_' . $tableModel->getId());
+                $tableName = $cursor->getTable()
+                                    ->getName();
 
-        }
+                $tableModel = $this->controller->getStorageService()
+                                               ->getTableByName($authorizationToken, $tableName);
 
-        $result = $this->statement->toString(EJQLQueryExecutionContext::SERVER_SIDE);
+                $cursor->getTable()
+                       ->withName('table_' . $tableModel->getId());
+
+            }
+
+            $cursor = $cursor->getUnion();
+
+        } while ($cursor);
+
+        $result = $statementSelect->toString(EJQLQueryExecutionContext::SERVER_SIDE);
 
         return $result;
 

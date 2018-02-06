@@ -36,9 +36,9 @@ abstract class JQLStatement extends JQLOpcode
     {
 
         Assertion::assertIsArray($token, 'A parsed JQL token must always be of type array!');
-        Assertion::assertIsBooleanKey($token, 'remote');
 
-        $this->remote = $token['remote'];
+        $this->remote = isset($token['remote']) ? $token['remote'] : false;
+
         $this->tokenizedStatement = $token;
         $this->id = md5(json_encode($token));
     }
@@ -53,6 +53,7 @@ abstract class JQLStatement extends JQLOpcode
      */
     public function getOpcodeType()
     {
+
         return EJQLLexerOpcodeTypes::STATEMENT;
     }
 
@@ -61,6 +62,7 @@ abstract class JQLStatement extends JQLOpcode
      */
     public function isRemote()
     {
+
         return $this->isRemote();
     }
 
@@ -89,6 +91,7 @@ abstract class JQLStatement extends JQLOpcode
      */
     public function getTokenizedStatement()
     {
+
         return $this->tokenizedStatement;
     }
 
@@ -97,6 +100,7 @@ abstract class JQLStatement extends JQLOpcode
      */
     public function getId()
     {
+
         return $this->id;
     }
 }
