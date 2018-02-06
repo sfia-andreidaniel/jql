@@ -1301,14 +1301,35 @@ var JQLDatabaseStatementExecutorRemoteStatement = (function () {
                     dataType: "json",
                     data: query,
                 }).then(function (result) {
-                    console.log("REMOTE: " + JSON.stringify(result));
-                    defer.resolve(result);
+                    defer.resolve(_this.createStatementResult(result));
                 }).fail(function (e) {
                     console.error("args: ", arguments);
                     defer.reject(e);
                 });
             }).promise();
         };
+    };
+    JQLDatabaseStatementExecutorRemoteStatement.prototype.createStatementResult = function (serverResponse) {
+        if (!(serverResponse instanceof Object)) {
+            throw new Error('Object expected!');
+        }
+        if (undefined === serverResponse.resultType) {
+            throw new Error('Property "resultType" expected!');
+        }
+        switch (serverResponse.resultType) {
+            case EJQL_LEXER_STATEMENT_TYPES.SELECT:
+                var result = new JQLStatementResultSelect();
+                result.addRows(serverResponse.rows);
+                return result;
+            case EJQL_LEXER_STATEMENT_TYPES.UPDATE:
+                throw new Error('Update server response not implemented!');
+            case EJQL_LEXER_STATEMENT_TYPES.INSERT:
+                throw new Error('Insert server response not implemented!');
+            case EJQL_LEXER_STATEMENT_TYPES.DELETE:
+                throw new Error('Delete server response not implemented!');
+            default:
+                throw new Error('Invalid server response resultType: ' + JSON.stringify(serverResponse.resultType));
+        }
     };
     return JQLDatabaseStatementExecutorRemoteStatement;
 }());

@@ -16,6 +16,7 @@ use JQL\Tokenizer\Statement\JQLStatementUpdate;
 
 class RemoteQueryExecutor
 {
+
     /**
      * @var Controller
      */
@@ -44,7 +45,10 @@ class RemoteQueryExecutor
 
             case EJQLLexerStatementTypes::SELECT:
                 /** @var JQLStatementSelect $statement */
-                return new Select($this->controller, $statement);
+                return new Select(
+                    $this->controller,
+                    $statement
+                );
                 break;
             case EJQLLexerStatementTypes::INSERT:
                 /** @var JQLStatementInsert $statement */
@@ -61,8 +65,7 @@ class RemoteQueryExecutor
 
             default:
                 throw new RemoteQueryException(
-                    'Unknown statement type!',
-                    RemoteQueryException::ERR_UNKNOWN_STATEMENT_TYPE
+                    'Unknown statement type!', RemoteQueryException::ERR_UNKNOWN_STATEMENT_TYPE
                 );
 
         }

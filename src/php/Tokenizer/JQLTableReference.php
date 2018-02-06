@@ -43,11 +43,22 @@ class JQLTableReference extends JQLOpcode
     }
 
     /**
+     * @param string $tableName
+     *
+     * @return JQLTableReference
+     */
+    public function withName($tableName)
+    {
+        $this->name = $tableName;
+        return $this;
+    }
+
+    /**
      * @param $queryExecutionContext
      *
      * @return string
      */
-    public function toString( $queryExecutionContext )
+    public function toString($queryExecutionContext)
     {
         return '`' . $this->name . '`';
     }

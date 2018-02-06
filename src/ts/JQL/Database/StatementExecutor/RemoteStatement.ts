@@ -21,23 +21,21 @@ class JQLDatabaseStatementExecutorRemoteStatement implements IDatabaseStatementE
                 }
 
                 let rpcEndpointName: string = this.db.getRPCEndpointName(),
-                    query: IStringMap       = {
+                    query: IStringMap = {
                         //"action":   "query",
-                        "auth":     this.db.getAuthorizationToken(),
-                        "query":    btoa(JSON.stringify(this.statement.getTokenizedStatement())),
+                        "auth": this.db.getAuthorizationToken(),
+                        "query": btoa(JSON.stringify(this.statement.getTokenizedStatement())),
                         "bindings": btoa(JSON.stringify(this.statement.getBindingData())),
                     };
 
                 this.db.getJQuery().ajax({
-                    url:      this.db.getRPCEndpointName() + "?action=query",
-                    type:     "POST",
+                    url: this.db.getRPCEndpointName() + "?action=query",
+                    type: "POST",
                     dataType: "json",
-                    data:     query,
-                }).then(function (result: any) {
+                    data: query,
+                }).then((result: object) => {
 
-                    console.log("REMOTE: " + JSON.stringify(result));
-
-                    defer.resolve(result);
+                    defer.resolve(this.createStatementResult(result));
 
                 }).fail(function (e) {
 
@@ -51,4 +49,39 @@ class JQLDatabaseStatementExecutorRemoteStatement implements IDatabaseStatementE
         };
     }
 
+    private createStatementResult(serverResponse: any): JQLStatementResult {
+
+        if (!(serverResponse instanceof Object)) {
+            throw new Error('Object expected!');
+        }
+
+        if (undefined === serverResponse.resultType) {
+            throw new Error('Property "resultType" expected!');
+        }
+
+        switch (serverResponse.resultType) {
+
+            case EJQL_LEXER_STATEMENT_TYPES.SELECT:
+
+                let result = new JQLStatementResultSelect();
+                result.addRows(serverResponse.rows);
+                return result;
+
+            case EJQL_LEXER_STATEMENT_TYPES.UPDATE:
+
+                throw new Error('Update server response not implemented!');
+
+            case EJQL_LEXER_STATEMENT_TYPES.INSERT:
+
+                throw new Error('Insert server response not implemented!');
+
+            case EJQL_LEXER_STATEMENT_TYPES.DELETE:
+
+                throw new Error('Delete server response not implemented!');
+
+            default:
+                throw new Error('Invalid server response resultType: ' + JSON.stringify(serverResponse.resultType));
+        }
+
+    }
 }

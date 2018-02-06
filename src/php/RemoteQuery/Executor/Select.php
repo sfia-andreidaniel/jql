@@ -5,15 +5,19 @@ namespace JQL\RemoteQuery\Executor;
 use JQL\Authorization\AuthorizationService;
 use JQL\Authorization\AuthorizationToken;
 use JQL\Controller;
+use JQL\Database\Database;
 use JQL\RemoteQuery\RemoteQueryException;
 use JQL\RemoteQuery\RemoteQueryExecutorInterface;
 use JQL\RemoteQuery\RemoteQueryService;
+use JQL\Storage\StorageException;
+use JQL\Storage\StorageService;
 use JQL\Tokenizer\EJQLLexerStatementTypes;
 use JQL\Tokenizer\EJQLQueryExecutionContext;
 use JQL\Tokenizer\Statement\JQLStatementSelect;
 
 class Select implements RemoteQueryExecutorInterface
 {
+
     /**
      * @var Controller
      */
@@ -30,8 +34,10 @@ class Select implements RemoteQueryExecutorInterface
      * @param Controller         $controller
      * @param JQLStatementSelect $statement
      */
-    public function __construct(Controller $controller, JQLStatementSelect $statement)
-    {
+    public function __construct(
+        Controller $controller,
+        JQLStatementSelect $statement
+    ) {
         $this->controller = $controller;
         $this->statement = $statement;
     }
@@ -45,12 +51,45 @@ class Select implements RemoteQueryExecutorInterface
     public function execute(AuthorizationToken $authorization)
     {
 
-        $this->performAuthorization($authorization, $this->statement->getId());
+        try {
 
-        return [
-            'resultType' => EJQLLexerStatementTypes::SELECT,
-            'query'      => $this->statement->toString(EJQLQueryExecutionContext::SERVER_SIDE),
-        ];
+            $this->performAuthorization($authorization, $this->statement->getId());
+
+            $statementAsString = $this->stringifyStatement($authorization, $this->statement);
+
+            /** @var Database $database */
+            $database = $this->controller->getDatabase();
+
+            $result = [];
+
+            $self = $this;
+
+            $database->query($statementAsString)
+                     ->each(
+                         function (array $row) use (&$result, $self) {
+                             $result[] = $row;
+                         }
+                     );
+
+            return [
+                'resultType' => EJQLLexerStatementTypes::SELECT,
+                'query'      => $statementAsString,
+                'rows'       => $result,
+            ];
+
+        }
+        catch (RemoteQueryException $e) {
+
+            throw $e;
+
+        }
+        catch (\Exception $e) {
+
+            throw new RemoteQueryException(
+                'Failed to execute select statement!', RemoteQueryException::ERR_EXECUTING_QUERY, $e
+            );
+
+        }
     }
 
     /**
@@ -75,6 +114,35 @@ class Select implements RemoteQueryExecutorInterface
                 RemoteQueryException::ERR_NOT_ENOUGH_PRIVILEGES
             );
         }
+
+    }
+
+    /**
+     * @param AuthorizationToken $authorizationToken
+     * @param JQLStatementSelect $statementSelect
+     *
+     * @return string
+     * @throws StorageException
+     */
+    private function stringifyStatement(AuthorizationToken $authorizationToken, JQLStatementSelect $statementSelect)
+    {
+
+        if (null !== $statementSelect->getTable()) {
+
+            $tableName = $statementSelect->getTable()
+                                         ->getName();
+
+            $tableModel = $this->controller->getStorageService()
+                                           ->getTableByName($authorizationToken, $tableName);
+
+            $statementSelect->getTable()
+                            ->withName('table_' . $tableModel->getId());
+
+        }
+
+        $result = $this->statement->toString(EJQLQueryExecutionContext::SERVER_SIDE);
+
+        return $result;
 
     }
 }
