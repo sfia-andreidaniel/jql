@@ -368,6 +368,8 @@ declare var db: JQLDatabase;
                 }
                 catch (e) {
 
+                    console.error(e);
+
                     $("#sql-result").html("<div class=error>" + nl2br(e.toString()) + "</div>");
                     return;
 

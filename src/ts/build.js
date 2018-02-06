@@ -59,7 +59,8 @@ var EJQL_LEXER_OPERATOR_LOGICAL_TYPE;
 })(EJQL_LEXER_OPERATOR_LOGICAL_TYPE || (EJQL_LEXER_OPERATOR_LOGICAL_TYPE = {}));
 var EJQL_LEXER_OPERATOR_COMPARISION_TYPE;
 (function (EJQL_LEXER_OPERATOR_COMPARISION_TYPE) {
-    EJQL_LEXER_OPERATOR_COMPARISION_TYPE["EQUALS"] = "==";
+    EJQL_LEXER_OPERATOR_COMPARISION_TYPE["EQUALS"] = "=";
+    EJQL_LEXER_OPERATOR_COMPARISION_TYPE["DIFFERENT"] = "<>";
     EJQL_LEXER_OPERATOR_COMPARISION_TYPE["LIKE"] = "like";
     EJQL_LEXER_OPERATOR_COMPARISION_TYPE["LTE"] = "<=";
     EJQL_LEXER_OPERATOR_COMPARISION_TYPE["LT"] = "<";
@@ -201,7 +202,7 @@ var JQLLexerFactory = (function () {
                     case EJQL_LEXER_STATEMENT_TYPES.DELETE:
                         return new JQLStatementDelete(lexerToken);
                     default:
-                        throw new Error('Cannot create statement from token: ' + JSON.stringify(lexerToken));
+                        throw new Error("Cannot create statement from token: " + JSON.stringify(lexerToken));
                 }
             case EJQL_LEXER_OPCODE_TYPES.TABLE:
                 return new JQLTableReference(lexerToken);
@@ -222,7 +223,7 @@ var JQLLexerFactory = (function () {
                             case EJQL_LEXER_OPERATOR_UNARY_TYPE.NOT:
                                 return new JQLExpressionUnaryNot(lexerToken);
                             default:
-                                throw new Error('Cannot create unary expression from token: ' + JSON.stringify(lexerToken));
+                                throw new Error("Cannot create unary expression from token: " + JSON.stringify(lexerToken));
                         }
                     case EJQL_LEXER_EXPRESSION_TYPES.LOGICAL:
                         switch (lexerToken.operator) {
@@ -232,6 +233,8 @@ var JQLLexerFactory = (function () {
                                 return new JQLExpressionLogicalOr(lexerToken);
                             case EJQL_LEXER_OPERATOR_COMPARISION_TYPE.EQUALS:
                                 return new JQLExpressionLogicalEquals(lexerToken);
+                            case EJQL_LEXER_OPERATOR_COMPARISION_TYPE.DIFFERENT:
+                                return new JQLExpressionLogicalDifferent(lexerToken);
                             case EJQL_LEXER_OPERATOR_COMPARISION_TYPE.GT:
                                 return new JQLExpressionLogicalGreaterThen(lexerToken);
                             case EJQL_LEXER_OPERATOR_COMPARISION_TYPE.GTE:
@@ -243,7 +246,7 @@ var JQLLexerFactory = (function () {
                             case EJQL_LEXER_OPERATOR_COMPARISION_TYPE.LIKE:
                                 return new JQLExpressionLogicalLike(lexerToken);
                             default:
-                                throw new Error('Cannot create logical expression from token: ' + JSON.stringify(lexerToken));
+                                throw new Error("Cannot create logical expression from token: " + JSON.stringify(lexerToken));
                         }
                     case EJQL_LEXER_EXPRESSION_TYPES.MATH:
                         switch (lexerToken.operator) {
@@ -256,7 +259,7 @@ var JQLLexerFactory = (function () {
                             case EJQL_LEXER_OPERATOR_MATH_TYPE.MULTIPLY:
                                 return new JQLExpressionMathMultiply(lexerToken);
                             default:
-                                throw new Error('Cannot create math expression from token: ' + JSON.stringify(lexerToken));
+                                throw new Error("Cannot create math expression from token: " + JSON.stringify(lexerToken));
                         }
                     case EJQL_LEXER_EXPRESSION_TYPES.GROUP:
                         return new JQLExpressionGroup(lexerToken);
@@ -267,7 +270,7 @@ var JQLLexerFactory = (function () {
                     case EJQL_LEXER_EXPRESSION_TYPES.FUNCTION_CALL:
                         return new JQLExpressionFunctionCall(lexerToken);
                     default:
-                        throw new Error('Unknown expression type: ' + JSON.stringify(lexerToken));
+                        throw new Error("Unknown expression type: " + JSON.stringify(lexerToken));
                 }
             case EJQL_LEXER_OPCODE_TYPES.FIELDS_LIST:
                 switch (lexerToken.type) {
@@ -276,7 +279,7 @@ var JQLLexerFactory = (function () {
                     case EJQL_LEXER_FIELD_TYPES.SPECIFIC_FIELDS:
                         return new JQLStatementSelectFieldsListSpecific(lexerToken);
                     default:
-                        throw new Error('Invalid lexer token select fields type: ' + JSON.stringify(lexerToken));
+                        throw new Error("Invalid lexer token select fields type: " + JSON.stringify(lexerToken));
                 }
             case EJQL_LEXER_OPCODE_TYPES.FIELD:
                 return new JQLStatementSelectField(lexerToken);
@@ -293,12 +296,12 @@ var JQLLexerFactory = (function () {
                     case EJQL_LEXER_ORDERING_STRATEGY.ORDERED:
                         return new JQLSorterStrategyByExpression(lexerToken);
                     default:
-                        throw new Error('Invalid lexer token ORDER BY: ' + JSON.stringify(lexerToken));
+                        throw new Error("Invalid lexer token ORDER BY: " + JSON.stringify(lexerToken));
                 }
             case EJQL_LEXER_OPCODE_TYPES.ORDER_BY_EXPRESSION:
                 return new JQLSorterExpression(lexerToken);
             default:
-                throw new Error('Invalid lexer token opcode type: ' + JSON.stringify(lexerToken.op));
+                throw new Error("Invalid lexer token opcode type: " + JSON.stringify(lexerToken.op));
         }
     };
     return JQLLexerFactory;
@@ -2347,13 +2350,30 @@ var JQLExpressionLogicalEquals = (function (_super) {
         return EJQL_LEXER_OPERATOR_COMPARISION_TYPE.EQUALS;
     };
     JQLExpressionLogicalEquals.prototype.compute = function (context) {
-        console.warn('TODO: Properly implement "Logical ==" operator');
+        console.warn('TODO: Properly implement "Logical =" operator');
         return this.left.compute(context) == this.right.compute(context);
     };
     JQLExpressionLogicalEquals.prototype.toString = function () {
-        return this.left.toString() + " == " + this.right.toString();
+        return this.left.toString() + " = " + this.right.toString();
     };
     return JQLExpressionLogicalEquals;
+}(JQLExpressionLogical));
+var JQLExpressionLogicalDifferent = (function (_super) {
+    __extends(JQLExpressionLogicalDifferent, _super);
+    function JQLExpressionLogicalDifferent() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    JQLExpressionLogicalDifferent.prototype.getOperator = function () {
+        return EJQL_LEXER_OPERATOR_COMPARISION_TYPE.EQUALS;
+    };
+    JQLExpressionLogicalDifferent.prototype.compute = function (context) {
+        console.warn('TODO: Properly implement "Logical <>" operator');
+        return this.left.compute(context) != this.right.compute(context);
+    };
+    JQLExpressionLogicalDifferent.prototype.toString = function () {
+        return this.left.toString() + " <> " + this.right.toString();
+    };
+    return JQLExpressionLogicalDifferent;
 }(JQLExpressionLogical));
 var JQLExpressionLogicalLike = (function (_super) {
     __extends(JQLExpressionLogicalLike, _super);
@@ -3653,6 +3673,7 @@ var JQLStatementDelete = (function (_super) {
                     statement = db.createStatement($(this).find("[name=jql]").val());
                 }
                 catch (e) {
+                    console.error(e);
                     $("#sql-result").html("<div class=error>" + nl2br(e.toString()) + "</div>");
                     return;
                 }

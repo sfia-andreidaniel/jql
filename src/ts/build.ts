@@ -34,6 +34,7 @@
 ///<reference path="./JQL/Expression/Logical/Or.ts" />
 ///<reference path="./JQL/Expression/Logical/And.ts" />
 ///<reference path="./JQL/Expression/Logical/Equals.ts" />
+///<reference path="./JQL/Expression/Logical/Different.ts" />
 ///<reference path="./JQL/Expression/Logical/Like.ts" />
 ///<reference path="./JQL/Expression/Logical/LowerThen.ts" />
 ///<reference path="./JQL/Expression/Logical/LowerThenEquals.ts" />

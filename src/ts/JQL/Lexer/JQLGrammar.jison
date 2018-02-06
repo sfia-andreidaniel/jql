@@ -50,8 +50,9 @@
             OR:                    '||',            // a or b, a || b
             AND:                   '&&',            // a && b, a and b
 
-            EQUALS:                '==',            // a == b, 1 == 2
+            EQUALS:                '=',             // a = b, 1 = 2
             LIKE:                  'like',          // a like '%foo'
+            DIFFERENT:             '<>',            // a <> b
 
             LTE:                   '<=',            // 3 <= 4
             LT:                    '<',             // 3 <  4
@@ -225,14 +226,12 @@ null                                return 'NULL';
 "-"                                 return '-';
 
 "!"                                 return '!';
-"<>"                                return '!=';
+"<>"                                return '<>';
 "<="                                return '<=';
 "<"                                 return '<';
 ">="                                return '>=';
 ">"                                 return '>';
-"=="                                return '==';
 "="                                 return '=';
-"!="                                return '!=';
 "like"                              return 'like';
 "&&"                                return '&&';
 "and"                               return '&&';
@@ -260,10 +259,10 @@ null                                return 'NULL';
 %left '&&'
 
 /* equality */
-%left '==' 'like' '!='
+%left '=' 'like'
 
 /* relational */
-%left '<=' '<' '>=' '>'
+%left '<>' '<=' '<' '>=' '>'
 
 /* addition arithmetic */
 %left '+' '-'
@@ -737,6 +736,17 @@ Expression
                                                                         right:        $3
                                                                     };
                                                                }
+    | Expression "<>" Expression                               {
+                                                                    //js
+                                                                    $$ = {
+                                                                        op:           AST.TOKEN_TYPES.EXPRESSION,
+                                                                        type:         AST.EXPRESSION.LOGICAL,
+                                                                        operator:     AST.OPERATOR.DIFFERENT,
+                                                                        left:         $1,
+                                                                        right:        $3
+                                                                    };
+
+                                                               }
     | Expression "&&" Expression                               {
                                                                     //js
                                                                     $$ = {
@@ -748,7 +758,7 @@ Expression
                                                                     };
                                                                }
 
-    | Expression "==" Expression                               {
+    | Expression "=" Expression                                {
                                                                     //js
                                                                     $$ = {
                                                                         op:           AST.TOKEN_TYPES.EXPRESSION,

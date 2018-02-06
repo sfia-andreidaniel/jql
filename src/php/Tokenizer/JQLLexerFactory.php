@@ -11,6 +11,7 @@ use JQL\Tokenizer\Expression\JQLExpressionIdentifier;
 use JQL\Tokenizer\Expression\JQLExpressionNull;
 use JQL\Tokenizer\Expression\JQLExpressionNumber;
 use JQL\Tokenizer\Expression\JQLExpressionString;
+use JQL\Tokenizer\Expression\Logical\JQLExpressionLogicalDifferent;
 use JQL\Tokenizer\Expression\Logical\JQLExpressionLogicalEquals;
 use JQL\Tokenizer\Expression\Logical\JQLExpressionLogicalGreaterThen;
 use JQL\Tokenizer\Expression\Logical\JQLExpressionLogicalGreaterThenEquals;
@@ -158,6 +159,10 @@ class JQLLexerFactory
 
                                 case EJQLLexerOperatorComparisionType::EQUALS:
                                     return new JQLExpressionLogicalEquals($lexerToken);
+                                    break;
+
+                                case EJQLLexerOperatorComparisionType::DIFFERENT:
+                                    return new JQLExpressionLogicalDifferent($lexerToken);
                                     break;
 
                                 case EJQLLexerOperatorComparisionType::GT:

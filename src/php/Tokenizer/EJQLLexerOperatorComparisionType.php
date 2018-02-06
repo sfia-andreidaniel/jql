@@ -5,12 +5,13 @@ namespace JQL\Tokenizer;
 
 class EJQLLexerOperatorComparisionType
 {
-    const EQUALS = "==";
-    const LIKE   = "like";
+    const EQUALS    = "=";
+    const DIFFERENT = "<>";
+    const LIKE      = "like";
 
-    const LTE    = "<=";
-    const LT     = "<";
-    const GTE    = ">=";
-    const GT     = ">";
+    const LTE       = "<=";
+    const LT        = "<";
+    const GTE       = ">=";
+    const GT        = ">";
 
 }

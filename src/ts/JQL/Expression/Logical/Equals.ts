@@ -6,13 +6,13 @@ class JQLExpressionLogicalEquals extends JQLExpressionLogical {
 
     public compute(context: IJQLTableRow): JQLPrimitive {
 
-        console.warn('TODO: Properly implement "Logical ==" operator');
+        console.warn('TODO: Properly implement "Logical =" operator');
 
         return this.left.compute(context) == this.right.compute(context);
     }
 
     public toString(): string {
-        return this.left.toString() + " == " + this.right.toString();
+        return this.left.toString() + " = " + this.right.toString();
     }
 
 }

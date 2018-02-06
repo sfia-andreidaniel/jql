@@ -66,13 +66,14 @@ enum EJQL_LEXER_OPERATOR_LOGICAL_TYPE {
 }
 
 enum EJQL_LEXER_OPERATOR_COMPARISION_TYPE {
-    EQUALS = "==",
-    LIKE   = "like",
+    EQUALS    = "=",
+    DIFFERENT = "<>",
+    LIKE      = "like",
 
-    LTE    = "<=",
-    LT     = "<",
-    GTE    = ">=",
-    GT     = ">",
+    LTE       = "<=",
+    LT        = "<",
+    GTE       = ">=",
+    GT        = ">",
 }
 
 enum EJQL_LEXER_OPERATOR_MATH_TYPE {
@@ -348,7 +349,7 @@ interface IJQLTable {
 
     getIndexes(): JQLTableIndex[];
 
-    alterIndexes( newIndexes: IJQLTableIndexDescriptor[] ): JQueryPromise<boolean>;
+    alterIndexes(newIndexes: IJQLTableIndexDescriptor[]): JQueryPromise<boolean>;
 
 }
 
@@ -460,11 +461,13 @@ interface IJQLTableDescriptor {
 }
 
 interface IEventEmitterCallback {
-    ( ...args: any[] ): void;
+    (...args: any[]): void;
 }
 
 interface EventEmitterInterface {
     on(eventName: string, callback: IEventEmitterCallback): this;
-    off( eventName: string, callback?: IEventEmitterCallback ): this;
-    trigger( eventName, ...eventArgs: any[] ): this;
+
+    off(eventName: string, callback?: IEventEmitterCallback): this;
+
+    trigger(eventName, ...eventArgs: any[]): this;
 }
