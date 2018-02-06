@@ -64,7 +64,9 @@ class JQLDatabaseStatementExecutorRemoteStatement implements IDatabaseStatementE
 
             case EJQL_LEXER_STATEMENT_TYPES.UPDATE:
 
-                throw new Error("Update server response not implemented!");
+                let updateResult = new JQLStatementResult();
+                updateResult.withAffectedRows(parseInt(serverResponse.affectedRows) || 0);
+                return updateResult;
 
             case EJQL_LEXER_STATEMENT_TYPES.INSERT:
 
@@ -76,7 +78,7 @@ class JQLDatabaseStatementExecutorRemoteStatement implements IDatabaseStatementE
             case EJQL_LEXER_STATEMENT_TYPES.DELETE:
 
                 let deleteResult = new JQLStatementResult();
-                deleteResult.withAffectedRows(~~serverResponse.affectedRows);
+                deleteResult.withAffectedRows(parseInt(serverResponse.affectedRows) || 0);
                 return deleteResult;
 
             default:

@@ -54,6 +54,7 @@ class JQLStatementUpdate extends JQLStatement
      * @param array $token
      *
      * @throws \JQL\Tokenizer\TokenizerException
+     * @throws \JQL\Assertion\AssertionException
      */
     public function __construct(array $token)
     {
@@ -79,7 +80,7 @@ class JQLStatementUpdate extends JQLStatement
         }
 
         if (isset($token['orderBy'])) {
-            $this['sorter'] = JQLLexerFactory::create($token['orderBy']);
+            $this->sorter = JQLLexerFactory::create($token['orderBy']);
         }
 
     }
@@ -150,7 +151,7 @@ class JQLStatementUpdate extends JQLStatement
         for ($i = 0, $len = count($this->fields); $i < $len; $i++) {
 
             for ($j = 0, $bindings = $this->fields[$i]->getExpression()
-                                                      ->getBindings(), $n = count($bindings); $j < $n; $j++) {
+                ->getBindings(), $n = count($bindings); $j < $n; $j++) {
                 $result[] = $bindings[$j];
             }
 
@@ -164,10 +165,9 @@ class JQLStatementUpdate extends JQLStatement
 
         if ($this->sorter) {
             if (!$this->sorter->isRandom()) {
-                for ($sorterByExpression = $this->sorter, $i = 0, $expressions = $sorterByExpression->getSortExpressions(
-                ), $len = count($expressions); $i < $len; $i++) {
+                for ($sorterByExpression = $this->sorter, $i = 0, $expressions = $sorterByExpression->getSortExpressions(), $len = count($expressions); $i < $len; $i++) {
                     for ($j = 0, $bindings = $expressions[$i]->getExpression()
-                                                             ->getBindings(), $n = count($bindings); $j < $n; $j++) {
+                        ->getBindings(), $n = count($bindings); $j < $n; $j++) {
                         $result[] = $bindings[$i];
                     }
                 }
@@ -188,7 +188,7 @@ class JQLStatementUpdate extends JQLStatement
         for ($i = 0, $len = count($this->fields); $i < $len; $i++) {
 
             for ($j = 0, $functions = $this->fields[$i]->getExpression()
-                                                       ->getFunctions(), $n = count($functions); $j < $n; $j++) {
+                ->getFunctions(), $n = count($functions); $j < $n; $j++) {
                 $result[] = $functions[$j];
             }
 
@@ -202,10 +202,9 @@ class JQLStatementUpdate extends JQLStatement
 
         if ($this->sorter) {
             if (!$this->sorter->isRandom()) {
-                for ($sorterByExpression = $this->sorter, $i = 0, $expressions = $sorterByExpression->getSortExpressions(
-                ), $len = count($expressions); $i < $len; $i++) {
+                for ($sorterByExpression = $this->sorter, $i = 0, $expressions = $sorterByExpression->getSortExpressions(), $len = count($expressions); $i < $len; $i++) {
                     for ($j = 0, $functions = $expressions[$i]->getExpression()
-                                                              ->getFunctions(), $n = count($functions); $j < $n; $j++) {
+                        ->getFunctions(), $n = count($functions); $j < $n; $j++) {
                         $result[] = $functions[$i];
                     }
                 }
@@ -226,7 +225,7 @@ class JQLStatementUpdate extends JQLStatement
         for ($i = 0, $len = count($this->fields); $i < $len; $i++) {
 
             for ($j = 0, $identifiers = $this->fields[$i]->getExpression()
-                                                         ->getIdentifiers(), $n = count($identifiers); $j < $n; $j++) {
+                ->getIdentifiers(), $n = count($identifiers); $j < $n; $j++) {
                 $result[] = $identifiers[$j];
             }
 
@@ -240,10 +239,9 @@ class JQLStatementUpdate extends JQLStatement
 
         if ($this->sorter) {
             if (!$this->sorter->isRandom()) {
-                for ($sorterByExpression = $this->sorter, $i = 0, $expressions = $sorterByExpression->getSortExpressions(
-                ), $len = count($expressions); $i < $len; $i++) {
+                for ($sorterByExpression = $this->sorter, $i = 0, $expressions = $sorterByExpression->getSortExpressions(), $len = count($expressions); $i < $len; $i++) {
                     for ($j = 0, $identifiers = $expressions[$i]->getExpression()
-                                                                ->getIdentifiers(), $n = count(
+                        ->getIdentifiers(), $n = count(
                         $identifiers
                     ); $j < $n; $j++) {
                         $result[] = $identifiers[$j];
@@ -262,6 +260,28 @@ class JQLStatementUpdate extends JQLStatement
      */
     public function toString($queryExecutionContext)
     {
-        return 'UPDATE';
+        $result = ['UPDATE ' . $this->table->toString($queryExecutionContext) . ' SET '];
+
+        $subResult = [];
+
+        foreach ($this->fields as $field) {
+            $subResult[] = $field->toString($queryExecutionContext);
+        }
+
+        $result[] = implode(',', $subResult);
+
+        if ($this->filter) {
+            $result[] = 'WHERE ' . $this->filter->toString($queryExecutionContext);
+        }
+
+        if ($this->sorter) {
+            $result[] = $this->sorter->toString($queryExecutionContext);
+        }
+
+        if ($this->limit) {
+            $result[] = $this->limit->toString($queryExecutionContext);
+        }
+
+        return implode(' ', $result);
     }
 }

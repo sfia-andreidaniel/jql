@@ -44,12 +44,33 @@ class Update implements RemoteQueryExecutorInterface
     public function execute(AuthorizationToken $authorization)
     {
 
-        $this->performAuthorizaton($authorization);
+        try {
 
-        return [
-            'resultType' => EJQLLexerStatementTypes::UPDATE,
-            'query'      => $this->statement->toString(EJQLQueryExecutionContext::SERVER_SIDE),
-        ];
+            $this->performAuthorizaton($authorization);
+
+            $statementAsString = $this->stringifyStatement($authorization, $this->statement);
+
+            $stmt = $this->controller->getDatabase()->query($statementAsString);
+
+            return [
+                'resultType'   => EJQLLexerStatementTypes::UPDATE,
+                'query'        => $statementAsString,
+                'affectedRows' => $stmt->getRowCount(),
+            ];
+
+        } catch (RemoteQueryException $e) {
+
+            throw $e;
+
+        } catch (\Exception $e) {
+
+            throw new RemoteQueryException(
+                'Failed to execute UPDATE statement!',
+                RemoteQueryException::ERR_EXECUTING_QUERY,
+                $e
+            );
+
+        }
     }
 
     /**
@@ -66,6 +87,30 @@ class Update implements RemoteQueryExecutorInterface
                 RemoteQueryException::ERR_NOT_ENOUGH_PRIVILEGES
             );
         }
+
+    }
+
+    /**
+     * @param AuthorizationToken $authorizationToken
+     * @param JQLStatementUpdate $updateStatement
+     *
+     * @return string
+     * @throws \JQL\Storage\StorageException
+     */
+    private function stringifyStatement(AuthorizationToken $authorizationToken, JQLStatementUpdate $updateStatement)
+    {
+        $tableName = $updateStatement->getTable()
+            ->getName();
+
+        $tableModel = $this->controller->getStorageService()
+            ->getTableByName($authorizationToken, $tableName);
+
+        $updateStatement->getTable()
+            ->withName('table_' . $tableModel->getId());
+
+        $result = $updateStatement->toString(EJQLQueryExecutionContext::SERVER_SIDE);
+
+        return $result;
 
     }
 }

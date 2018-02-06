@@ -1318,7 +1318,9 @@ var JQLDatabaseStatementExecutorRemoteStatement = (function () {
                 selectResult.addRows(serverResponse.rows);
                 return selectResult;
             case EJQL_LEXER_STATEMENT_TYPES.UPDATE:
-                throw new Error("Update server response not implemented!");
+                var updateResult = new JQLStatementResult();
+                updateResult.withAffectedRows(parseInt(serverResponse.affectedRows) || 0);
+                return updateResult;
             case EJQL_LEXER_STATEMENT_TYPES.INSERT:
                 var insertResult = new JQLStatementResultInsert();
                 insertResult.withLastInsertId(parseInt(serverResponse.lastInsertId) || 0);
@@ -1326,7 +1328,7 @@ var JQLDatabaseStatementExecutorRemoteStatement = (function () {
                 return insertResult;
             case EJQL_LEXER_STATEMENT_TYPES.DELETE:
                 var deleteResult = new JQLStatementResult();
-                deleteResult.withAffectedRows(~~serverResponse.affectedRows);
+                deleteResult.withAffectedRows(parseInt(serverResponse.affectedRows) || 0);
                 return deleteResult;
             default:
                 throw new Error("Invalid server response resultType: " + JSON.stringify(serverResponse.resultType));
