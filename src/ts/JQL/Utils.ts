@@ -16,6 +16,7 @@ class JQLUtils {
         "into",
         "values",
         "delete",
+        "like",
     ];
 
     public static getType(variable: any): EJQLTableColumnType {

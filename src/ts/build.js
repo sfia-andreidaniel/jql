@@ -525,6 +525,7 @@ var JQLUtils = (function () {
         "into",
         "values",
         "delete",
+        "like",
     ];
     return JQLUtils;
 }());
