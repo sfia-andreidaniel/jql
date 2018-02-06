@@ -49,6 +49,12 @@ class JQLLimit extends JQLOpcode
      */
     public function toString( $queryExecutionContext )
     {
-        return 'LIMIT ' . $this->skip . ',' . $this->limit;
+
+        if ( $this->skip === 0 ) {
+            return 'LIMIT ' . $this->limit;
+        } else {
+            return 'LIMIT ' . $this->skip . ',' . $this->limit;
+        }
+
     }
 }

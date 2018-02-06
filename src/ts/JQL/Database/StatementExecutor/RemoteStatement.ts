@@ -15,11 +15,6 @@ class JQLDatabaseStatementExecutorRemoteStatement implements IDatabaseStatementE
 
             return <any>this.db.getJQuery().Deferred((defer) => {
 
-                if (this.statement.getStatementType() !== EJQL_LEXER_STATEMENT_TYPES.SELECT) {
-                    defer.reject(new Error("Only select statements can be sent to backend!"));
-                    return;
-                }
-
                 let rpcEndpointName: string = this.db.getRPCEndpointName(),
                     query: IStringMap = {
                         //"action":   "query",
@@ -63,9 +58,9 @@ class JQLDatabaseStatementExecutorRemoteStatement implements IDatabaseStatementE
 
             case EJQL_LEXER_STATEMENT_TYPES.SELECT:
 
-                let result = new JQLStatementResultSelect();
-                result.addRows(serverResponse.rows);
-                return result;
+                let selectResult = new JQLStatementResultSelect();
+                selectResult.addRows(serverResponse.rows);
+                return selectResult;
 
             case EJQL_LEXER_STATEMENT_TYPES.UPDATE:
 
@@ -77,7 +72,9 @@ class JQLDatabaseStatementExecutorRemoteStatement implements IDatabaseStatementE
 
             case EJQL_LEXER_STATEMENT_TYPES.DELETE:
 
-                throw new Error('Delete server response not implemented!');
+                let deleteResult = new JQLStatementResult();
+                deleteResult.withAffectedRows(~~serverResponse.affectedRows);
+                return deleteResult;
 
             default:
                 throw new Error('Invalid server response resultType: ' + JSON.stringify(serverResponse.resultType));

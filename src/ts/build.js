@@ -1286,10 +1286,6 @@ var JQLDatabaseStatementExecutorRemoteStatement = (function () {
         var _this = this;
         return function () {
             return _this.db.getJQuery().Deferred(function (defer) {
-                if (_this.statement.getStatementType() !== EJQL_LEXER_STATEMENT_TYPES.SELECT) {
-                    defer.reject(new Error("Only select statements can be sent to backend!"));
-                    return;
-                }
                 var rpcEndpointName = _this.db.getRPCEndpointName(), query = {
                     "auth": _this.db.getAuthorizationToken(),
                     "query": btoa(JSON.stringify(_this.statement.getTokenizedStatement())),
@@ -1318,15 +1314,17 @@ var JQLDatabaseStatementExecutorRemoteStatement = (function () {
         }
         switch (serverResponse.resultType) {
             case EJQL_LEXER_STATEMENT_TYPES.SELECT:
-                var result = new JQLStatementResultSelect();
-                result.addRows(serverResponse.rows);
-                return result;
+                var selectResult = new JQLStatementResultSelect();
+                selectResult.addRows(serverResponse.rows);
+                return selectResult;
             case EJQL_LEXER_STATEMENT_TYPES.UPDATE:
                 throw new Error('Update server response not implemented!');
             case EJQL_LEXER_STATEMENT_TYPES.INSERT:
                 throw new Error('Insert server response not implemented!');
             case EJQL_LEXER_STATEMENT_TYPES.DELETE:
-                throw new Error('Delete server response not implemented!');
+                var deleteResult = new JQLStatementResult();
+                deleteResult.withAffectedRows(~~serverResponse.affectedRows);
+                return deleteResult;
             default:
                 throw new Error('Invalid server response resultType: ' + JSON.stringify(serverResponse.resultType));
         }

@@ -40,6 +40,7 @@ class JQLStatementDelete extends JQLStatement
      *
      * @param array $token
      *
+     * @throws \JQL\Assertion\AssertionException
      * @throws \JQL\Tokenizer\TokenizerException
      */
     public function __construct(array $token)
@@ -188,6 +189,22 @@ class JQLStatementDelete extends JQLStatement
      */
     public function toString($queryExecutionContext)
     {
-        return 'DELETE';
+        $result = [ 'DELETE FROM' ];
+
+        $result[] = $this->table->toString( $queryExecutionContext );
+
+        if ( null !== $this->filter ) {
+            $result[] = 'WHERE ' . $this->filter->toString( $queryExecutionContext );
+        }
+
+        if ( null !== $this->sorter ) {
+            $result[] = $this->sorter->toString( $queryExecutionContext );
+        }
+
+        if ( null !== $this->limit ) {
+            $result[] = $this->limit->toString( $queryExecutionContext );
+        }
+
+        return implode(' ', $result);
     }
 }

@@ -13,6 +13,7 @@ use JQL\Tokenizer\Statement\JQLStatementDelete;
 
 class Delete implements RemoteQueryExecutorInterface
 {
+
     /**
      * @var Controller
      */
@@ -31,6 +32,7 @@ class Delete implements RemoteQueryExecutorInterface
      */
     public function __construct(Controller $controller, JQLStatementDelete $statement)
     {
+
         $this->controller = $controller;
         $this->statement = $statement;
     }
@@ -44,12 +46,34 @@ class Delete implements RemoteQueryExecutorInterface
     public function execute(AuthorizationToken $authorization)
     {
 
-        $this->performAuthorization( $authorization );
+        try {
 
-        return [
-            'resultType' => EJQLLexerStatementTypes::DELETE,
-            'query'      => $this->statement->toString(EJQLQueryExecutionContext::SERVER_SIDE),
-        ];
+            $this->performAuthorization($authorization);
+
+            $statementAsString = $this->stringifyStatement($authorization, $this->statement);
+
+            $stmt = $this->controller->getDatabase()
+                                     ->query($statementAsString);
+
+            return [
+                'resultType'   => EJQLLexerStatementTypes::DELETE,
+                'query'        => $statementAsString,
+                'affectedRows' => $stmt->getRowCount(),
+            ];
+
+        }
+        catch (RemoteQueryException $e) {
+
+            throw $e;
+
+        }
+        catch (\Exception $e) {
+
+            throw new RemoteQueryException(
+                'Failed to execute DELETE statement!', RemoteQueryException::ERR_EXECUTING_QUERY, $e
+            );
+
+        }
     }
 
     /**
@@ -60,7 +84,7 @@ class Delete implements RemoteQueryExecutorInterface
     private function performAuthorization(AuthorizationToken $authorization)
     {
 
-        if ( $authorization->getRole() !== AuthorizationService::AUTHORIZATION_TOKEN_ROLE_FORM_ADMIN ) {
+        if ($authorization->getRole() !== AuthorizationService::AUTHORIZATION_TOKEN_ROLE_FORM_ADMIN) {
 
             throw new RemoteQueryException(
                 'Not enough privileges to execute delete statements on backend!',
@@ -68,6 +92,31 @@ class Delete implements RemoteQueryExecutorInterface
             );
 
         }
+
+    }
+
+    /**
+     * @param AuthorizationToken $authorizationToken
+     * @param JQLStatementDelete $deleteStatement
+     *
+     * @return string
+     * @throws \JQL\Storage\StorageException
+     */
+    private function stringifyStatement(AuthorizationToken $authorizationToken, JQLStatementDelete $deleteStatement)
+    {
+
+        $tableName = $deleteStatement->getTable()
+                                     ->getName();
+
+        $tableModel = $this->controller->getStorageService()
+                                       ->getTableByName($authorizationToken, $tableName);
+
+        $deleteStatement->getTable()
+                        ->withName('table_' . $tableModel->getId());
+
+        $result = $deleteStatement->toString(EJQLQueryExecutionContext::SERVER_SIDE);
+
+        return $result;
 
     }
 
