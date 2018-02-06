@@ -6,7 +6,7 @@ namespace JQL\Tokenizer;
 class EJQLLexerOperatorComparisionType
 {
     const EQUALS = "==";
-    const LIKE   = "~=";
+    const LIKE   = "like";
 
     const LTE    = "<=";
     const LT     = "<";

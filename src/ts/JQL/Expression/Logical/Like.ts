@@ -6,7 +6,7 @@ class JQLExpressionLogicalLike extends JQLExpressionLogical {
 
     public compute(context: IJQLTableRow): JQLPrimitive {
 
-        console.warn('TODO: Properly implement "Logical ~=" operator');
+        console.warn('TODO: Properly implement "Logical LIKE" operator');
 
         return this.like( this.left.compute( context ), this.right.compute( context ) );
     }
@@ -20,7 +20,7 @@ class JQLExpressionLogicalLike extends JQLExpressionLogical {
     }
 
     public toString(): string {
-        return this.left.toString() + " ~= " + this.right.toString();
+        return this.left.toString() + " LIKE " + this.right.toString();
     }
 
 }

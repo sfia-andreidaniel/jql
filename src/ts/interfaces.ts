@@ -67,7 +67,7 @@ enum EJQL_LEXER_OPERATOR_LOGICAL_TYPE {
 
 enum EJQL_LEXER_OPERATOR_COMPARISION_TYPE {
     EQUALS = "==",
-    LIKE   = "~=",
+    LIKE   = "like",
 
     LTE    = "<=",
     LT     = "<",

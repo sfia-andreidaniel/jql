@@ -75,8 +75,8 @@ var JQLGrammar = (function(){
 var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[1,18],$V1=[1,27],$V2=[1,15],$V3=[1,26],$V4=[6,28],$V5=[1,42],$V6=[1,50],$V7=[1,51],$V8=[1,43],$V9=[1,44],$Va=[1,45],$Vb=[1,46],$Vc=[1,47],$Vd=[1,49],$Ve=[1,52],$Vf=[6,25],$Vg=[6,25,28],$Vh=[6,21,25],$Vi=[6,21,25,28],$Vj=[1,60],$Vk=[1,61],$Vl=[50,51],$Vm=[1,70],$Vn=[6,15,28],$Vo=[6,15,28,55],$Vp=[1,84],$Vq=[1,87],$Vr=[1,76],$Vs=[1,77],$Vt=[1,78],$Vu=[1,79],$Vv=[1,80],$Vw=[1,81],$Vx=[1,82],$Vy=[1,83],$Vz=[1,85],$VA=[1,86],$VB=[6,15,18,21,25,28,35,52,55,56,63,64,65,66,67,68,69,70,71,72,73,76,82,83],$VC=[6,18,21,25,28,35],$VD=[6,15,18,21,25,28,35,55,56,63,64,65,66,67,68,69,70,71,73,76,82,83],$VE=[1,123],$VF=[1,131],$VG=[1,132],$VH=[6,18,21,25],$VI=[6,15,18,21,25,28,35,55,56,64,65,66,67,76,82,83],$VJ=[6,15,18,21,25,28,35,55,56,64,65,66,67,68,69,70,71,76,82,83],$VK=[55,76],$VL=[6,25,28,55],$VM=[1,140],$VN=[1,141],$VO=[6,18,21,25,35,55];
 var parser = {trace: function trace() { },
 yy: {},
-symbols_: {"error":2,"JQL":3,"REMOTE":4,"Statement":5,"EOF":6,"SelectStatement":7,"UpdateStatement":8,"InsertStatement":9,"DeleteStatement":10,"SelectSingleRowStatement":11,"SELECT":12,"SelectFieldsList":13,"SelectFromTableStatement":14,"FROM":15,"TableReference":16,"SelectWithOptionalWHEREClause":17,"WHERE":18,"Expression":19,"SelectWithOptionalORDERClause":20,"ORDER":21,"BY":22,"OrderByClause":23,"SelectWithOptionalLIMITClause":24,"LIMIT":25,"LimitClause":26,"SelectStatementWithoutUnion":27,"UNION":28,"UpdateStatementBegin":29,"UPDATE":30,"DelayedClause":31,"DELAYED":32,"NUMBER":33,"UpdateAllRowsStatement":34,"SET":35,"UpdateFieldsList":36,"UpdateWithOptionalWHEREStatement":37,"UpdateWithOptionalORDERStatement":38,"UpdateWithOptionalLIMITStatement":39,"LimitClauseWithoutRowSkipping":40,"InsertStatementBegin":41,"INSERT":42,"IGNORE":43,"INTO":44,"DeleteAllRowsStatement":45,"DELETE":46,"DeleteWithOptionalWHEREClauseStatement":47,"DeleteWithOptionalORDERClauseStatement":48,"DeleteWithOptionalLIMITClauseStatement":49,"IDENTIFIER":50,"ESCAPED_IDENTIFIER":51,"*":52,"SelectFieldEnumeration":53,"SelectField":54,",":55,"AS":56,"UpdateField":57,"=":58,"BOOLEAN":59,"NULL":60,"STRING":61,"!":62,"-":63,"||":64,"&&":65,"==":66,"~=":67,"<=":68,"<":69,">=":70,">":71,"/":72,"+":73,"FunctionCall":74,"(":75,")":76,"BINDING":77,"FunctionCallArgumentsList":78,"RANDOM":79,"OrderByClauseFieldsList":80,"OrderByField":81,"ASC":82,"DESC":83,"$accept":0,"$end":1},
-terminals_: {2:"error",4:"REMOTE",6:"EOF",12:"SELECT",15:"FROM",18:"WHERE",21:"ORDER",22:"BY",25:"LIMIT",28:"UNION",30:"UPDATE",32:"DELAYED",33:"NUMBER",35:"SET",42:"INSERT",43:"IGNORE",44:"INTO",46:"DELETE",50:"IDENTIFIER",51:"ESCAPED_IDENTIFIER",52:"*",55:",",56:"AS",58:"=",59:"BOOLEAN",60:"NULL",61:"STRING",62:"!",63:"-",64:"||",65:"&&",66:"==",67:"~=",68:"<=",69:"<",70:">=",71:">",72:"/",73:"+",75:"(",76:")",77:"BINDING",79:"RANDOM",82:"ASC",83:"DESC"},
+symbols_: {"error":2,"JQL":3,"REMOTE":4,"Statement":5,"EOF":6,"SelectStatement":7,"UpdateStatement":8,"InsertStatement":9,"DeleteStatement":10,"SelectSingleRowStatement":11,"SELECT":12,"SelectFieldsList":13,"SelectFromTableStatement":14,"FROM":15,"TableReference":16,"SelectWithOptionalWHEREClause":17,"WHERE":18,"Expression":19,"SelectWithOptionalORDERClause":20,"ORDER":21,"BY":22,"OrderByClause":23,"SelectWithOptionalLIMITClause":24,"LIMIT":25,"LimitClause":26,"SelectStatementWithoutUnion":27,"UNION":28,"UpdateStatementBegin":29,"UPDATE":30,"DelayedClause":31,"DELAYED":32,"NUMBER":33,"UpdateAllRowsStatement":34,"SET":35,"UpdateFieldsList":36,"UpdateWithOptionalWHEREStatement":37,"UpdateWithOptionalORDERStatement":38,"UpdateWithOptionalLIMITStatement":39,"LimitClauseWithoutRowSkipping":40,"InsertStatementBegin":41,"INSERT":42,"IGNORE":43,"INTO":44,"DeleteAllRowsStatement":45,"DELETE":46,"DeleteWithOptionalWHEREClauseStatement":47,"DeleteWithOptionalORDERClauseStatement":48,"DeleteWithOptionalLIMITClauseStatement":49,"IDENTIFIER":50,"ESCAPED_IDENTIFIER":51,"*":52,"SelectFieldEnumeration":53,"SelectField":54,",":55,"AS":56,"UpdateField":57,"=":58,"BOOLEAN":59,"NULL":60,"STRING":61,"!":62,"-":63,"||":64,"&&":65,"==":66,"like":67,"<=":68,"<":69,">=":70,">":71,"/":72,"+":73,"FunctionCall":74,"(":75,")":76,"BINDING":77,"FunctionCallArgumentsList":78,"RANDOM":79,"OrderByClauseFieldsList":80,"OrderByField":81,"ASC":82,"DESC":83,"$accept":0,"$end":1},
+terminals_: {2:"error",4:"REMOTE",6:"EOF",12:"SELECT",15:"FROM",18:"WHERE",21:"ORDER",22:"BY",25:"LIMIT",28:"UNION",30:"UPDATE",32:"DELAYED",33:"NUMBER",35:"SET",42:"INSERT",43:"IGNORE",44:"INTO",46:"DELETE",50:"IDENTIFIER",51:"ESCAPED_IDENTIFIER",52:"*",55:",",56:"AS",58:"=",59:"BOOLEAN",60:"NULL",61:"STRING",62:"!",63:"-",64:"||",65:"&&",66:"==",67:"like",68:"<=",69:"<",70:">=",71:">",72:"/",73:"+",75:"(",76:")",77:"BINDING",79:"RANDOM",82:"ASC",83:"DESC"},
 productions_: [0,[3,3],[3,2],[5,1],[5,1],[5,1],[5,1],[11,2],[14,3],[17,3],[17,1],[20,4],[20,1],[24,3],[24,1],[27,1],[27,1],[7,1],[7,3],[29,2],[29,1],[31,2],[31,1],[34,4],[37,3],[37,1],[38,4],[38,1],[39,3],[39,1],[8,1],[41,2],[41,1],[9,5],[45,3],[47,3],[47,1],[48,4],[48,1],[49,3],[49,1],[10,1],[16,1],[16,1],[13,1],[13,1],[53,1],[53,3],[54,1],[54,3],[54,3],[36,1],[36,3],[36,3],[57,3],[57,3],[19,1],[19,1],[19,1],[19,1],[19,2],[19,2],[19,3],[19,3],[19,3],[19,3],[19,3],[19,3],[19,3],[19,3],[19,3],[19,3],[19,3],[19,3],[19,1],[19,3],[19,1],[19,1],[19,1],[74,3],[74,4],[78,1],[78,3],[23,1],[23,1],[80,1],[80,3],[81,2],[81,2],[81,1],[40,1],[26,3],[26,1]],
 performAction: function anonymous(yytext, yyleng, yylineno, yy, yystate /* action[1] */, $$ /* vstack */, _$ /* lstack */) {
 /* this == yyval */
@@ -879,7 +879,7 @@ parse: function parse(input) {
             AND:                   '&&',            // a && b, a and b
 
             EQUALS:                '==',            // a == b, 1 == 2
-            LIKE:                  '~=',            // a ~= '%foo'
+            LIKE:                  'like',          // a like '%foo'
 
             LTE:                   '<=',            // 3 <= 4
             LT:                    '<',             // 3 <  4
@@ -907,13 +907,6 @@ parse: function parse(input) {
         FIELD_TYPES: {
             ALL_FIELDS:            'all',
             SPECIFIC_FIELDS:       'enumeration'
-        },
-
-        id: 0,
-
-        createAlias: function( prefix ) {
-            AST.id++;
-            return ( prefix || 'field_' ) + AST.id;
         },
 
         unescapeIdentifier: function( escapedIdentifier ) {
@@ -1445,7 +1438,7 @@ case 53:return 'INVALID';
 break;
 }
 },
-rules: [/^(?:\s+)/i,/^(?:[0-9]+\.[0-9]*|[0-9]*\.[0-9]+\b)/i,/^(?:[0-9]+)/i,/^(?:true|false\b)/i,/^(?:null\b)/i,/^(?:"(\\["]|[^"])*")/i,/^(?:'(\\[']|[^'])*')/i,/^(?:select\b)/i,/^(?:update\b)/i,/^(?:insert\b)/i,/^(?:delete\b)/i,/^(?:remote\b)/i,/^(?:from\b)/i,/^(?:where\b)/i,/^(?:limit\b)/i,/^(?:union\b)/i,/^(?:as\b)/i,/^(?:set\b)/i,/^(?:delayed\b)/i,/^(?:order\b)/i,/^(?:by\b)/i,/^(?:random\b)/i,/^(?:asc\b)/i,/^(?:ascending\b)/i,/^(?:desc\b)/i,/^(?:descending\b)/i,/^(?:ignore\b)/i,/^(?:into\b)/i,/^(?:\()/i,/^(?:\))/i,/^(?:\*)/i,/^(?:\/)/i,/^(?:\+)/i,/^(?:-)/i,/^(?:!)/i,/^(?:<>)/i,/^(?:<=)/i,/^(?:<)/i,/^(?:>=)/i,/^(?:>)/i,/^(?:==)/i,/^(?:=)/i,/^(?:!=)/i,/^(?:~=)/i,/^(?:&&)/i,/^(?:and\b)/i,/^(?:\|\|)/i,/^(?:or\b)/i,/^(?:,)/i,/^(?:[A-Za-z_\$][A-Za-z0-9_]*)/i,/^(?:`[A-Za-z_\$][A-Za-z0-9_]*`)/i,/^(?::[A-Za-z_\$][A-Za-z0-9_]*)/i,/^(?:$)/i,/^(?:.)/i],
+rules: [/^(?:\s+)/i,/^(?:[0-9]+\.[0-9]*|[0-9]*\.[0-9]+\b)/i,/^(?:[0-9]+)/i,/^(?:true|false\b)/i,/^(?:null\b)/i,/^(?:"(\\["]|[^"])*")/i,/^(?:'(\\[']|[^'])*')/i,/^(?:select\b)/i,/^(?:update\b)/i,/^(?:insert\b)/i,/^(?:delete\b)/i,/^(?:remote\b)/i,/^(?:from\b)/i,/^(?:where\b)/i,/^(?:limit\b)/i,/^(?:union\b)/i,/^(?:as\b)/i,/^(?:set\b)/i,/^(?:delayed\b)/i,/^(?:order\b)/i,/^(?:by\b)/i,/^(?:random\b)/i,/^(?:asc\b)/i,/^(?:ascending\b)/i,/^(?:desc\b)/i,/^(?:descending\b)/i,/^(?:ignore\b)/i,/^(?:into\b)/i,/^(?:\()/i,/^(?:\))/i,/^(?:\*)/i,/^(?:\/)/i,/^(?:\+)/i,/^(?:-)/i,/^(?:!)/i,/^(?:<>)/i,/^(?:<=)/i,/^(?:<)/i,/^(?:>=)/i,/^(?:>)/i,/^(?:==)/i,/^(?:=)/i,/^(?:!=)/i,/^(?:like\b)/i,/^(?:&&)/i,/^(?:and\b)/i,/^(?:\|\|)/i,/^(?:or\b)/i,/^(?:,)/i,/^(?:[A-Za-z_\$][A-Za-z0-9_]*)/i,/^(?:`[A-Za-z_\$][A-Za-z0-9_]*`)/i,/^(?::[A-Za-z_\$][A-Za-z0-9_]*)/i,/^(?:$)/i,/^(?:.)/i],
 conditions: {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53],"inclusive":true}}
 });
 return lexer;

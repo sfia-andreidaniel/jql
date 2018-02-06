@@ -23,7 +23,7 @@ class JQLExpressionLogicalLike extends JQLExpressionLogical
         switch ($queryExecutionContext) {
 
             case EJQLQueryExecutionContext::CLIENT_SIDE:
-                return $leftStringified . ' ~= ' . $rightStringified;
+                return $leftStringified . ' LIKE ' . $rightStringified;
                 break;
 
             case EJQLQueryExecutionContext::SERVER_SIDE:

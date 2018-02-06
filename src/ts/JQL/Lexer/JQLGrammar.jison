@@ -51,7 +51,7 @@
             AND:                   '&&',            // a && b, a and b
 
             EQUALS:                '==',            // a == b, 1 == 2
-            LIKE:                  '~=',            // a ~= '%foo'
+            LIKE:                  'like',          // a like '%foo'
 
             LTE:                   '<=',            // 3 <= 4
             LT:                    '<',             // 3 <  4
@@ -79,13 +79,6 @@
         FIELD_TYPES: {
             ALL_FIELDS:            'all',
             SPECIFIC_FIELDS:       'enumeration'
-        },
-
-        id: 0,
-
-        createAlias: function( prefix ) {
-            AST.id++;
-            return ( prefix || 'field_' ) + AST.id;
         },
 
         unescapeIdentifier: function( escapedIdentifier ) {
@@ -240,7 +233,7 @@ null                                return 'NULL';
 "=="                                return '==';
 "="                                 return '=';
 "!="                                return '!=';
-"~="                                return '~=';
+"like"                              return 'like';
 "&&"                                return '&&';
 "and"                               return '&&';
 "||"                                return '||';
@@ -267,7 +260,7 @@ null                                return 'NULL';
 %left '&&'
 
 /* equality */
-%left '==' '~=' '!='
+%left '==' 'like' '!='
 
 /* relational */
 %left '<=' '<' '>=' '>'
@@ -765,7 +758,7 @@ Expression
                                                                         right:        $3
                                                                     };
                                                                }
-    | Expression "~=" Expression                               {
+    | Expression "like" Expression                             {
                                                                     //js
                                                                     $$ = {
                                                                         op:           AST.TOKEN_TYPES.EXPRESSION,

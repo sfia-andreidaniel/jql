@@ -60,7 +60,7 @@ var EJQL_LEXER_OPERATOR_LOGICAL_TYPE;
 var EJQL_LEXER_OPERATOR_COMPARISION_TYPE;
 (function (EJQL_LEXER_OPERATOR_COMPARISION_TYPE) {
     EJQL_LEXER_OPERATOR_COMPARISION_TYPE["EQUALS"] = "==";
-    EJQL_LEXER_OPERATOR_COMPARISION_TYPE["LIKE"] = "~=";
+    EJQL_LEXER_OPERATOR_COMPARISION_TYPE["LIKE"] = "like";
     EJQL_LEXER_OPERATOR_COMPARISION_TYPE["LTE"] = "<=";
     EJQL_LEXER_OPERATOR_COMPARISION_TYPE["LT"] = "<";
     EJQL_LEXER_OPERATOR_COMPARISION_TYPE["GTE"] = ">=";
@@ -2363,7 +2363,7 @@ var JQLExpressionLogicalLike = (function (_super) {
         return EJQL_LEXER_OPERATOR_COMPARISION_TYPE.LIKE;
     };
     JQLExpressionLogicalLike.prototype.compute = function (context) {
-        console.warn('TODO: Properly implement "Logical ~=" operator');
+        console.warn('TODO: Properly implement "Logical LIKE" operator');
         return this.like(this.left.compute(context), this.right.compute(context));
     };
     JQLExpressionLogicalLike.prototype.like = function (left, right) {
@@ -2371,7 +2371,7 @@ var JQLExpressionLogicalLike = (function (_super) {
         return true;
     };
     JQLExpressionLogicalLike.prototype.toString = function () {
-        return this.left.toString() + " ~= " + this.right.toString();
+        return this.left.toString() + " LIKE " + this.right.toString();
     };
     return JQLExpressionLogicalLike;
 }(JQLExpressionLogical));
