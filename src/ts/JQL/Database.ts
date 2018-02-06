@@ -16,6 +16,8 @@ class JQLDatabase extends EventEmitter implements IJQLDatabase, EventEmitterInte
 
     private rpcEndpointName: string;
 
+    private bindingProviders: IQueryBindingProvider[] = [];
+
     public withJQuery(jq: JQueryStatic): this {
         this.jq = jq;
         this.planner = new JQLDatabaseQueryPlanner(this);
@@ -251,7 +253,7 @@ class JQLDatabase extends EventEmitter implements IJQLDatabase, EventEmitterInte
 
     public executeStatement(statement: JQLStatement, bindings?: IJQLBindData): JQueryPromise<JQLStatementResult> {
 
-        statement.bind(bindings || {});
+        statement.bind(bindings || {}, this);
 
         return this.planner.scheduleStatement(statement, this.createExecutionStrategy(statement));
 
@@ -421,4 +423,26 @@ class JQLDatabase extends EventEmitter implements IJQLDatabase, EventEmitterInte
 
     }
 
+    public autoBind(bindingName: string, jqlExpressionBinding: JQLExpressionBinding): boolean {
+
+        for (let i = 0, len = this.bindingProviders.length; i < len; i++) {
+
+            if (this.bindingProviders[ i ].canBind(bindingName)) {
+
+                jqlExpressionBinding.bind(this.bindingProviders[ i ].getBindedValue(bindingName));
+
+                return true;
+
+            }
+
+        }
+
+        return false;
+
+    }
+
+    public withAutoBindingProvider(provider: IQueryBindingProvider): this {
+        this.bindingProviders.push(provider);
+        return this;
+    }
 }

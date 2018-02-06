@@ -471,3 +471,8 @@ interface EventEmitterInterface {
 
     trigger(eventName, ...eventArgs: any[]): this;
 }
+
+interface IQueryBindingProvider {
+    canBind(bindingName: string): boolean;
+    getBindedValue(bindingName: string): JQLPrimitive;
+}

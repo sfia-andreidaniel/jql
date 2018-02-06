@@ -30,7 +30,7 @@ abstract class JQLStatement extends JQLOpcode {
 
     public abstract getTable(): JQLTableReference;
 
-    public bind(data?: IJQLBindData): this {
+    public bind(data?: IJQLBindData, db?: JQLDatabase): this {
 
         this.binded = false;
 
@@ -47,7 +47,11 @@ abstract class JQLStatement extends JQLOpcode {
             bindingName = bindings[ i ].getBindingName();
 
             if (undefined === data[ bindingName ]) {
-                throw new Error("Failed to bind statement: Binding " + JSON.stringify(bindingName) + " is not defined in bind object!");
+
+                if (!db || !db.autoBind(bindingName, bindings[ i ])) {
+                    throw new Error("Failed to bind statement: Binding " + JSON.stringify(bindingName) + " is not defined in bind object, and is also not auto bindable!");
+                }
+
             } else {
                 bindings[ i ].bind(data[ bindingName ]);
             }
@@ -62,13 +66,13 @@ abstract class JQLStatement extends JQLOpcode {
 
     public getBindingData(): IJQLBindData {
 
-        let bindData: IJQLBindData = {},
+        let bindData: IJQLBindData           = {},
             bindings: JQLExpressionBinding[] = this.getBindings(),
             bindingName;
 
-        for ( let i=0, len = bindings.length; i<len; i++ ) {
-            if ( undefined === bindData[ bindingName = bindings[i].getBindingName() ] ) {
-                bindData[ bindingName ] = bindings[i].getBindedValue();
+        for (let i = 0, len = bindings.length; i < len; i++) {
+            if (undefined === bindData[ bindingName = bindings[ i ].getBindingName() ]) {
+                bindData[ bindingName ] = bindings[ i ].getBindedValue();
             }
         }
 

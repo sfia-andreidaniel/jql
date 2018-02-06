@@ -567,6 +567,7 @@ var JQLDatabase = (function (_super) {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.functions = {};
         _this.tables = {};
+        _this.bindingProviders = [];
         return _this;
     }
     JQLDatabase.prototype.withJQuery = function (jq) {
@@ -717,7 +718,7 @@ var JQLDatabase = (function (_super) {
         return stmt;
     };
     JQLDatabase.prototype.executeStatement = function (statement, bindings) {
-        statement.bind(bindings || {});
+        statement.bind(bindings || {}, this);
         return this.planner.scheduleStatement(statement, this.createExecutionStrategy(statement));
     };
     JQLDatabase.prototype.createExecutionStrategy = function (statement) {
@@ -829,6 +830,19 @@ var JQLDatabase = (function (_super) {
                 });
             }).promise();
         })(this.jq, this);
+    };
+    JQLDatabase.prototype.autoBind = function (bindingName, jqlExpressionBinding) {
+        for (var i = 0, len = this.bindingProviders.length; i < len; i++) {
+            if (this.bindingProviders[i].canBind(bindingName)) {
+                jqlExpressionBinding.bind(this.bindingProviders[i].getBindedValue(bindingName));
+                return true;
+            }
+        }
+        return false;
+    };
+    JQLDatabase.prototype.withAutoBindingProvider = function (provider) {
+        this.bindingProviders.push(provider);
+        return this;
     };
     return JQLDatabase;
 }(EventEmitter));
@@ -2004,7 +2018,7 @@ var JQLStatement = (function (_super) {
     JQLStatement.prototype.isRemote = function () {
         return this.remote;
     };
-    JQLStatement.prototype.bind = function (data) {
+    JQLStatement.prototype.bind = function (data, db) {
         this.binded = false;
         var bindings = this.getBindings(), numBindings = bindings.length, bindingName;
         for (var i = 0; i < numBindings; i++) {
@@ -2013,7 +2027,9 @@ var JQLStatement = (function (_super) {
         for (var i = 0; i < numBindings; i++) {
             bindingName = bindings[i].getBindingName();
             if (undefined === data[bindingName]) {
-                throw new Error("Failed to bind statement: Binding " + JSON.stringify(bindingName) + " is not defined in bind object!");
+                if (!db || !db.autoBind(bindingName, bindings[i])) {
+                    throw new Error("Failed to bind statement: Binding " + JSON.stringify(bindingName) + " is not defined in bind object, and is also not auto bindable!");
+                }
             }
             else {
                 bindings[i].bind(data[bindingName]);
