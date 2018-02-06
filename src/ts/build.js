@@ -527,9 +527,9 @@ var JQLUtils = (function () {
         var aString = this.castToString(a).toLowerCase(), bString = this.castToString(b).toLowerCase();
         return aString === bString
             ? 0
-            : (aString < bString
-                ? 1
-                : -1);
+            : (aString > bString
+                ? -1
+                : 1);
     };
     JQLUtils.RESERVED_KEYWORDS = [
         "select",
@@ -2335,8 +2335,7 @@ var JQLExpressionLogicalOr = (function (_super) {
         return EJQL_LEXER_OPERATOR_LOGICAL_TYPE.OR;
     };
     JQLExpressionLogicalOr.prototype.compute = function (context) {
-        console.warn('TODO: Properly implement "Logical ||" operator');
-        return this.left.compute(context) || this.right.compute(context);
+        return !!(this.left.compute(context) || this.right.compute(context));
     };
     JQLExpressionLogicalOr.prototype.toString = function () {
         return this.left.toString() + " or " + this.right.toString();
@@ -2352,8 +2351,7 @@ var JQLExpressionLogicalAnd = (function (_super) {
         return EJQL_LEXER_OPERATOR_LOGICAL_TYPE.AND;
     };
     JQLExpressionLogicalAnd.prototype.compute = function (context) {
-        console.warn('TODO: Properly implement "Logical &&" operator');
-        return this.left.compute(context) || this.right.compute(context);
+        return !!(this.left.compute(context) && this.right.compute(context));
     };
     JQLExpressionLogicalAnd.prototype.toString = function () {
         return this.left.toString() + " and " + this.right.toString();
@@ -2476,8 +2474,14 @@ var JQLExpressionLogicalLowerThen = (function (_super) {
         return EJQL_LEXER_OPERATOR_COMPARISION_TYPE.LT;
     };
     JQLExpressionLogicalLowerThen.prototype.compute = function (context) {
-        console.warn('TODO: Properly implement "Logical <" operator');
-        return this.left.compute(context) < this.right.compute(context);
+        var computedLeft = this.left.compute(context), computedRight = this.right.compute(context);
+        if ((computedLeft === null || computedRight === null)) {
+            return null;
+        }
+        if (!isNaN(computedLeft) && !isNaN(computedRight)) {
+            return Number(computedLeft) < Number(computedRight);
+        }
+        return computedLeft < computedRight || JQLUtils.compareAsStrings(computedLeft, computedRight) > 0;
     };
     JQLExpressionLogicalLowerThen.prototype.toString = function () {
         return this.left.toString() + " < " + this.right.toString();
@@ -2493,8 +2497,14 @@ var JQLExpressionLogicalLowerThenEquals = (function (_super) {
         return EJQL_LEXER_OPERATOR_COMPARISION_TYPE.LTE;
     };
     JQLExpressionLogicalLowerThenEquals.prototype.compute = function (context) {
-        console.warn('TODO: Properly implement "Logical <=" operator');
-        return this.left.compute(context) <= this.right.compute(context);
+        var computedLeft = this.left.compute(context), computedRight = this.right.compute(context);
+        if ((computedLeft === null || computedRight === null)) {
+            return null;
+        }
+        if (!isNaN(computedLeft) && !isNaN(computedRight)) {
+            return Number(computedLeft) < Number(computedRight);
+        }
+        return computedLeft <= computedRight || JQLUtils.compareAsStrings(computedLeft, computedRight) >= 0;
     };
     JQLExpressionLogicalLowerThenEquals.prototype.toString = function () {
         return this.left.toString() + " <= " + this.right.toString();
@@ -2510,11 +2520,17 @@ var JQLExpressionLogicalGreaterThen = (function (_super) {
         return EJQL_LEXER_OPERATOR_COMPARISION_TYPE.GT;
     };
     JQLExpressionLogicalGreaterThen.prototype.compute = function (context) {
-        console.warn('TODO: Properly implement "Logical >" operator');
-        return this.left.compute(context) > this.right.compute(context);
+        var computedLeft = this.left.compute(context), computedRight = this.right.compute(context);
+        if ((computedLeft === null || computedRight === null)) {
+            return null;
+        }
+        if (!isNaN(computedLeft) && !isNaN(computedRight)) {
+            return Number(computedLeft) > Number(computedRight);
+        }
+        return computedLeft > computedRight || JQLUtils.compareAsStrings(computedLeft, computedRight) < 0;
     };
     JQLExpressionLogicalGreaterThen.prototype.toString = function () {
-        return this.left.toString() + " >= " + this.right.toString();
+        return this.left.toString() + " > " + this.right.toString();
     };
     return JQLExpressionLogicalGreaterThen;
 }(JQLExpressionLogical));
@@ -2527,8 +2543,14 @@ var JQLExpressionLogicalGreaterThenEquals = (function (_super) {
         return EJQL_LEXER_OPERATOR_COMPARISION_TYPE.GTE;
     };
     JQLExpressionLogicalGreaterThenEquals.prototype.compute = function (context) {
-        console.warn('TODO: Properly implement "Logical >=" operator');
-        return this.left.compute(context) >= this.right.compute(context);
+        var computedLeft = this.left.compute(context), computedRight = this.right.compute(context);
+        if ((computedLeft === null || computedRight === null)) {
+            return null;
+        }
+        if (!isNaN(computedLeft) && !isNaN(computedRight)) {
+            return Number(computedLeft) > Number(computedRight);
+        }
+        return computedLeft >= computedRight || JQLUtils.compareAsStrings(computedLeft, computedRight) <= 0;
     };
     JQLExpressionLogicalGreaterThenEquals.prototype.toString = function () {
         return this.left.toString() + " >= " + this.right.toString();

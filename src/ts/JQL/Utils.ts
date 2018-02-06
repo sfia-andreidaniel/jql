@@ -331,9 +331,9 @@ class JQLUtils {
 
         return aString === bString
             ? 0
-            : (aString < bString
-                ? 1
-                : -1);
+            : (aString > bString
+                ? -1
+                : 1);
 
     }
 }

@@ -6,9 +6,7 @@ class JQLExpressionLogicalOr extends JQLExpressionLogical {
 
     public compute(context: IJQLTableRow): JQLPrimitive {
 
-        console.warn('TODO: Properly implement "Logical ||" operator');
-
-        return this.left.compute(context) || this.right.compute(context);
+        return !!(this.left.compute(context) || this.right.compute(context));
     }
 
     public toString(): string {
