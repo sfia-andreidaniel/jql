@@ -474,7 +474,8 @@ UpdateWithOptionalORDERStatement
     ;
 
 UpdateWithOptionalLIMITStatement
-    : UpdateWithOptionalORDERStatement "LIMIT" LimitClause     {
+    : UpdateWithOptionalORDERStatement
+      "LIMIT" LimitClauseWithoutRowSkipping                   {
                                                                     //js
                                                                     $$ = $1;
                                                                     $$.limit = $3;
@@ -557,7 +558,7 @@ DeleteWithOptionalORDERClauseStatement
 
 DeleteWithOptionalLIMITClauseStatement
     : DeleteWithOptionalORDERClauseStatement
-      "LIMIT" LimitClause                                      {
+      "LIMIT" LimitClauseWithoutRowSkipping                    {
                                                                     //js
                                                                     $$ = $1;
                                                                     $$.limit = $3;
@@ -982,8 +983,27 @@ OrderByField
                                                                }
     ;
 
+LimitClauseWithoutRowSkipping
+    : "NUMBER"                                                {
+                                                                    //js
+                                                                    $$ = {
+                                                                       op:           AST.TOKEN_TYPES.OPTION_LIMIT,
+                                                                       limit:        AST.parseNumber( $1 ),
+                                                                       skip:         0
+                                                                   };
+                                                              }
+    ;
+
 LimitClause
-    : "NUMBER"                                                 {
+    : "NUMBER" "," "NUMBER"                                    {
+                                                                        //js
+                                                                        $$ = {
+                                                                            op:           AST.TOKEN_TYPES.OPTION_LIMIT,
+                                                                            limit:        AST.parseNumber( $3 ),
+                                                                            skip:         AST.parseNumber( $1 )
+                                                                        };
+                                                               }
+    | "NUMBER"                                                 {
                                                                     //js
                                                                     $$ = {
                                                                         op:           AST.TOKEN_TYPES.OPTION_LIMIT,
@@ -991,12 +1011,5 @@ LimitClause
                                                                         skip:         0
                                                                     };
                                                                }
-    | "NUMBER" "," "NUMBER"                                    {
-                                                                    //js
-                                                                    $$ = {
-                                                                        op:           AST.TOKEN_TYPES.OPTION_LIMIT,
-                                                                        limit:        AST.parseNumber( $3 ),
-                                                                        skip:         AST.parseNumber( $1 )
-                                                                    };
-                                                               }
+
     ;
