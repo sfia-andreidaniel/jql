@@ -1,8 +1,22 @@
 declare var db: JQLDatabase;
 
+class DummyAutoDatabaseBinder implements IQueryBindingProvider {
+
+    public canBind(bindingName: string): boolean {
+        return /^binding_test_[\d]+$/.test(bindingName);
+    }
+
+    public getBindedValue(bindingName: string): JQLPrimitive {
+        return bindingName;
+    }
+
+}
+
 (function ($: JQueryStatic) {
 
     $(function () {
+
+        db.withAutoBindingProvider(new DummyAutoDatabaseBinder());
 
         let refreshTablesInAdminTableForm = function () {
 
@@ -292,62 +306,59 @@ declare var db: JQLDatabase;
                 .split("\n").join("<br />");
         };
 
-        let htmlentities = (function() {
+        let htmlentities = (function () {
 
-            let escaper = document.createElement('div');
+            let escaper = document.createElement("div");
 
-            return function(s: string): string {
-                escaper.textContent = String(s || '');
+            return function (s: string): string {
+                escaper.textContent = String(s || "");
                 return escaper.innerHTML;
-            }
+            };
 
         })();
 
-        let castColumnToString = function( col: JQLPrimitive ): string {
-            if ( null === col ) {
-                return '<NULL>';
-            } else
-            if ( true === col ) {
-                return 'TRUE';
-            } else
-            if ( false === col ) {
-                return 'FALSE';
-            } else
-            if ( 'string' === typeof col ) {
+        let castColumnToString = function (col: JQLPrimitive): string {
+            if (null === col) {
+                return "<NULL>";
+            } else if (true === col) {
+                return "TRUE";
+            } else if (false === col) {
+                return "FALSE";
+            } else if ("string" === typeof col) {
                 return col;
             } else {
                 return String(col);
             }
         };
 
-        let dumpSQLResult = function( result: JQLStatementResultSelect ): string {
+        let dumpSQLResult = function (result: JQLStatementResultSelect): string {
 
-            let buffer: string = '<table style="width: 100%"><thead><tr>',
-                rows = result.getRows(),
+            let buffer: string = "<table style=\"width: 100%\"><thead><tr>",
+                rows           = result.getRows(),
                 cols: string[] = [];
 
-            if ( !rows.length ) {
-                return '0 rows';
+            if (!rows.length) {
+                return "0 rows";
             }
 
-            let firstRow = rows[0];
+            let firstRow = rows[ 0 ];
 
-            for ( let colName in firstRow ) {
-                buffer += '<td>' + htmlentities( colName ) + '</td>';
+            for (let colName in firstRow) {
+                buffer += "<td>" + htmlentities(colName) + "</td>";
                 cols.push(colName);
             }
 
-            buffer += '</tr></thead><tbody>';
+            buffer += "</tr></thead><tbody>";
 
-            for ( let i=0, len = rows.length; i<len; i++ ) {
-                buffer += '<tr>';
-                for ( let j=0, n = cols.length; j<n; j++ ) {
-                    buffer += '<td>' + htmlentities( castColumnToString(rows[i][ cols[j] ]) ) + '</td>';
+            for (let i = 0, len = rows.length; i < len; i++) {
+                buffer += "<tr>";
+                for (let j = 0, n = cols.length; j < n; j++) {
+                    buffer += "<td>" + htmlentities(castColumnToString(rows[ i ][ cols[ j ] ])) + "</td>";
                 }
-                buffer += '</tr>';
+                buffer += "</tr>";
             }
 
-            buffer += '</tbody></table>';
+            buffer += "</tbody></table>";
 
             return buffer;
 
@@ -359,7 +370,7 @@ declare var db: JQLDatabase;
                 e.preventDefault();
                 e.stopPropagation();
 
-                $("#sql-result").html('');
+                $("#sql-result").html("");
 
                 let statement: JQLStatement;
 
@@ -375,28 +386,30 @@ declare var db: JQLDatabase;
 
                 }
 
-                $("#sql-result").html('executing...');
+                $("#sql-result").html("executing...");
 
 
                 let queryStartTime = +new Date;
 
-                db.executeStatement(statement).then(function(result: JQLStatementResult){
+                db.executeStatement(statement).then(function (result: JQLStatementResult) {
 
-                    $('#sql-result').html('<div class=success>Completed in ' + ( ( +new Date - queryStartTime ) ) + ' milliseconds' );
+                    $("#sql-result").html("<div class=success>Completed in " + ((+new Date - queryStartTime)) + " milliseconds");
 
-                    if ( !result.hasRows() ) {
+                    if (!result.hasRows()) {
 
-                        $('#sql-result').append( result.getAffectedRows() + ' rows affected' );
+                        $("#sql-result").append(result.getAffectedRows() + " rows affected");
 
                     } else {
 
-                        $('#sql-result').append(dumpSQLResult( <JQLStatementResultSelect>result ));
+                        $("#sql-result").append(dumpSQLResult(<JQLStatementResultSelect>result));
 
                     }
 
-                }).fail(function(e){
+                }).fail(function (e) {
 
-                    $("#sql-result").html("<div class=error>" + nl2br(e instanceof Error ? e.toString() : JSON.stringify(e)) + "</div>");
+                    $("#sql-result").html("<div class=error>" + nl2br(e instanceof Error
+                        ? e.toString()
+                        : JSON.stringify(e)) + "</div>");
 
                 });
 

@@ -718,8 +718,15 @@ var JQLDatabase = (function (_super) {
         return stmt;
     };
     JQLDatabase.prototype.executeStatement = function (statement, bindings) {
-        statement.bind(bindings || {}, this);
-        return this.planner.scheduleStatement(statement, this.createExecutionStrategy(statement));
+        try {
+            statement.bind(bindings || {}, this);
+            return this.planner.scheduleStatement(statement, this.createExecutionStrategy(statement));
+        }
+        catch (e) {
+            return this.jq.Deferred(function (deferred) {
+                deferred.reject(e);
+            }).promise();
+        }
     };
     JQLDatabase.prototype.createExecutionStrategy = function (statement) {
         if (!statement.isRemote()) {
@@ -3491,8 +3498,20 @@ var JQLStatementDelete = (function (_super) {
     };
     return JQLStatementDelete;
 }(JQLStatement));
+var DummyAutoDatabaseBinder = (function () {
+    function DummyAutoDatabaseBinder() {
+    }
+    DummyAutoDatabaseBinder.prototype.canBind = function (bindingName) {
+        return /^binding_test_[\d]+$/.test(bindingName);
+    };
+    DummyAutoDatabaseBinder.prototype.getBindedValue = function (bindingName) {
+        return bindingName;
+    };
+    return DummyAutoDatabaseBinder;
+}());
 (function ($) {
     $(function () {
+        db.withAutoBindingProvider(new DummyAutoDatabaseBinder());
         var refreshTablesInAdminTableForm = function () {
             var tables = db.enumerateTables();
             $("#admin-table [name=table-list]").each(function () {
@@ -3680,23 +3699,23 @@ var JQLStatementDelete = (function (_super) {
                 .split("\n").join("<br />");
         };
         var htmlentities = (function () {
-            var escaper = document.createElement('div');
+            var escaper = document.createElement("div");
             return function (s) {
-                escaper.textContent = String(s || '');
+                escaper.textContent = String(s || "");
                 return escaper.innerHTML;
             };
         })();
         var castColumnToString = function (col) {
             if (null === col) {
-                return '<NULL>';
+                return "<NULL>";
             }
             else if (true === col) {
-                return 'TRUE';
+                return "TRUE";
             }
             else if (false === col) {
-                return 'FALSE';
+                return "FALSE";
             }
-            else if ('string' === typeof col) {
+            else if ("string" === typeof col) {
                 return col;
             }
             else {
@@ -3704,31 +3723,31 @@ var JQLStatementDelete = (function (_super) {
             }
         };
         var dumpSQLResult = function (result) {
-            var buffer = '<table style="width: 100%"><thead><tr>', rows = result.getRows(), cols = [];
+            var buffer = "<table style=\"width: 100%\"><thead><tr>", rows = result.getRows(), cols = [];
             if (!rows.length) {
-                return '0 rows';
+                return "0 rows";
             }
             var firstRow = rows[0];
             for (var colName in firstRow) {
-                buffer += '<td>' + htmlentities(colName) + '</td>';
+                buffer += "<td>" + htmlentities(colName) + "</td>";
                 cols.push(colName);
             }
-            buffer += '</tr></thead><tbody>';
+            buffer += "</tr></thead><tbody>";
             for (var i = 0, len = rows.length; i < len; i++) {
-                buffer += '<tr>';
+                buffer += "<tr>";
                 for (var j = 0, n = cols.length; j < n; j++) {
-                    buffer += '<td>' + htmlentities(castColumnToString(rows[i][cols[j]])) + '</td>';
+                    buffer += "<td>" + htmlentities(castColumnToString(rows[i][cols[j]])) + "</td>";
                 }
-                buffer += '</tr>';
+                buffer += "</tr>";
             }
-            buffer += '</tbody></table>';
+            buffer += "</tbody></table>";
             return buffer;
         };
         $("#query").each(function () {
             $(this).on("submit", function (e) {
                 e.preventDefault();
                 e.stopPropagation();
-                $("#sql-result").html('');
+                $("#sql-result").html("");
                 var statement;
                 try {
                     statement = db.createStatement($(this).find("[name=jql]").val());
@@ -3738,18 +3757,20 @@ var JQLStatementDelete = (function (_super) {
                     $("#sql-result").html("<div class=error>" + nl2br(e.toString()) + "</div>");
                     return;
                 }
-                $("#sql-result").html('executing...');
+                $("#sql-result").html("executing...");
                 var queryStartTime = +new Date;
                 db.executeStatement(statement).then(function (result) {
-                    $('#sql-result').html('<div class=success>Completed in ' + ((+new Date - queryStartTime)) + ' milliseconds');
+                    $("#sql-result").html("<div class=success>Completed in " + ((+new Date - queryStartTime)) + " milliseconds");
                     if (!result.hasRows()) {
-                        $('#sql-result').append(result.getAffectedRows() + ' rows affected');
+                        $("#sql-result").append(result.getAffectedRows() + " rows affected");
                     }
                     else {
-                        $('#sql-result').append(dumpSQLResult(result));
+                        $("#sql-result").append(dumpSQLResult(result));
                     }
                 }).fail(function (e) {
-                    $("#sql-result").html("<div class=error>" + nl2br(e instanceof Error ? e.toString() : JSON.stringify(e)) + "</div>");
+                    $("#sql-result").html("<div class=error>" + nl2br(e instanceof Error
+                        ? e.toString()
+                        : JSON.stringify(e)) + "</div>");
                 });
             });
         });
