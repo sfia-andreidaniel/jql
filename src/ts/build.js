@@ -2718,15 +2718,28 @@ var JQLExpressionUnaryInvert = (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     JQLExpressionUnaryInvert.prototype.getOperator = function () {
-        console.warn('TODO: Properly implement "Unary -" operator');
         return EJQL_LEXER_OPERATOR_UNARY_TYPE.INVERT;
     };
     JQLExpressionUnaryInvert.prototype.compute = function (context) {
-        console.warn('TODO: Properly implement "Unary -" operator');
-        return -this.operand.compute(context);
+        var computedOperand = this.operand.compute(context);
+        if (computedOperand === null) {
+            return null;
+        }
+        else if (computedOperand === true) {
+            return -1;
+        }
+        else if (computedOperand === false) {
+            return 0;
+        }
+        else if (isNaN(computedOperand)) {
+            return -computedOperand;
+        }
+        else {
+            return 0;
+        }
     };
     JQLExpressionUnaryInvert.prototype.toString = function () {
-        return '-' + this.operand.toString();
+        return "-" + this.operand.toString();
     };
     return JQLExpressionUnaryInvert;
 }(JQLExpressionUnary));
@@ -3592,6 +3605,23 @@ var JQLStatementDelete = (function (_super) {
                 return escaper.innerHTML;
             };
         })();
+        var castColumnToString = function (col) {
+            if (null === col) {
+                return '<NULL>';
+            }
+            else if (true === col) {
+                return 'TRUE';
+            }
+            else if (false === col) {
+                return 'FALSE';
+            }
+            else if ('string' === typeof col) {
+                return col;
+            }
+            else {
+                return String(col);
+            }
+        };
         var dumpSQLResult = function (result) {
             var buffer = '<table style="width: 100%"><thead><tr>', rows = result.getRows(), cols = [];
             if (!rows.length) {
@@ -3606,7 +3636,7 @@ var JQLStatementDelete = (function (_super) {
             for (var i = 0, len = rows.length; i < len; i++) {
                 buffer += '<tr>';
                 for (var j = 0, n = cols.length; j < n; j++) {
-                    buffer += '<td>' + htmlentities(rows[i][cols[j]]) + '</td>';
+                    buffer += '<td>' + htmlentities(castColumnToString(rows[i][cols[j]])) + '</td>';
                 }
                 buffer += '</tr>';
             }

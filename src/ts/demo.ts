@@ -303,6 +303,23 @@ declare var db: JQLDatabase;
 
         })();
 
+        let castColumnToString = function( col: JQLPrimitive ): string {
+            if ( null === col ) {
+                return '<NULL>';
+            } else
+            if ( true === col ) {
+                return 'TRUE';
+            } else
+            if ( false === col ) {
+                return 'FALSE';
+            } else
+            if ( 'string' === typeof col ) {
+                return col;
+            } else {
+                return String(col);
+            }
+        };
+
         let dumpSQLResult = function( result: JQLStatementResultSelect ): string {
 
             let buffer: string = '<table style="width: 100%"><thead><tr>',
@@ -325,7 +342,7 @@ declare var db: JQLDatabase;
             for ( let i=0, len = rows.length; i<len; i++ ) {
                 buffer += '<tr>';
                 for ( let j=0, n = cols.length; j<n; j++ ) {
-                    buffer += '<td>' + htmlentities( rows[i][ cols[j] ] ) + '</td>';
+                    buffer += '<td>' + htmlentities( castColumnToString(rows[i][ cols[j] ]) ) + '</td>';
                 }
                 buffer += '</tr>';
             }
