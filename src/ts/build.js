@@ -104,6 +104,18 @@ var EJQLTableNamespace;
     EJQLTableNamespace["FORM"] = "private";
     EJQLTableNamespace["GLOBAL"] = "global";
 })(EJQLTableNamespace || (EJQLTableNamespace = {}));
+var EFormRuleEventType;
+(function (EFormRuleEventType) {
+    EFormRuleEventType[EFormRuleEventType["INIT"] = 0] = "INIT";
+    EFormRuleEventType[EFormRuleEventType["CHANGE"] = 1] = "CHANGE";
+    EFormRuleEventType[EFormRuleEventType["CHECK"] = 2] = "CHECK";
+    EFormRuleEventType[EFormRuleEventType["UNCHECK"] = 3] = "UNCHECK";
+    EFormRuleEventType[EFormRuleEventType["TEXT_INPUT"] = 4] = "TEXT_INPUT";
+    EFormRuleEventType[EFormRuleEventType["ALL_EVENTS"] = 5] = "ALL_EVENTS";
+    EFormRuleEventType[EFormRuleEventType["REINITIALIZE"] = 6] = "REINITIALIZE";
+    EFormRuleEventType[EFormRuleEventType["APPROVED"] = 7] = "APPROVED";
+    EFormRuleEventType[EFormRuleEventType["SUBMITTED"] = 8] = "SUBMITTED";
+})(EFormRuleEventType || (EFormRuleEventType = {}));
 var EventEmitter = (function () {
     function EventEmitter() {
     }
@@ -850,6 +862,9 @@ var JQLDatabase = (function (_super) {
     JQLDatabase.prototype.withAutoBindingProvider = function (provider) {
         this.bindingProviders.push(provider);
         return this;
+    };
+    JQLDatabase.prototype.saveJQLFormConfiguration = function (configuration) {
+        throw new Error("Not implemented!");
     };
     return JQLDatabase;
 }(EventEmitter));

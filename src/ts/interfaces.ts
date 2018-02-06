@@ -474,5 +474,52 @@ interface EventEmitterInterface {
 
 interface IQueryBindingProvider {
     canBind(bindingName: string): boolean;
+
     getBindedValue(bindingName: string): JQLPrimitive;
+}
+
+enum EFormRuleEventType {
+    INIT,
+    CHANGE,
+    CHECK,
+    UNCHECK,
+    TEXT_INPUT,
+    ALL_EVENTS,
+    REINITIALIZE,
+    APPROVED, // BACKEND SIDE EVENT
+    SUBMITTED // BACKEND SIDE EVENT
+}
+
+/**
+ * JQL 1.0 definitions
+ */
+
+interface IJQLv1FormEventAction {
+    controlId: string;
+    jql: string;
+}
+
+interface IJQLv1FormEventConfiguration {
+    controlId: string;
+    eventType: EFormRuleEventType;
+    actions: IJQLv1FormEventAction[];
+    isRule?: boolean;
+}
+
+/**
+ * JQL 2.0 definitions
+ */
+interface IJQLv2FormEventAction {
+    controlId: string;
+    statement: IJQL_LEXER_PARSED_SELECT_STATEMENT
+        | IJQL_LEXER_PARSED_DELETE_STATEMENT
+        | IJQL_LEXER_PARSED_UPDATE_STATEMENT
+        | IJQL_LEXER_PARSED_INSERT_STATEMENT;
+}
+
+interface IJQLv2FormEventConfiguration {
+    controlId: string;
+    eventType: EFormRuleEventType;
+    actions: IJQLv2FormEventAction[];
+    isRule?: boolean;
 }

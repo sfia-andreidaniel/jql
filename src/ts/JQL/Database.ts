@@ -456,4 +456,8 @@ class JQLDatabase extends EventEmitter implements IJQLDatabase, EventEmitterInte
         this.bindingProviders.push(provider);
         return this;
     }
+
+    public saveJQLFormConfiguration(configuration: IJQLv1FormEventConfiguration): JQueryPromise<boolean> {
+        throw new Error("Not implemented!");
+    }
 }
