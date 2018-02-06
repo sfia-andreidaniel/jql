@@ -313,4 +313,27 @@ class JQLUtils {
         return result;
     }
 
+    public static castToString(primitive: JQLPrimitive): string {
+        if (true === primitive) {
+            return "1";
+        } else if (false === primitive) {
+            return "0";
+        } else {
+            return String(primitive || "");
+        }
+    }
+
+
+    public static compareAsStrings(a: JQLPrimitive, b: JQLPrimitive): number {
+
+        let aString = this.castToString(a).toLowerCase(),
+            bString = this.castToString(b).toLowerCase();
+
+        return aString === bString
+            ? 0
+            : (aString < bString
+                ? 1
+                : -1);
+
+    }
 }

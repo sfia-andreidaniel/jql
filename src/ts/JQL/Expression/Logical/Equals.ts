@@ -9,11 +9,17 @@ class JQLExpressionLogicalEquals extends JQLExpressionLogical {
         let computedLeft  = this.left.compute(context),
             computedRight = this.right.compute(context);
 
-        if ((computedLeft === null && computedRight !== null) || (computedLeft !== null && computedRight === null)) {
+        // ANY MEMBER THAT IS NULL RESULTS IN A NULL EXPRESSION RESULT
+        if ((computedLeft === null || computedRight === null)) {
             return null;
         }
 
-        return computedLeft == computedRight;
+        // BOTH MEMBERS ARE NUMBERS?
+        if (!isNaN(<any>computedLeft) && !isNaN(<any>computedRight)) {
+            return Number(computedLeft) != Number(computedRight);
+        }
+
+        return computedLeft == computedRight || JQLUtils.compareAsStrings(computedLeft, computedRight) === 0;
 
     }
 

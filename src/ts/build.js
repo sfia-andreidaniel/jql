@@ -512,6 +512,25 @@ var JQLUtils = (function () {
         }
         return result;
     };
+    JQLUtils.castToString = function (primitive) {
+        if (true === primitive) {
+            return "1";
+        }
+        else if (false === primitive) {
+            return "0";
+        }
+        else {
+            return String(primitive || "");
+        }
+    };
+    JQLUtils.compareAsStrings = function (a, b) {
+        var aString = this.castToString(a).toLowerCase(), bString = this.castToString(b).toLowerCase();
+        return aString === bString
+            ? 0
+            : (aString < bString
+                ? 1
+                : -1);
+    };
     JQLUtils.RESERVED_KEYWORDS = [
         "select",
         "from",
@@ -2351,10 +2370,13 @@ var JQLExpressionLogicalEquals = (function (_super) {
     };
     JQLExpressionLogicalEquals.prototype.compute = function (context) {
         var computedLeft = this.left.compute(context), computedRight = this.right.compute(context);
-        if ((computedLeft === null && computedRight !== null) || (computedLeft !== null && computedRight === null)) {
+        if ((computedLeft === null || computedRight === null)) {
             return null;
         }
-        return computedLeft == computedRight;
+        if (!isNaN(computedLeft) && !isNaN(computedRight)) {
+            return Number(computedLeft) != Number(computedRight);
+        }
+        return computedLeft == computedRight || JQLUtils.compareAsStrings(computedLeft, computedRight) === 0;
     };
     JQLExpressionLogicalEquals.prototype.toString = function () {
         return this.left.toString() + " = " + this.right.toString();
@@ -2371,10 +2393,13 @@ var JQLExpressionLogicalDifferent = (function (_super) {
     };
     JQLExpressionLogicalDifferent.prototype.compute = function (context) {
         var computedLeft = this.left.compute(context), computedRight = this.right.compute(context);
-        if ((computedLeft === null && computedRight !== null) || (computedLeft !== null && computedRight === null)) {
+        if ((computedLeft === null || computedRight === null)) {
             return null;
         }
-        return computedLeft != computedRight;
+        if (!isNaN(computedLeft) && !isNaN(computedRight)) {
+            return Number(computedLeft) != Number(computedRight);
+        }
+        return computedLeft != computedRight || JQLUtils.compareAsStrings(computedLeft, computedRight) !== 0;
     };
     JQLExpressionLogicalDifferent.prototype.toString = function () {
         return this.left.toString() + " <> " + this.right.toString();
@@ -2393,7 +2418,10 @@ var JQLExpressionLogicalLike = (function (_super) {
         return this.like(this.left.compute(context), this.right.compute(context));
     };
     JQLExpressionLogicalLike.prototype.like = function (left, right) {
-        var leftStr = this.castToString(left), rightStr = this.castToString(right), regExp = this.buildRegularExpression(rightStr);
+        if (null === left || null === right) {
+            return null;
+        }
+        var leftStr = JQLUtils.castToString(left), rightStr = JQLUtils.castToString(right), regExp = this.buildRegularExpression(rightStr);
         return regExp.test(leftStr);
     };
     JQLExpressionLogicalLike.prototype.buildRegularExpression = function (str) {
@@ -2433,17 +2461,6 @@ var JQLExpressionLogicalLike = (function (_super) {
             }
         }
         return new RegExp(regExpStr + "$", "i");
-    };
-    JQLExpressionLogicalLike.prototype.castToString = function (primitive) {
-        if (true === primitive) {
-            return "1";
-        }
-        else if (false === primitive) {
-            return "0";
-        }
-        else {
-            return String(primitive || "");
-        }
     };
     JQLExpressionLogicalLike.prototype.toString = function () {
         return this.left.toString() + " LIKE " + this.right.toString();

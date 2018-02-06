@@ -9,8 +9,13 @@ class JQLExpressionLogicalLike extends JQLExpressionLogical {
     }
 
     private like(left: JQLPrimitive, right: JQLPrimitive): boolean {
-        let leftStr  = this.castToString(left),
-            rightStr = this.castToString(right),
+
+        if (null === left || null === right) {
+            return null;
+        }
+
+        let leftStr  = JQLUtils.castToString(left),
+            rightStr = JQLUtils.castToString(right),
             regExp   = this.buildRegularExpression(rightStr);
 
         return regExp.test(leftStr);
@@ -57,16 +62,6 @@ class JQLExpressionLogicalLike extends JQLExpressionLogical {
         }
 
         return new RegExp(regExpStr + "$", "i");
-    }
-
-    private castToString(primitive: JQLPrimitive): string {
-        if (true === primitive) {
-            return "1";
-        } else if (false === primitive) {
-            return "0";
-        } else {
-            return String(primitive || "");
-        }
     }
 
     public toString(): string {
