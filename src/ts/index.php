@@ -6,105 +6,13 @@
     <script src="vendor/jquery-3.2.1.min.js"></script>
     <script src="JQL/Lexer/JQLGrammar.js"></script>
     <script src="build.js"></script>
-    <style>
-        body > form {
-            display: inline-block;
-            vertical-align: top;
-        }
-
-        body > form {
-            width: 500px;
-        }
-
-        body > form label, body > form button {
-            display: inline-block;
-            min-height: 40px;
-            box-sizing: content-box;
-        }
-
-        body > form > * {
-            display: inline-block;
-            vertical-align: middle;
-            line-height: 34px;
-        }
-
-        body > form label > span {
-            display: inline-block;
-            width: 150px;
-            vertical-align: middle;
-        }
-
-        body > form label > span + input:not([type=checkbox]),
-        body > form label > span + select,
-        body > form label > span + textarea {
-            width: 300px;
-            height: 34px;
-            box-sizing: content-box;
-            padding: 0;
-            margin: 0;
-            vertical-align: middle;
-        }
-
-        #admin-table #describe-table {
-            margin-top: 15px;
-        }
-
-        #admin-table #describe-table table {
-            border-collapse: collapse;
-            border: 1px solid black;
-        }
-
-        #admin-table #describe-table table thead {
-            background-color: black;
-            color: white;
-        }
-
-        #admin-table tr.footer {
-            display: none;
-        }
-
-        #admin-table tr.footer button {
-            margin: 10px 0;
-        }
-
-        #admin-table table.modified tr.footer {
-            display: table-row;
-        }
-
-        #admin-table a[data-role=drop-index] {
-            float: right;
-            margin-right: 10px;
-        }
-
-        form *.error {
-            color: red;
-            font-family: "Courier New";
-            font-size: 12px;
-            line-height: 1.2em;
-        }
-
-        form *.success {
-            color: green;
-        }
-
-        #sql-result {
-            margin-top: 20px;
-        }
-
-        #sql-result thead {
-            color: white;
-            background-color: black;
-        }
-
-    </style>
-
+    <link rel="stylesheet" type="text/css" href="demo.css" />
 </head>
 <body>
 
 <?php
 
 $authorizationToken = json_decode(file_get_contents('http://127.0.0.1/?action=token&token_type=admin&user_id=1&form_id=1'));
-
 $tableSchema = json_decode(file_get_contents('http://127.0.0.1?action=show-tables&auth=' . $authorizationToken), true);
 
 ?>
