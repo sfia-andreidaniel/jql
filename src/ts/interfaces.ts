@@ -509,17 +509,13 @@ interface IJQLv1FormEventConfiguration {
 /**
  * JQL 2.0 definitions
  */
-interface IJQLv2FormEventAction {
-    controlId: string;
+interface IJQLv2FormEventAction extends IJQLv1FormEventAction {
     statement: IJQL_LEXER_PARSED_SELECT_STATEMENT
         | IJQL_LEXER_PARSED_DELETE_STATEMENT
         | IJQL_LEXER_PARSED_UPDATE_STATEMENT
         | IJQL_LEXER_PARSED_INSERT_STATEMENT;
 }
 
-interface IJQLv2FormEventConfiguration {
-    controlId: string;
-    eventType: EFormRuleEventType;
+interface IJQLv2FormEventConfiguration extends IJQLv1FormEventConfiguration {
     actions: IJQLv2FormEventAction[];
-    isRule?: boolean;
 }

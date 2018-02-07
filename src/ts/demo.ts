@@ -417,6 +417,46 @@ class DummyAutoDatabaseBinder implements IQueryBindingProvider {
 
         });
 
+        $("#config").each(function () {
+
+            $(this).on("submit", function (e) {
+
+                e.preventDefault();
+                e.stopPropagation();
+
+                try {
+
+                    let config: IJQLv1FormEventConfiguration[] = JSON.parse($(this).find("[name=config]").val());
+
+                    db.saveJQLFormConfiguration(config).then(() => {
+
+                        $("#save-result").html("<span class=success>SAVED</span>");
+
+                    }).fail((e) => {
+
+                        $("#save-result").html("<span class=error>" + e.toString() + "</span>");
+
+                    });
+
+                }
+                catch (e) {
+
+                    $(this).find("#save-result").html("<span class=error>" + e.toString() + "</span>");
+
+                }
+
+            });
+
+            $(this).find("[name=config]").val(
+                JSON.stringify(
+                    JQLV1ConfigurationDemoProvider.getConfig(),
+                    undefined,
+                    4,
+                ),
+            );
+
+        });
+
     });
 
 

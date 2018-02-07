@@ -198,6 +198,56 @@ var EventEmitter = (function () {
     };
     return EventEmitter;
 }());
+var JQLValidatorV1Configuration = (function () {
+    function JQLValidatorV1Configuration() {
+    }
+    JQLValidatorV1Configuration.assertJQLV1ConfigurationStructure = function (structure) {
+        if (!(structure instanceof Object)) {
+            throw new Error("Object expected!");
+        }
+        if (undefined === structure.controlId) {
+            throw new Error("Missing property \"controlId\"");
+        }
+        if ("string" !== typeof structure.controlId) {
+            throw new Error("Property \"controlId\" type should be string");
+        }
+        if (undefined === structure.eventType) {
+            throw new Error("Missing property \"eventType\"");
+        }
+        if ("number" !== typeof structure.eventType) {
+            throw new Error("Property \"eventType\" type should be number");
+        }
+        if (!Array.isArray(structure.actions)) {
+            throw new Error("Missing property \"actions\"");
+        }
+        if (undefined !== structure.isRule) {
+            if ("boolean" !== typeof structure.isRule) {
+                throw new Error("Property \"isRule\" type should be boolean|undefined");
+            }
+        }
+        for (var i = 0, len = structure.actions.length; i < len; i++) {
+            this.assertJQLV1EventActionStructure(structure.actions[i]);
+        }
+    };
+    JQLValidatorV1Configuration.assertJQLV1EventActionStructure = function (action) {
+        if (!(action instanceof Object)) {
+            throw new Error("Action object expected!");
+        }
+        if (undefined === action.controlId) {
+            throw new Error("Action property \"controlId\" type should be string");
+        }
+        if ("string" !== typeof action.controlId) {
+            throw new Error("Action property \"controlId\" should be string");
+        }
+        if (undefined === action.jql) {
+            throw new Error("Action property \"jql\" should be string");
+        }
+        if ("string" !== typeof action.jql) {
+            throw new Error("Action property \"jql\" should be string");
+        }
+    };
+    return JQLValidatorV1Configuration;
+}());
 var JQLLexerFactory = (function () {
     function JQLLexerFactory() {
     }
@@ -864,7 +914,44 @@ var JQLDatabase = (function (_super) {
         return this;
     };
     JQLDatabase.prototype.saveJQLFormConfiguration = function (configuration) {
-        throw new Error("Not implemented!");
+        var _this = this;
+        try {
+            if (!Array.isArray(configuration)) {
+                throw new Error("Array of IJQLv1FormEventConfiguration expected");
+            }
+            for (var i = 0, len = configuration.length; i < len; i++) {
+                JQLValidatorV1Configuration.assertJQLV1ConfigurationStructure(configuration[i]);
+            }
+            var jqlV2Config_1 = JSON.parse(JSON.stringify(configuration));
+            for (var i = 0, len = configuration.length; i < len; i++) {
+                for (var j = 0, n = configuration[i].actions.length; j < n; j++) {
+                    jqlV2Config_1[i].actions[j].statement = JQLGrammar.parse(configuration[i].actions[j].jql);
+                }
+            }
+            return (function ($) {
+                return $.Deferred(function (defer) {
+                    $.ajax({
+                        url: _this.rpcEndpointName,
+                        data: {
+                            action: "save-jql-configuration",
+                            auth: _this.authorizationToken,
+                            configuration: btoa(JSON.stringify(jqlV2Config_1)),
+                        },
+                        type: "POST",
+                        dataType: "json",
+                    }).then(function (response) {
+                        defer.resolve(configuration);
+                    }).fail(function (e) {
+                        defer.reject(e);
+                    });
+                }).promise();
+            })(this.jq);
+        }
+        catch (e) {
+            return this.jq.Deferred(function (defer) {
+                defer.reject(e);
+            }).promise();
+        }
     };
     return JQLDatabase;
 }(EventEmitter));
@@ -3513,6 +3600,30 @@ var JQLStatementDelete = (function (_super) {
     };
     return JQLStatementDelete;
 }(JQLStatement));
+var JQLV1ConfigurationDemoProvider = (function () {
+    function JQLV1ConfigurationDemoProvider() {
+    }
+    JQLV1ConfigurationDemoProvider.getConfig = function () {
+        return [
+            {
+                eventType: EFormRuleEventType.ALL_EVENTS,
+                controlId: "control_12322311",
+                actions: [
+                    {
+                        controlId: "control_123312",
+                        jql: "REMOTE SELECT * FROM persons2 LIMIT 3",
+                    },
+                    {
+                        controlId: "control_2213",
+                        jql: "SELECT * FROM persons LIMIT 1",
+                    },
+                ],
+                isRule: false,
+            },
+        ];
+    };
+    return JQLV1ConfigurationDemoProvider;
+}());
 var DummyAutoDatabaseBinder = (function () {
     function DummyAutoDatabaseBinder() {
     }
@@ -3788,6 +3899,24 @@ var DummyAutoDatabaseBinder = (function () {
                         : JSON.stringify(e)) + "</div>");
                 });
             });
+        });
+        $("#config").each(function () {
+            $(this).on("submit", function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                try {
+                    var config = JSON.parse($(this).find("[name=config]").val());
+                    db.saveJQLFormConfiguration(config).then(function () {
+                        $("#save-result").html("<span class=success>SAVED</span>");
+                    }).fail(function (e) {
+                        $("#save-result").html("<span class=error>" + e.toString() + "</span>");
+                    });
+                }
+                catch (e) {
+                    $(this).find("#save-result").html("<span class=error>" + e.toString() + "</span>");
+                }
+            });
+            $(this).find("[name=config]").val(JSON.stringify(JQLV1ConfigurationDemoProvider.getConfig(), undefined, 4));
         });
     });
 })(jQuery);

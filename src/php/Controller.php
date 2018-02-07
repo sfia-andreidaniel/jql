@@ -9,6 +9,8 @@ use JQL\Authorization\AuthorizationService;
 use JQL\CSVParser\CSVParser;
 use JQL\CSVParser\CSVParserOptions;
 use JQL\Database\Database;
+use JQL\FormEventsConfiguration\FormEventsConfigurationDAO;
+use JQL\FormEventsConfiguration\FormEventsConfigurationService;
 use JQL\RemoteQuery\RemoteQueryException;
 use JQL\RemoteQuery\RemoteQueryService;
 use JQL\Storage\StorageService;
@@ -26,7 +28,7 @@ class Controller
     const ACTION_DROP_TABLE = 'drop-table';
     const ACTION_FETCH_TABLE = 'fetch-table';
     const ACTION_ALTER_INDEXES = 'alter-table-indexes';
-
+    const ACTION_SAVE_JQL_CONFIGURATION = 'save-jql-configuration';
 
     /**
      * @var array
@@ -62,6 +64,11 @@ class Controller
      * @var StorageService
      */
     private $storageService;
+
+    /**
+     * @var FormEventsConfigurationService
+     */
+    private $formEventsConfigurationService;
 
     /**
      * Controller constructor.
@@ -150,6 +157,10 @@ class Controller
                 return $this->alterTableIndexesAction();
                 break;
 
+            case self::ACTION_SAVE_JQL_CONFIGURATION:
+                return $this->saveJQLFormConfiguration();
+                break;
+
             default:
                 throw new ControllerException(
                     'Invalid action: ' . json_encode($action), ControllerException::ERR_INVALID_ACTION
@@ -185,7 +196,7 @@ class Controller
     {
 
         $auth = $this->getAuthorizationService()
-                     ->getAuthenticationToken();
+            ->getAuthenticationToken();
 
         $queryBase64 = $this->requestParam('query');
 
@@ -262,7 +273,7 @@ class Controller
         }
 
         $result = $this->getRemoteQueryService()
-                       ->executeQuery($decodedQuery, $decodedBindings, $auth);
+            ->executeQuery($decodedQuery, $decodedBindings, $auth);
 
         return $result;
     }
@@ -312,6 +323,21 @@ class Controller
     }
 
     /**
+     * @return FormEventsConfigurationService
+     */
+    public function getFormEventsConfigurationService()
+    {
+        return null === $this->formEventsConfigurationService
+            ? $this->formEventsConfigurationService = new FormEventsConfigurationService(
+                $this,
+                new FormEventsConfigurationDAO(
+                    $this->getDatabase()
+                )
+            )
+            : $this->formEventsConfigurationService;
+    }
+
+    /**
      * @return array
      * @throws AssertionException
      * @throws AuthorizationException
@@ -320,7 +346,7 @@ class Controller
     private function createTableFromCSVAction()
     {
         $token = $this->getAuthorizationService()
-                      ->getAuthenticationToken();
+            ->getAuthenticationToken();
 
         $fileData = isset($_FILES['csvFile'])
             ? file_get_contents($_FILES['csvFile']['tmp_name'])
@@ -401,33 +427,33 @@ class Controller
         );
 
         $table = (new TableModelBuilder())->withUserId($token->getUserId())
-                                          ->withFormId(
-                                              $settingJSON['table']['namespace'] === StorageService::TABLE_NAMESPACE_PRIVATE
-                                                  ? $token->getFormId()
-                                                  : null
-                                          )
-                                          ->withAccessMode($settingJSON['table']['accessMode'])
-                                          ->withName($settingJSON['table']['name'])
-                                          ->withNamespace($settingJSON['table']['namespace'])
-                                          ->withStorageEngine($settingJSON['table']['storageEngine'])
-                                          ->build();
+            ->withFormId(
+                $settingJSON['table']['namespace'] === StorageService::TABLE_NAMESPACE_PRIVATE
+                    ? $token->getFormId()
+                    : null
+            )
+            ->withAccessMode($settingJSON['table']['accessMode'])
+            ->withName($settingJSON['table']['name'])
+            ->withNamespace($settingJSON['table']['namespace'])
+            ->withStorageEngine($settingJSON['table']['storageEngine'])
+            ->build();
 
         $csvParserOptions = (new CSVParserOptions())->withEncloseAllFields(
             $settingJSON['csvParser']['encloseAllFields']
         )
-                                                    ->withFieldEnclosure($settingJSON['csvParser']['enclosure'])
-                                                    ->withFieldDelimiter($settingJSON['csvParser']['delimiter'])
-                                                    ->withEscapeCharacter($settingJSON['csvParser']['escapeCharacter'])
-                                                    ->withAutoTrim($settingJSON['csvParser']['autoTrim'])
-                                                    ->withLineTerminator($settingJSON['csvParser']['lineTerminator']);
+            ->withFieldEnclosure($settingJSON['csvParser']['enclosure'])
+            ->withFieldDelimiter($settingJSON['csvParser']['delimiter'])
+            ->withEscapeCharacter($settingJSON['csvParser']['escapeCharacter'])
+            ->withAutoTrim($settingJSON['csvParser']['autoTrim'])
+            ->withLineTerminator($settingJSON['csvParser']['lineTerminator']);
 
         $tableModel = $this->getStorageService()
-                           ->createTableFromCSV(
-                               $fileData,
-                               $csvParserOptions,
-                               $table,
-                               $token
-                           );
+            ->createTableFromCSV(
+                $fileData,
+                $csvParserOptions,
+                $table,
+                $token
+            );
 
         return [
             'name'          => $tableModel->getName(),
@@ -447,16 +473,16 @@ class Controller
     {
 
         $token = $this->getAuthorizationService()
-                      ->getAuthenticationToken();
+            ->getAuthenticationToken();
 
         $result = [];
 
         foreach ($this->getStorageService()
-                      ->getUserTables(
-                          $token,
-                          $token->getUserId(),
-                          $token->getFormId()
-                      ) as $tableModel) {
+                     ->getUserTables(
+                         $token,
+                         $token->getUserId(),
+                         $token->getFormId()
+                     ) as $tableModel) {
             $result[] = [
                 'name'          => $tableModel->getName(),
                 'schema'        => $tableModel->getSchema(),
@@ -479,15 +505,15 @@ class Controller
     {
 
         $token = $this->getAuthorizationService()
-                      ->getAuthenticationToken();
+            ->getAuthenticationToken();
 
         $tableName = $this->requestParam('name');
 
         $rows = $this->getStorageService()
-                     ->getTableRows(
-                         $token,
-                         $tableName
-                     );
+            ->getTableRows(
+                $token,
+                $tableName
+            );
 
         return $rows;
 
@@ -502,12 +528,12 @@ class Controller
     {
 
         $token = $this->getAuthorizationService()
-                      ->getAuthenticationToken();
+            ->getAuthenticationToken();
 
         $tableName = $this->requestParam('name');
 
         $this->getStorageService()
-             ->dropTable($token, $tableName);
+            ->dropTable($token, $tableName);
 
         return true;
 
@@ -524,7 +550,7 @@ class Controller
     {
 
         $token = $this->getAuthorizationService()
-                      ->getAuthenticationToken();
+            ->getAuthenticationToken();
 
         try {
 
@@ -554,7 +580,7 @@ class Controller
             }
 
             $tableModel = $this->getStorageService()
-                               ->alterTableIndexes($token, $tableName, $indexData);
+                ->alterTableIndexes($token, $tableName, $indexData);
 
             return [
                 'name'          => $tableModel->getName(),
@@ -565,8 +591,7 @@ class Controller
                 'storageEngine' => $tableModel->getStorageEngine(),
             ];
 
-        }
-        catch (AssertionException $e) {
+        } catch (AssertionException $e) {
 
             throw new ControllerException(
                 'Failed to alter table indexes: ' . $e->getMessage(), StorageException::ERR_ALTER_TABLE_INDEXES, $e
@@ -574,5 +599,43 @@ class Controller
 
         }
 
+    }
+
+    /**
+     * @return bool
+     * @throws AuthorizationException
+     * @throws AssertionException
+     * @throws FormEventsConfiguration\FormEventsConfigurationException
+     */
+    private function saveJQLFormConfiguration()
+    {
+        $authorizationToken = $this->getAuthorizationService()->getAuthenticationToken();
+
+        $configurationBase64 = $this->post('configuration', null);
+
+        Assertion::assertIsString($configurationBase64, 'Invalid request argument: configuration: string expected!');
+
+        $configurationJSON = @base64_decode($configurationBase64);
+
+        Assertion::assertIsString($configurationJSON, 'Failed to decode configuration as base64 string!');
+
+        $configuration = @json_decode($configurationJSON, true);
+
+        Assertion::assertTrue(!json_last_error(), 'Failed to decode configuration as JSON!');
+
+        Assertion::assertIsArray($configuration, 'Decoded configuration is not a array!');
+
+        Assertion::assertTrue(
+            is_int($authorizationToken->getFormId())
+            && is_int($authorizationToken->getUserId())
+            && $authorizationToken->getFormId() > 0
+            && $authorizationToken->getUserId() > 0,
+            'Invalid authorization token!'
+        );
+
+        $this->getFormEventsConfigurationService()
+            ->saveFormConfiguration($authorizationToken, $configuration);
+
+        return $configuration;
     }
 }

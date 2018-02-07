@@ -213,6 +213,18 @@ $tableSchema = json_decode(file_get_contents('http://127.0.0.1?action=show-table
     </fieldset>
 </form>
 
+<form method="post" id="config">
+    <fieldset>
+        <legend>Save JQL Configuration</legend>
+        <label>
+            <span>Configuration:</span>
+            <textarea style="height: 100px" name="config" placeholder="Paste here a JQL v.1.0 JSON configuration"></textarea>
+        </label>
+        <button data-role="save-config">Save</button>
+        <div id="save-result"></div>
+    </fieldset>
+</form>
+
 <script>
 
     (function ($) {

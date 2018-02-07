@@ -457,7 +457,64 @@ class JQLDatabase extends EventEmitter implements IJQLDatabase, EventEmitterInte
         return this;
     }
 
-    public saveJQLFormConfiguration(configuration: IJQLv1FormEventConfiguration): JQueryPromise<boolean> {
-        throw new Error("Not implemented!");
+    public saveJQLFormConfiguration(configuration: IJQLv1FormEventConfiguration[]): JQueryPromise<IJQLv2FormEventConfiguration[]> {
+
+        try {
+
+            if (!Array.isArray(configuration)) {
+                throw new Error("Array of IJQLv1FormEventConfiguration expected");
+            }
+
+            for (let i = 0, len = configuration.length; i < len; i++) {
+                JQLValidatorV1Configuration.assertJQLV1ConfigurationStructure(configuration[ i ]);
+            }
+
+            let jqlV2Config: IJQLv2FormEventConfiguration[] = JSON.parse(JSON.stringify(configuration));
+
+            // validate JQL queries correctness
+            for (let i = 0, len = configuration.length; i < len; i++) {
+
+                for (let j = 0, n = configuration[ i ].actions.length; j < n; j++) {
+
+                    jqlV2Config[ i ].actions[ j ].statement = <IJQL_LEXER_PARSED_SELECT_STATEMENT | IJQL_LEXER_PARSED_DELETE_STATEMENT | IJQL_LEXER_PARSED_UPDATE_STATEMENT | IJQL_LEXER_PARSED_INSERT_STATEMENT>JQLGrammar.parse(configuration[ i ].actions[ j ].jql);
+
+                }
+
+            }
+
+            return <any>(($: JQueryStatic) => {
+
+                return $.Deferred((defer) => {
+
+                    $.ajax({
+                        url:      this.rpcEndpointName,
+                        data:     {
+                            action:        "save-jql-configuration",
+                            auth:          this.authorizationToken,
+                            configuration: btoa(JSON.stringify(jqlV2Config)),
+                        },
+                        type:     "POST",
+                        dataType: "json",
+                    }).then(function (response: boolean) {
+
+                        defer.resolve(configuration);
+
+                    }).fail(function (e) {
+
+                        defer.reject(e);
+
+                    });
+
+                }).promise();
+
+            })(this.jq);
+
+        }
+        catch (e) {
+            return <any>this.jq.Deferred(function (defer) {
+                defer.reject(e);
+            }).promise();
+        }
+
     }
 }

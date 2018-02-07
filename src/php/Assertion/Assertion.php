@@ -378,18 +378,38 @@ class Assertion
     }
 
     /**
-     * @param mixed $bindingValue
+     * @param mixed $var
      * @param null  $message
      *
      * @throws AssertionException
      */
-    public static function assertIsPrimitive($bindingValue, $message = null)
+    public static function assertIsPrimitive($var, $message = null)
     {
 
-        if (!is_string($bindingValue) && !is_bool($bindingValue) && !is_int($bindingValue) && !is_float($bindingValue) && !is_null($bindingValue)) {
+        if (!is_string($var) && !is_bool($var) && !is_int($var) && !is_float($var) && !is_null($var)) {
             throw new AssertionException(
                 null === $message
                     ? 'Expected primitive value (int|float|null|bool|string)'
+                    : $message
+            );
+        }
+
+    }
+
+    /**
+     * @param mixed       $var
+     * @param string      $key
+     * @param null|string $message
+     *
+     * @throws AssertionException
+     */
+    public static function assertIsArrayKey($var, $key, $message = null)
+    {
+
+        if ( !( is_array( $var ) && array_key_exists( $key, $var ) && is_array( $var[$key] ) ) ) {
+            throw new AssertionException(
+                null === $message
+                    ? 'Expecting array key'
                     : $message
             );
         }
