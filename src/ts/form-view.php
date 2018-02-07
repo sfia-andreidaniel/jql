@@ -39,9 +39,10 @@ $tableSchema = json_decode(file_get_contents('http://127.0.0.1?action=show-table
         <legend>Execute JQL Query:</legend>
         <label>
             <span>JQL</span>
-            <textarea style="height: 100px" name="jql" placeholder="SELECT * FROM foo WHERE foo=bar ORDER BY moo DESC, car ASC LIMIT 2"></textarea>
+            <textarea style="height: 100px" name="jql" placeholder="SELECT * FROM foo WHERE foo=bar ORDER BY moo DESC, car ASC LIMIT 2">REMOTE SELECT * FROM persons2 LIMIT 3</textarea>
         </label>
         <button data-role="run-query">Run</button>
+        <div id="allowed-queries"></div>
         <div id="sql-result"></div>
     </fieldset>
 </form>
@@ -58,6 +59,7 @@ $tableSchema = json_decode(file_get_contents('http://127.0.0.1?action=show-table
                 .withAuthorizationToken(<?php echo json_encode($authorizationToken) ?>)
                 .withRPCEndpointName("http://127.0.0.1/")
                 .withTablesList( <?=json_encode($tableSchema);?> )
+                .withFormEventsConfiguration()
                 .withFunction('sum', function (a, b) {
                     return a + b;
                 });

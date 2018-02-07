@@ -3917,6 +3917,8 @@ var DummyAutoDatabaseBinder = (function () {
                 }
             });
             $(this).find("[name=config]").val(JSON.stringify(JQLV1ConfigurationDemoProvider.getConfig(), undefined, 4));
+            $(this).find('#allowed-queries').each(function () {
+            });
         });
     });
 })(jQuery);

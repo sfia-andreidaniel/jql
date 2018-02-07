@@ -74,15 +74,11 @@ class FormEventsConfigurationDAO
 
                 foreach ($item['actions'] as $action) {
 
-                    foreach ($action as $jqlQuery) {
+                    $md5Hash = md5(json_encode($action['statement']));
 
-                        $md5Hash = md5(json_encode($jqlQuery['statement']));
+                    if (!in_array($md5Hash, $seenQueriesMD5Hashes)) {
 
-                        if (!in_array($md5Hash, $seenQueriesMD5Hashes)) {
-
-                            $seenQueriesMD5Hashes[] = $md5Hash;
-
-                        }
+                        $seenQueriesMD5Hashes[] = $md5Hash;
 
                     }
 

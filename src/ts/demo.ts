@@ -455,6 +455,10 @@ class DummyAutoDatabaseBinder implements IQueryBindingProvider {
                 ),
             );
 
+            $(this).find('#allowed-queries').each(function(){
+
+            });
+
         });
 
     });
