@@ -208,7 +208,9 @@ class UnfetchedTable implements IJQLTable {
 
 
         })(this.db.getJQuery());
+    }
 
-
+    public supportsIndexes(): boolean {
+        return true;
     }
 }

@@ -149,4 +149,8 @@ class JQLTableStorageEngineInMemory extends JQLTable {
         return null;
     }
 
+    public supportsIndexes(): boolean {
+        return true;
+    }
+
 }

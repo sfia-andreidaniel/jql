@@ -16,7 +16,9 @@ class DummyAutoDatabaseBinder implements IQueryBindingProvider {
 
     $(function () {
 
-        db.withAutoBindingProvider(new DummyAutoDatabaseBinder());
+        db
+            .withAutoBindingProvider(new DummyAutoDatabaseBinder())
+            .withTable("virtual_table", JQLVirtualTableDemo.create(db));
 
         let refreshTablesInAdminTableForm = function () {
 
@@ -136,15 +138,19 @@ class DummyAutoDatabaseBinder implements IQueryBindingProvider {
 
                             indexFound = true;
 
-                            indexText += "<label>UNI: <input type=checkbox name=\"uniq_" + columns[ i ].name + "\" " + (indexes[ j ].isUnique()
-                                ? "checked"
-                                : "") + "/></label>";
+                            if ( table.supportsIndexes() ) {
 
-                            if (columns[ i ].type === EJQLTableColumnType.NUMBER) {
-
-                                indexText += "<label>AUTO: <input type=radio name=\"autoincrement\" value=\"" + columns[ i ].name + "\" " + (indexes[ j ].isAutoIncrement()
+                                indexText += "<label>UNI: <input type=checkbox name=\"uniq_" + columns[ i ].name + "\" " + (indexes[ j ].isUnique()
                                     ? "checked"
                                     : "") + "/></label>";
+
+                                if (columns[ i ].type === EJQLTableColumnType.NUMBER) {
+
+                                    indexText += "<label>AUTO: <input type=radio name=\"autoincrement\" value=\"" + columns[ i ].name + "\" " + (indexes[ j ].isAutoIncrement()
+                                        ? "checked"
+                                        : "") + "/></label>";
+
+                                }
 
                             }
 
@@ -152,17 +158,25 @@ class DummyAutoDatabaseBinder implements IQueryBindingProvider {
 
                         if (!indexFound) {
 
-                            indexText += "<label>UNI: <input type=checkbox name=\"uniq_" + columns[ i ].name + "\" /></label>";
+                            if ( table.supportsIndexes() ) {
 
-                            if (columns[ i ].type === EJQLTableColumnType.NUMBER) {
+                                indexText += "<label>UNI: <input type=checkbox name=\"uniq_" + columns[ i ].name + "\" /></label>";
 
-                                indexText += "<label>AUTO: <input type=radio name=\"autoincrement\" value=\"" + columns[ i ].name + "\" /></label>";
+                                if (columns[ i ].type === EJQLTableColumnType.NUMBER) {
+
+                                    indexText += "<label>AUTO: <input type=radio name=\"autoincrement\" value=\"" + columns[ i ].name + "\" /></label>";
+
+                                }
 
                             }
 
                         }
 
-                        indexText += "<a data-role=\"drop-index\" href=\"javascript:;\">x</a>";
+                        if ( table.supportsIndexes() ) {
+                            indexText += "<a data-role=\"drop-index\" href=\"javascript:;\">x</a>";
+                        } else {
+                            indexText = 'Not Supported';
+                        }
 
                         buffer += `<td>${indexText}</td></tr>`;
 
@@ -455,7 +469,7 @@ class DummyAutoDatabaseBinder implements IQueryBindingProvider {
                 ),
             );
 
-            $(this).find('#allowed-queries').each(function(){
+            $(this).find("#allowed-queries").each(function () {
 
             });
 

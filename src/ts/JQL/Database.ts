@@ -106,7 +106,7 @@ class JQLDatabase extends EventEmitter implements IJQLDatabase, EventEmitterInte
         }
     }
 
-    private withTable(tableName: string, table: IJQLTable): this {
+    public withTable(tableName: string, table: IJQLTable): this {
 
         if (!this.isValidIdentifierName(tableName)) {
             throw new Error(JSON.stringify(tableName) + " is not a valid table name!");

@@ -347,6 +347,8 @@ interface IJQLTable {
 
     getStorageEngine(): EJQLTableStorageEngine;
 
+    supportsIndexes(): boolean;
+
     getIndexes(): JQLTableIndex[];
 
     alterIndexes(newIndexes: IJQLTableIndexDescriptor[]): JQueryPromise<boolean>;

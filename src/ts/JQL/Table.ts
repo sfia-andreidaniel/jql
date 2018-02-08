@@ -133,7 +133,7 @@ abstract class JQLTable implements IJQLTable {
 
     public abstract getStorageEngine(): EJQLTableStorageEngine;
 
-    public static createVirtualTable(columnDefinitions: IJQLTableColumn[]): JQLTable {
+    public static createVirtualTable(columnDefinitions: IJQLTableColumn[]): JQLTableStorageEngineInMemoryVirtualTable {
         return new JQLTableStorageEngineInMemoryVirtualTable( columnDefinitions );
     }
 
@@ -228,5 +228,7 @@ abstract class JQLTable implements IJQLTable {
     public abstract setNextAutoIncrementValue(nextAutoIncrementValue: number);
 
     public abstract alterIndexes( indexes: IJQLTableIndexDescriptor[] ): JQueryPromise<boolean>;
+
+    public abstract supportsIndexes(): boolean;
 
 }

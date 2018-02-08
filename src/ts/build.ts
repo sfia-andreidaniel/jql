@@ -74,4 +74,5 @@
 ///<reference path="./JQL/Statement/Delete.ts" />
 
 ///<reference path="./JQLV1ConfigurationDemoProvider.ts" />
+///<reference path="./JQLVirtualTableDemo.ts" />
 ///<reference path="./demo.ts" />

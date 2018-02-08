@@ -45,4 +45,8 @@ class JQLTableStorageEngineInMemoryVirtualTable extends JQLTableStorageEngineInM
     public getNextAutoIncrementValue(): number {
         return 1;
     }
+
+    public supportsIndexes(): boolean {
+        return false;
+    }
 }

@@ -1753,6 +1753,9 @@ var UnfetchedTable = (function () {
             }).promise();
         })(this.db.getJQuery());
     };
+    UnfetchedTable.prototype.supportsIndexes = function () {
+        return true;
+    };
     return UnfetchedTable;
 }());
 var JQLTableIndex = (function () {
@@ -1944,6 +1947,9 @@ var JQLTableStorageEngineInMemory = (function (_super) {
     JQLTableStorageEngineInMemory.prototype.alterIndexes = function (indexes) {
         return null;
     };
+    JQLTableStorageEngineInMemory.prototype.supportsIndexes = function () {
+        return true;
+    };
     return JQLTableStorageEngineInMemory;
 }(JQLTable));
 var JQLTableStorageEngineInMemoryVirtualTable = (function (_super) {
@@ -1982,6 +1988,9 @@ var JQLTableStorageEngineInMemoryVirtualTable = (function (_super) {
     };
     JQLTableStorageEngineInMemoryVirtualTable.prototype.getNextAutoIncrementValue = function () {
         return 1;
+    };
+    JQLTableStorageEngineInMemoryVirtualTable.prototype.supportsIndexes = function () {
+        return false;
     };
     return JQLTableStorageEngineInMemoryVirtualTable;
 }(JQLTableStorageEngineInMemory));
@@ -2081,6 +2090,9 @@ var JQLTableStorageEngineRemote = (function (_super) {
     };
     JQLTableStorageEngineRemote.prototype.alterIndexes = function (indexes) {
         return null;
+    };
+    JQLTableStorageEngineRemote.prototype.supportsIndexes = function () {
+        return true;
     };
     return JQLTableStorageEngineRemote;
 }(JQLTable));
@@ -3722,6 +3734,40 @@ var JQLV1ConfigurationDemoProvider = (function () {
     };
     return JQLV1ConfigurationDemoProvider;
 }());
+var JQLVirtualTableDemo = (function () {
+    function JQLVirtualTableDemo() {
+    }
+    JQLVirtualTableDemo.create = function (db) {
+        var table = JQLTable.createVirtualTable([
+            {
+                name: "id",
+                type: EJQLTableColumnType.NUMBER,
+                default: 0,
+            },
+            {
+                name: "name",
+                type: EJQLTableColumnType.STRING,
+                default: "",
+            },
+        ]);
+        table.createRow()
+            .withPropertyGetter("id", function () {
+            return 1;
+        })
+            .withPropertyGetter("name", function () {
+            return "Jack";
+        });
+        table.createRow()
+            .withPropertyGetter("id", function () {
+            return 2;
+        })
+            .withPropertyGetter("name", function () {
+            return "John";
+        });
+        return table;
+    };
+    return JQLVirtualTableDemo;
+}());
 var DummyAutoDatabaseBinder = (function () {
     function DummyAutoDatabaseBinder() {
     }
@@ -3735,7 +3781,9 @@ var DummyAutoDatabaseBinder = (function () {
 }());
 (function ($) {
     $(function () {
-        db.withAutoBindingProvider(new DummyAutoDatabaseBinder());
+        db
+            .withAutoBindingProvider(new DummyAutoDatabaseBinder())
+            .withTable("virtual_table", JQLVirtualTableDemo.create(db));
         var refreshTablesInAdminTableForm = function () {
             var tables = db.enumerateTables();
             $("#admin-table [name=table-list]").each(function () {
@@ -3812,22 +3860,31 @@ var DummyAutoDatabaseBinder = (function () {
                                 continue;
                             }
                             indexFound = true;
-                            indexText += "<label>UNI: <input type=checkbox name=\"uniq_" + columns[i].name + "\" " + (indexes[j].isUnique()
-                                ? "checked"
-                                : "") + "/></label>";
-                            if (columns[i].type === EJQLTableColumnType.NUMBER) {
-                                indexText += "<label>AUTO: <input type=radio name=\"autoincrement\" value=\"" + columns[i].name + "\" " + (indexes[j].isAutoIncrement()
+                            if (table.supportsIndexes()) {
+                                indexText += "<label>UNI: <input type=checkbox name=\"uniq_" + columns[i].name + "\" " + (indexes[j].isUnique()
                                     ? "checked"
                                     : "") + "/></label>";
+                                if (columns[i].type === EJQLTableColumnType.NUMBER) {
+                                    indexText += "<label>AUTO: <input type=radio name=\"autoincrement\" value=\"" + columns[i].name + "\" " + (indexes[j].isAutoIncrement()
+                                        ? "checked"
+                                        : "") + "/></label>";
+                                }
                             }
                         }
                         if (!indexFound) {
-                            indexText += "<label>UNI: <input type=checkbox name=\"uniq_" + columns[i].name + "\" /></label>";
-                            if (columns[i].type === EJQLTableColumnType.NUMBER) {
-                                indexText += "<label>AUTO: <input type=radio name=\"autoincrement\" value=\"" + columns[i].name + "\" /></label>";
+                            if (table.supportsIndexes()) {
+                                indexText += "<label>UNI: <input type=checkbox name=\"uniq_" + columns[i].name + "\" /></label>";
+                                if (columns[i].type === EJQLTableColumnType.NUMBER) {
+                                    indexText += "<label>AUTO: <input type=radio name=\"autoincrement\" value=\"" + columns[i].name + "\" /></label>";
+                                }
                             }
                         }
-                        indexText += "<a data-role=\"drop-index\" href=\"javascript:;\">x</a>";
+                        if (table.supportsIndexes()) {
+                            indexText += "<a data-role=\"drop-index\" href=\"javascript:;\">x</a>";
+                        }
+                        else {
+                            indexText = 'Not Supported';
+                        }
                         buffer += "<td>" + indexText + "</td></tr>";
                     }
                     buffer += "<tr class=\"footer\"><td colspan=\"2\">&nbsp;</td><td><button data-role=\"apply-indexes\">Apply Indexes</button></td></tr>";
@@ -4015,7 +4072,7 @@ var DummyAutoDatabaseBinder = (function () {
                 }
             });
             $(this).find("[name=config]").val(JSON.stringify(JQLV1ConfigurationDemoProvider.getConfig(), undefined, 4));
-            $(this).find('#allowed-queries').each(function () {
+            $(this).find("#allowed-queries").each(function () {
             });
         });
     });
