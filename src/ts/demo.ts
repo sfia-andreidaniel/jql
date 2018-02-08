@@ -138,7 +138,7 @@ class DummyAutoDatabaseBinder implements IQueryBindingProvider {
 
                             indexFound = true;
 
-                            if ( table.supportsIndexes() ) {
+                            if ( table.isIndexable() ) {
 
                                 indexText += "<label>UNI: <input type=checkbox name=\"uniq_" + columns[ i ].name + "\" " + (indexes[ j ].isUnique()
                                     ? "checked"
@@ -158,7 +158,7 @@ class DummyAutoDatabaseBinder implements IQueryBindingProvider {
 
                         if (!indexFound) {
 
-                            if ( table.supportsIndexes() ) {
+                            if ( table.isIndexable() ) {
 
                                 indexText += "<label>UNI: <input type=checkbox name=\"uniq_" + columns[ i ].name + "\" /></label>";
 
@@ -172,7 +172,7 @@ class DummyAutoDatabaseBinder implements IQueryBindingProvider {
 
                         }
 
-                        if ( table.supportsIndexes() ) {
+                        if ( table.isIndexable() ) {
                             indexText += "<a data-role=\"drop-index\" href=\"javascript:;\">x</a>";
                         } else {
                             indexText = 'Not Supported';

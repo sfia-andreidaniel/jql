@@ -1668,12 +1668,12 @@ var UnfetchedTable = (function () {
             })(this.db.getJQuery(), this.db);
         }
         else {
-            this.table = (function ($, db) {
+            this.table = (function ($) {
                 return $.Deferred(function (defer) {
                     _this.deferredTable = JQLTable.createFromRemoteTableDefinition(_this.describe(), _this.indexes);
                     defer.resolve(_this.deferredTable);
                 }).promise();
-            })(this.db.getJQuery(), this.db);
+            })(this.db.getJQuery());
         }
         return this.table;
     };
@@ -1685,7 +1685,7 @@ var UnfetchedTable = (function () {
             if (schema.hasOwnProperty(identifierName)) {
                 this.identifiers.push({
                     name: identifierName,
-                    type: this.castBackendDataTypeToFrontendDataType(schema[identifierName]),
+                    type: UnfetchedTable.castBackendDataTypeToFrontendDataType(schema[identifierName]),
                     default: null,
                 });
             }
@@ -1701,7 +1701,7 @@ var UnfetchedTable = (function () {
             }
         }
     };
-    UnfetchedTable.prototype.castBackendDataTypeToFrontendDataType = function (dataType) {
+    UnfetchedTable.castBackendDataTypeToFrontendDataType = function (dataType) {
         switch (dataType) {
             case EJQLBackendTableColumnType.BOOLEAN:
                 return EJQLTableColumnType.BOOLEAN;
@@ -1713,20 +1713,6 @@ var UnfetchedTable = (function () {
             default:
                 return EJQLTableColumnType.NULL;
         }
-    };
-    UnfetchedTable.prototype.createSchemaFromBackendTableModel = function (tableModel) {
-        var schema = [];
-        if (tableModel.schema) {
-            for (var columnName in tableModel.schema) {
-                if (tableModel.schema.hasOwnProperty(columnName)) {
-                    schema.push({
-                        name: columnName,
-                        type: this.castBackendDataTypeToFrontendDataType(tableModel.schema[columnName]),
-                    });
-                }
-            }
-        }
-        return schema;
     };
     UnfetchedTable.prototype.getIndexes = function () {
         if (this.deferredTable) {
@@ -1752,7 +1738,22 @@ var UnfetchedTable = (function () {
             }).promise();
         })(this.db.getJQuery());
     };
-    UnfetchedTable.prototype.supportsIndexes = function () {
+    UnfetchedTable.prototype.isIndexable = function () {
+        if (this.deferredTable) {
+            return this.deferredTable.isIndexable();
+        }
+        return true;
+    };
+    UnfetchedTable.prototype.isVirtual = function () {
+        if (this.deferredTable) {
+            return this.deferredTable.isVirtual();
+        }
+        return false;
+    };
+    UnfetchedTable.prototype.isTransactional = function () {
+        if (this.deferredTable) {
+            return this.deferredTable.isTransactional();
+        }
         return true;
     };
     return UnfetchedTable;
@@ -1946,8 +1947,11 @@ var JQLTableStorageEngineInMemory = (function (_super) {
     JQLTableStorageEngineInMemory.prototype.alterIndexes = function (indexes) {
         return null;
     };
-    JQLTableStorageEngineInMemory.prototype.supportsIndexes = function () {
+    JQLTableStorageEngineInMemory.prototype.isIndexable = function () {
         return true;
+    };
+    JQLTableStorageEngineInMemory.prototype.isVirtual = function () {
+        return false;
     };
     return JQLTableStorageEngineInMemory;
 }(JQLTable));
@@ -1965,31 +1969,34 @@ var JQLTableStorageEngineInMemoryVirtualTable = (function (_super) {
         throw new Error("Cannot add indexes on virtual tables!");
     };
     JQLTableStorageEngineInMemoryVirtualTable.prototype.replace = function (index, newRow) {
-        throw new Error('Cannot replace rows on virtual tables!');
+        throw new Error("Cannot replace rows on virtual tables!");
     };
     JQLTableStorageEngineInMemoryVirtualTable.prototype.insertRow = function (row) {
-        throw new Error('Cannot insert rows on virtual tables!');
+        throw new Error("Cannot insert rows on virtual tables!");
     };
     JQLTableStorageEngineInMemoryVirtualTable.prototype.deleteRow = function (rowIndex) {
-        throw new Error('Cannot delete rows from virtual tables!');
+        throw new Error("Cannot delete rows from virtual tables!");
     };
     JQLTableStorageEngineInMemoryVirtualTable.prototype.isTransactional = function () {
         return false;
     };
     JQLTableStorageEngineInMemoryVirtualTable.prototype.startTransaction = function () {
-        throw new Error('Transactions are not supported on virtual tables!');
+        throw new Error("Transactions are not supported on virtual tables!");
     };
     JQLTableStorageEngineInMemoryVirtualTable.prototype.commitTransaction = function () {
-        throw new Error('Transactions are not supported on virtual tables!');
+        throw new Error("Transactions are not supported on virtual tables!");
     };
     JQLTableStorageEngineInMemoryVirtualTable.prototype.rollbackTransaction = function () {
-        throw new Error('Transactions are not supported on virtual tables!');
+        throw new Error("Transactions are not supported on virtual tables!");
     };
     JQLTableStorageEngineInMemoryVirtualTable.prototype.getNextAutoIncrementValue = function () {
         return 1;
     };
-    JQLTableStorageEngineInMemoryVirtualTable.prototype.supportsIndexes = function () {
+    JQLTableStorageEngineInMemoryVirtualTable.prototype.isIndexable = function () {
         return false;
+    };
+    JQLTableStorageEngineInMemoryVirtualTable.prototype.isVirtual = function () {
+        return true;
     };
     return JQLTableStorageEngineInMemoryVirtualTable;
 }(JQLTableStorageEngineInMemory));
@@ -2090,8 +2097,11 @@ var JQLTableStorageEngineRemote = (function (_super) {
     JQLTableStorageEngineRemote.prototype.alterIndexes = function (indexes) {
         return null;
     };
-    JQLTableStorageEngineRemote.prototype.supportsIndexes = function () {
+    JQLTableStorageEngineRemote.prototype.isIndexable = function () {
         return true;
+    };
+    JQLTableStorageEngineRemote.prototype.isVirtual = function () {
+        return false;
     };
     return JQLTableStorageEngineRemote;
 }(JQLTable));
@@ -3859,7 +3869,7 @@ var DummyAutoDatabaseBinder = (function () {
                                 continue;
                             }
                             indexFound = true;
-                            if (table.supportsIndexes()) {
+                            if (table.isIndexable()) {
                                 indexText += "<label>UNI: <input type=checkbox name=\"uniq_" + columns[i].name + "\" " + (indexes[j].isUnique()
                                     ? "checked"
                                     : "") + "/></label>";
@@ -3871,14 +3881,14 @@ var DummyAutoDatabaseBinder = (function () {
                             }
                         }
                         if (!indexFound) {
-                            if (table.supportsIndexes()) {
+                            if (table.isIndexable()) {
                                 indexText += "<label>UNI: <input type=checkbox name=\"uniq_" + columns[i].name + "\" /></label>";
                                 if (columns[i].type === EJQLTableColumnType.NUMBER) {
                                     indexText += "<label>AUTO: <input type=radio name=\"autoincrement\" value=\"" + columns[i].name + "\" /></label>";
                                 }
                             }
                         }
-                        if (table.supportsIndexes()) {
+                        if (table.isIndexable()) {
                             indexText += "<a data-role=\"drop-index\" href=\"javascript:;\">x</a>";
                         }
                         else {

@@ -228,6 +228,9 @@ abstract class JQLTable implements IJQLTable {
 
     public abstract alterIndexes( indexes: IJQLTableIndexDescriptor[] ): JQueryPromise<boolean>;
 
-    public abstract supportsIndexes(): boolean;
+    public abstract isIndexable(): boolean;
+
+    public abstract isVirtual(): boolean;
+
 
 }

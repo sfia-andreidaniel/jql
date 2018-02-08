@@ -347,11 +347,15 @@ interface IJQLTable {
 
     getStorageEngine(): EJQLTableStorageEngine;
 
-    supportsIndexes(): boolean;
+    isIndexable(): boolean;
 
     getIndexes(): JQLTableIndex[];
 
     alterIndexes(newIndexes: IJQLTableIndexDescriptor[]): JQueryPromise<boolean>;
+
+    isVirtual(): boolean;
+
+    isTransactional(): boolean;
 
 }
 

@@ -1,4 +1,4 @@
-class JQLTableStorageEngineRemote extends JQLTable {
+class JQLTableStorageEngineRemote extends JQLTable implements IJQLTable {
 
     constructor(identifiers: IJQLTableColumn[], indexes?: IJQLTableIndexDescriptor[]) {
 
@@ -60,7 +60,11 @@ class JQLTableStorageEngineRemote extends JQLTable {
         return null;
     }
 
-    public supportsIndexes(): boolean {
+    public isIndexable(): boolean {
         return true;
+    }
+
+    public isVirtual(): boolean {
+        return false;
     }
 }

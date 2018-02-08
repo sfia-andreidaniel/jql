@@ -1,4 +1,4 @@
-class JQLTableStorageEngineInMemory extends JQLTable {
+class JQLTableStorageEngineInMemory extends JQLTable implements IJQLTable {
 
     protected rows: JQLPrimitive[][] = [];
 
@@ -149,8 +149,12 @@ class JQLTableStorageEngineInMemory extends JQLTable {
         return null;
     }
 
-    public supportsIndexes(): boolean {
+    public isIndexable(): boolean {
         return true;
+    }
+
+    public isVirtual(): boolean {
+        return false;
     }
 
 }

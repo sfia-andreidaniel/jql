@@ -92,7 +92,7 @@ class UnfetchedTable implements IJQLTable {
 
         } else {
 
-            this.table = (($: JQueryStatic, db: JQLDatabase): JQueryPromise<IJQLTable> => {
+            this.table = (($: JQueryStatic): JQueryPromise<IJQLTable> => {
 
                 return <any>$.Deferred((defer) => {
 
@@ -104,7 +104,7 @@ class UnfetchedTable implements IJQLTable {
 
                 }).promise();
 
-            })(this.db.getJQuery(), this.db);
+            })(this.db.getJQuery());
 
         }
 
@@ -120,7 +120,7 @@ class UnfetchedTable implements IJQLTable {
             if (schema.hasOwnProperty(identifierName)) {
                 this.identifiers.push({
                     name:    identifierName,
-                    type:    this.castBackendDataTypeToFrontendDataType(schema[ identifierName ]),
+                    type:    UnfetchedTable.castBackendDataTypeToFrontendDataType(schema[ identifierName ]),
                     default: null,
                 });
             }
@@ -141,37 +141,21 @@ class UnfetchedTable implements IJQLTable {
         }
     }
 
-    private castBackendDataTypeToFrontendDataType(dataType: EJQLBackendTableColumnType): EJQLTableColumnType {
+    private static castBackendDataTypeToFrontendDataType(dataType: EJQLBackendTableColumnType): EJQLTableColumnType {
         switch (dataType) {
             case EJQLBackendTableColumnType.BOOLEAN:
                 return EJQLTableColumnType.BOOLEAN;
+
             case EJQLBackendTableColumnType.FLOAT:
             case EJQLBackendTableColumnType.INT:
                 return EJQLTableColumnType.NUMBER;
+
             case EJQLBackendTableColumnType.STRING:
                 return EJQLTableColumnType.STRING;
+
             default:
                 return EJQLTableColumnType.NULL;
         }
-    }
-
-    private createSchemaFromBackendTableModel(tableModel: IJQLBackendTableModel): IJQLTableColumn[] {
-        let schema: IJQLTableColumn[] = [];
-
-        if (tableModel.schema) {
-
-            for (let columnName in tableModel.schema) {
-                if (tableModel.schema.hasOwnProperty(columnName)) {
-                    schema.push({
-                        name: columnName,
-                        type: this.castBackendDataTypeToFrontendDataType(tableModel.schema[ columnName ]),
-                    });
-                }
-            }
-
-        }
-
-        return schema;
     }
 
     public getIndexes(): JQLTableIndex[] {
@@ -210,7 +194,30 @@ class UnfetchedTable implements IJQLTable {
         })(this.db.getJQuery());
     }
 
-    public supportsIndexes(): boolean {
+    public isIndexable(): boolean {
+
+        if (this.deferredTable) {
+            return this.deferredTable.isIndexable();
+        }
+
+        return true;
+    }
+
+    public isVirtual(): boolean {
+
+        if (this.deferredTable) {
+            return this.deferredTable.isVirtual();
+        }
+
+        return false;
+    }
+
+    public isTransactional(): boolean {
+
+        if (this.deferredTable) {
+            return this.deferredTable.isTransactional();
+        }
+
         return true;
     }
 }
