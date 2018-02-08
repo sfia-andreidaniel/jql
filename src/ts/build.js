@@ -1566,6 +1566,9 @@ var JQLTable = (function () {
         }
         return false;
     };
+    JQLTable.createVirtualTable = function (columnDefinitions) {
+        return new JQLTableStorageEngineInMemoryVirtualTable(columnDefinitions);
+    };
     JQLTable.createFromInMemoryArrayOfObjects = function (rows, columnDefinitions, indexes) {
         var identifiers = undefined === columnDefinitions
             ? JQLUtils.getColumnDefinitions(rows)
@@ -1943,6 +1946,101 @@ var JQLTableStorageEngineInMemory = (function (_super) {
     };
     return JQLTableStorageEngineInMemory;
 }(JQLTable));
+var JQLTableStorageEngineInMemoryVirtualTable = (function (_super) {
+    __extends(JQLTableStorageEngineInMemoryVirtualTable, _super);
+    function JQLTableStorageEngineInMemoryVirtualTable(identifiers) {
+        return _super.call(this, identifiers, [], undefined) || this;
+    }
+    JQLTableStorageEngineInMemoryVirtualTable.prototype.createRow = function () {
+        var result = new JQLTableStorageEngineInMemoryVirtualRow(this);
+        this.rows.push(result);
+        return result;
+    };
+    JQLTableStorageEngineInMemoryVirtualTable.prototype.withSingleColumnIndex = function (indexDescriptor) {
+        throw new Error("Cannot add indexes on virtual tables!");
+    };
+    JQLTableStorageEngineInMemoryVirtualTable.prototype.replace = function (index, newRow) {
+        throw new Error('Cannot replace rows on virtual tables!');
+    };
+    JQLTableStorageEngineInMemoryVirtualTable.prototype.insertRow = function (row) {
+        throw new Error('Cannot insert rows on virtual tables!');
+    };
+    JQLTableStorageEngineInMemoryVirtualTable.prototype.deleteRow = function (rowIndex) {
+        throw new Error('Cannot delete rows from virtual tables!');
+    };
+    JQLTableStorageEngineInMemoryVirtualTable.prototype.isTransactional = function () {
+        return false;
+    };
+    JQLTableStorageEngineInMemoryVirtualTable.prototype.startTransaction = function () {
+        throw new Error('Transactions are not supported on virtual tables!');
+    };
+    JQLTableStorageEngineInMemoryVirtualTable.prototype.commitTransaction = function () {
+        throw new Error('Transactions are not supported on virtual tables!');
+    };
+    JQLTableStorageEngineInMemoryVirtualTable.prototype.rollbackTransaction = function () {
+        throw new Error('Transactions are not supported on virtual tables!');
+    };
+    JQLTableStorageEngineInMemoryVirtualTable.prototype.getNextAutoIncrementValue = function () {
+        return 1;
+    };
+    return JQLTableStorageEngineInMemoryVirtualTable;
+}(JQLTableStorageEngineInMemory));
+var JQLTableStorageEngineInMemoryVirtualRow = (function () {
+    function JQLTableStorageEngineInMemoryVirtualRow(table) {
+        this.table = table;
+        this.data = Object.create(null);
+        for (var i = 0, identifiers = this.table.describe(), len = identifiers.length; i < len; i++) {
+            (function (identifierIndex, identifierName, self) {
+                Object.defineProperty(self, String(identifierIndex), {
+                    get: function () {
+                        return (undefined === self.data[identifierName] || undefined === self.data[identifierName].get)
+                            ? undefined
+                            : self.data[identifierName].get();
+                    },
+                    set: function (value) {
+                        if (undefined === self.data[identifierName] || undefined === self.data[identifierName].set) {
+                            throw new Error("Value \"" + identifierName + "\" is read-only!");
+                        }
+                        else {
+                            self.data[identifierName].set(value);
+                        }
+                    },
+                    enumerable: true,
+                    configurable: false,
+                });
+            })(i, identifiers[i].name, this);
+            this.cols = i + 1;
+        }
+    }
+    Object.defineProperty(JQLTableStorageEngineInMemoryVirtualRow.prototype, "length", {
+        get: function () {
+            return this.cols;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    JQLTableStorageEngineInMemoryVirtualRow.prototype.withPropertySetter = function (propertyName, setter) {
+        if (this.table.hasIdentifier(propertyName)) {
+            this.data[propertyName] = this.data[propertyName] || Object.create(null);
+            this.data[propertyName].set = setter;
+        }
+        else {
+            throw new Error("Property \"" + propertyName + "\" is not allowed!");
+        }
+        return this;
+    };
+    JQLTableStorageEngineInMemoryVirtualRow.prototype.withPropertyGetter = function (propertyName, getter) {
+        if (this.table.hasIdentifier(propertyName)) {
+            this.data[propertyName] = this.data[propertyName] || Object.create(null);
+            this.data[propertyName].get = getter;
+        }
+        else {
+            throw new Error("Property \"" + propertyName + "\" is not allowed!");
+        }
+        return this;
+    };
+    return JQLTableStorageEngineInMemoryVirtualRow;
+}());
 var JQLTableStorageEngineRemote = (function (_super) {
     __extends(JQLTableStorageEngineRemote, _super);
     function JQLTableStorageEngineRemote(identifiers, indexes) {

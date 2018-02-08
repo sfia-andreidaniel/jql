@@ -517,4 +517,5 @@ class JQLDatabase extends EventEmitter implements IJQLDatabase, EventEmitterInte
         }
 
     }
+
 }

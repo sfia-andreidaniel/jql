@@ -18,6 +18,8 @@
 ///<reference path="./JQL/Table/Index/SingleColumn.ts" />
 ///<reference path="./JQL/Table/Index/Backend.ts" />
 ///<reference path="./JQL/Table/StorageEngine/InMemory.ts" />
+///<reference path="./JQL/Table/StorageEngine/InMemory/VirtualTable.ts" />
+///<reference path="./JQL/Table/StorageEngine/InMemory/VirtualRow.ts" />
 ///<reference path="./JQL/Table/StorageEngine/Remote.ts" />
 ///<reference path="./JQL/Table/Utils/Iterator.ts" />
 ///<reference path="./JQL/Row.ts" />

@@ -133,6 +133,10 @@ abstract class JQLTable implements IJQLTable {
 
     public abstract getStorageEngine(): EJQLTableStorageEngine;
 
+    public static createVirtualTable(columnDefinitions: IJQLTableColumn[]): JQLTable {
+        return new JQLTableStorageEngineInMemoryVirtualTable( columnDefinitions );
+    }
+
     public static createFromInMemoryArrayOfObjects(rows: object[], columnDefinitions?: IJQLTableColumn[], indexes?: IJQLTableIndexDescriptor[]): JQLTable {
 
         let identifiers              = undefined === columnDefinitions

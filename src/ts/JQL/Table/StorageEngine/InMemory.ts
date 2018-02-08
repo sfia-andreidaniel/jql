@@ -1,6 +1,6 @@
 class JQLTableStorageEngineInMemory extends JQLTable {
 
-    private rows: JQLPrimitive[][] = [];
+    protected rows: JQLPrimitive[][] = [];
 
     private lastTransactionSnapshot: string;
 
