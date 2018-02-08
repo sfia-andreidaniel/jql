@@ -1609,8 +1609,7 @@ var JQLTable = (function () {
     };
     JQLTable.prototype.fetch = function () {
         var _this = this;
-        var $ = jQuery;
-        return $.Deferred(function (defer) {
+        return jQuery.Deferred(function (defer) {
             defer.resolve(_this);
         }).promise();
     };
