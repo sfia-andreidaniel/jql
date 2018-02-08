@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <script src="vendor/jquery-3.2.1.min.js"></script>
-    <script src="JQL/Lexer/JQLGrammar.js"></script>
-    <script src="build.js"></script>
+    <script src="../build/demo.js"></script>
     <link rel="stylesheet" type="text/css" href="demo.css" />
 </head>
 <body>
@@ -137,7 +136,7 @@ $tableSchema = json_decode(file_get_contents('http://127.0.0.1?action=show-table
 
     (function ($) {
 
-        window.db = (new JQLDatabase()).withJQuery($);
+        window.db = (new JQL.Database).withJQuery($);
 
         $(function () {
 

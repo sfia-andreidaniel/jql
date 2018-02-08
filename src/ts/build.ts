@@ -2,7 +2,6 @@
 ///<reference path="./jquery2.d.ts" />
 ///<reference path="./Lexer.d.ts" />
 ///<reference path="./EventEmitter.ts" />
-
 ///<reference path="./JQL/Validator/V1Configuration.ts" />
 ///<reference path="./JQL/Lexer/Factory.ts" />
 ///<reference path="./JQL/Utils.ts" />
@@ -72,7 +71,3 @@
 ///<reference path="./JQL/Statement/Update/Field.ts" />
 ///<reference path="./JQL/Statement/Update/DelayedOption.ts" />
 ///<reference path="./JQL/Statement/Delete.ts" />
-
-///<reference path="./JQLV1ConfigurationDemoProvider.ts" />
-///<reference path="./JQLVirtualTableDemo.ts" />
-///<reference path="./demo.ts" />
