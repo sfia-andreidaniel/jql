@@ -3,7 +3,7 @@
 return [
 
     'token.jti'                 => '4f1g23a12aa',
-    'token.password'            => 'LKSJDO(#sdklo*quw#eksd>amkuy@#($*ylasdalkj(*(@#$',
+    'token.password'            => 'LKSJDO(#sdklo*quw#eksd>amkuy@#($*ylasdalkj(*(@#$="&',
     'token.ttl'                 => 86400,
     'token.b2bSecret'           => '123456',
     'server.name'               => $_SERVER['SERVER_NAME'],

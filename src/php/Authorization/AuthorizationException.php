@@ -10,4 +10,5 @@ class AuthorizationException extends \Exception
     const ERR_UNAUTHORIZED_REQUEST = 3;
     const ERR_INVALID_AUTHORIZATION_TOKEN = 4;
     const ERR_FAILED_VALIDATE_TOKEN_ISSUER = 5;
+    const ERR_CREATE_B2B_AUTHORIZATION_TOKEN = 6;
 }

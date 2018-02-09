@@ -12,6 +12,10 @@
 
 <?php
 
+$secret = 'LKSJDO(#sdklo*quw#eksd>amkuy@#($*ylasdalkj(*(@#$="&';
+
+
+
 $authorizationToken = json_decode(file_get_contents('http://127.0.0.1/?action=token&token_type=viewer&user_id=1&form_id=1'));
 $tableSchema = json_decode(file_get_contents('http://127.0.0.1?action=show-tables&auth=' . $authorizationToken), true);
 

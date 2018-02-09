@@ -10,6 +10,7 @@ use JQL\CSVParser\CSVParser;
 use JQL\CSVParser\CSVParserOptions;
 use JQL\Database\Database;
 use JQL\FormEventsConfiguration\FormEventsConfigurationDAO;
+use JQL\FormEventsConfiguration\FormEventsConfigurationException;
 use JQL\FormEventsConfiguration\FormEventsConfigurationService;
 use JQL\RemoteQuery\RemoteQueryException;
 use JQL\RemoteQuery\RemoteQueryService;
@@ -29,6 +30,7 @@ class Controller
     const ACTION_FETCH_TABLE = 'fetch-table';
     const ACTION_ALTER_INDEXES = 'alter-table-indexes';
     const ACTION_SAVE_JQL_CONFIGURATION = 'save-jql-configuration';
+    const ACTION_FETCH_FORM_DATA = 'fetch-form-data';
 
     /**
      * @var array
@@ -119,6 +121,7 @@ class Controller
      * @throws AssertionException
      * @throws AuthorizationException
      * @throws ControllerException
+     * @throws FormEventsConfigurationException
      * @throws RemoteQueryException
      * @throws StorageException
      */
@@ -159,6 +162,10 @@ class Controller
 
             case self::ACTION_SAVE_JQL_CONFIGURATION:
                 return $this->saveJQLFormConfiguration();
+                break;
+
+            case self::ACTION_FETCH_FORM_DATA:
+                return $this->fetchFormData();
                 break;
 
             default:
@@ -473,7 +480,7 @@ class Controller
     {
 
         $token = $this->getAuthorizationService()
-            ->getAuthenticationToken();
+            ->generateServerToServerAuthenticationToken();
 
         $result = [];
 
@@ -637,5 +644,47 @@ class Controller
             ->saveFormConfiguration($authorizationToken, $configuration);
 
         return $configuration;
+    }
+
+    /**
+     * @return mixed
+     * @throws AuthorizationException
+     * @throws FormEventsConfigurationException
+     * @throws StorageException
+     */
+    private function fetchFormData()
+    {
+
+        $authorizationToken = $this->getAuthorizationService()->generateServerToServerAuthenticationToken();
+
+        $formEventsData = $this->getFormEventsConfigurationService()->getFormConfiguration($authorizationToken);
+
+        $formJQLTables = [];
+
+        foreach ($this->getStorageService()
+                     ->getUserTables(
+                         $authorizationToken,
+                         $authorizationToken->getUserId(),
+                         $authorizationToken->getFormId()
+                     ) as $tableModel) {
+            $formJQLTables[] = [
+                'name'          => $tableModel->getName(),
+                'schema'        => $tableModel->getSchema(),
+                'indexes'       => $tableModel->getIndexes(),
+                'namespace'     => $tableModel->getNamespace(),
+                'accessMode'    => $tableModel->getAccessMode(),
+                'storageEngine' => $tableModel->getStorageEngine(),
+            ];
+        }
+
+        if (null === $formEventsData && 0 === count($formJQLTables)) {
+            return null;
+        }
+
+        return [
+            'events' => $formEventsData,
+            'tables' => $formJQLTables,
+        ];
+
     }
 }

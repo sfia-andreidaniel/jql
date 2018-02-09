@@ -2,6 +2,8 @@
 
 namespace JQL\FormEventsConfiguration;
 
+use JQL\Assertion\Assertion;
+use JQL\Assertion\AssertionException;
 use JQL\Database\Database;
 
 class FormEventsConfigurationDAO
@@ -126,12 +128,84 @@ class FormEventsConfigurationDAO
 
     }
 
+    /**
+     *
+     */
     private function silentlyRollbackTransaction()
     {
         try {
             $this->database->query('ROLLBACK');
         } catch (\Exception $e) {
         }
+    }
+
+    /**
+     * @param int $userId
+     * @param int $formId
+     *
+     * @return array|null
+     * @throws FormEventsConfigurationException
+     */
+    public function getFormConfiguration($userId, $formId)
+    {
+
+        try {
+
+            $rows = [];
+
+            $self = $this;
+
+            $this->database->query(
+                '
+                    SELECT `config` 
+                    FROM jql_forms_config 
+                    WHERE user_id = :user_id 
+                      AND form_id = :form_id 
+                    LIMIT 1
+                ',
+                [
+                    ':user_id' => $userId,
+                    ':form_id' => $formId,
+                ]
+            )->each(function(array $row) use (&$rows, $self) {
+                $rows[] = $self->normalizeDAORow($row);
+            });
+
+            return count($rows) === 1
+                ? $rows[0]
+                : null;
+
+        } catch (\Exception $e) {
+            throw new FormEventsConfigurationException(
+                'Failed to get JQL form Events configuration!',
+                FormEventsConfigurationException::ERR_GET_JQL_FORM_EVENTS_CONFIGURATION,
+                $e
+            );
+        }
+
+    }
+
+    /**
+     * @param array $row
+     *
+     * @return array
+     * @throws FormEventsConfigurationException
+     * @throws AssertionException
+     */
+    private function normalizeDAORow(array $row)
+    {
+        $result = @json_decode($row['config'], true);
+
+        if (json_last_error()) {
+            throw new FormEventsConfigurationException(
+                'Failed to decode data from database as JSON!',
+                FormEventsConfigurationException::ERR_CORRUPTED_DATABASE_JSON_DATA
+            );
+        }
+
+        Assertion::assertTrue(is_array($result));
+
+        return $row;
     }
 
 }

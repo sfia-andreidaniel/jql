@@ -139,4 +139,32 @@ class FormEventsConfigurationService
 
     }
 
+    /**
+     * @param AuthorizationToken $authorizationToken
+     *
+     * @return array|null
+     * @throws FormEventsConfigurationException
+     */
+    public function getFormConfiguration(AuthorizationToken $authorizationToken)
+    {
+
+        try {
+
+            Assertion::assertTrue(is_int($authorizationToken->getUserId()) && $authorizationToken->getUserId() > 0, 'Token\'s user id must be int > 0');
+            Assertion::assertTrue(is_int($authorizationToken->getFormId()) && $authorizationToken->getFormId() > 0, 'Token\'s form id must be int > 0');
+
+            $result = $this->dao->getFormConfiguration( $authorizationToken->getUserId(), $authorizationToken->getFormId() );
+
+            return $result;
+
+        } catch (AssertionException $e) {
+            throw new FormEventsConfigurationException(
+                'Failed to fetch form configuration!',
+                FormEventsConfigurationException::ERR_FETCH_FORM_CONFIGURATION,
+                $e
+            );
+        }
+
+    }
+
 }
