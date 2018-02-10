@@ -5,14 +5,24 @@
     <title>Title</title>
     <script src="vendor/jquery-3.2.1.min.js"></script>
     <script src="../build/demo.js"></script>
-    <link rel="stylesheet" type="text/css" href="demo.css" />
+    <link rel="stylesheet" type="text/css" href="demo.css"/>
 </head>
 <body>
 
 <?php
 
-$authorizationToken = json_decode(file_get_contents('http://127.0.0.1/?action=token&token_type=admin&user_id=1&form_id=1'));
-$tableSchema = json_decode(file_get_contents('http://127.0.0.1?action=show-tables&auth=' . $authorizationToken), true);
+use ContactForm\JQL\JQLMicroService;
+
+require_once __DIR__ . '/../autoloaders.php';
+
+try {
+    $authorizationToken = JQLMicroService::getInstance()->createAdminAuthenticationToken(1, 1);
+    $tableSchema = JQLMicroService::getInstance()->getFormJQLConfiguration($authorizationToken);
+} catch (\ContactForm\JQL\JQLMicroserviceError $e) {
+    $authorizationToken = null;
+    $tableSchema = null;
+}
+
 
 ?>
 
@@ -113,7 +123,8 @@ $tableSchema = json_decode(file_get_contents('http://127.0.0.1?action=show-table
         <legend>Execute JQL Query:</legend>
         <label>
             <span>JQL</span>
-            <textarea style="height: 100px" name="jql" placeholder="SELECT * FROM foo WHERE foo=bar ORDER BY moo DESC, car ASC LIMIT 2"></textarea>
+            <textarea style="height: 100px" name="jql"
+                      placeholder="SELECT * FROM foo WHERE foo=bar ORDER BY moo DESC, car ASC LIMIT 2"></textarea>
         </label>
         <button data-role="run-query">Run</button>
         <div id="sql-result"></div>
@@ -125,7 +136,8 @@ $tableSchema = json_decode(file_get_contents('http://127.0.0.1?action=show-table
         <legend>Save JQL Configuration</legend>
         <label>
             <span>Configuration:</span>
-            <textarea style="height: 100px" name="config" placeholder="Paste here a JQL v.1.0 JSON configuration"></textarea>
+            <textarea style="height: 100px" name="config"
+                      placeholder="Paste here a JQL v.1.0 JSON configuration"></textarea>
         </label>
         <button data-role="save-config">Save</button>
         <div id="save-result"></div>
@@ -143,7 +155,7 @@ $tableSchema = json_decode(file_get_contents('http://127.0.0.1?action=show-table
             db
                 .withAuthorizationToken(<?php echo json_encode($authorizationToken) ?>)
                 .withRPCEndpointName("http://127.0.0.1/")
-                .withTablesList( <?=json_encode($tableSchema);?> )
+                .withTablesList( <?=json_encode(is_array($tableSchema) ? $tableSchema['tables'] : null);?> )
                 .withFunction('sum', function (a, b) {
                     return a + b;
                 });

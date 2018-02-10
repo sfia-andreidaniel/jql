@@ -480,7 +480,7 @@ class Controller
     {
 
         $token = $this->getAuthorizationService()
-            ->generateServerToServerAuthenticationToken();
+            ->getAuthenticationToken();
 
         $result = [];
 
@@ -655,7 +655,7 @@ class Controller
     private function fetchFormData()
     {
 
-        $authorizationToken = $this->getAuthorizationService()->generateServerToServerAuthenticationToken();
+        $authorizationToken = $this->getAuthorizationService()->getAuthenticationToken();
 
         $formEventsData = $this->getFormEventsConfigurationService()->getFormConfiguration($authorizationToken);
 

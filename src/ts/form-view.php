@@ -5,19 +5,24 @@
     <title>Title</title>
     <script src="vendor/jquery-3.2.1.min.js"></script>
     <script src="../build/demo.js"></script>
-    <link rel="stylesheet" type="text/css" href="demo.css" />
+    <link rel="stylesheet" type="text/css" href="demo.css"/>
 
 </head>
 <body>
 
 <?php
 
-$secret = 'LKSJDO(#sdklo*quw#eksd>amkuy@#($*ylasdalkj(*(@#$="&';
+use ContactForm\JQL\JQLMicroService;
 
+require_once __DIR__ . '/../autoloaders.php';
 
-
-$authorizationToken = json_decode(file_get_contents('http://127.0.0.1/?action=token&token_type=viewer&user_id=1&form_id=1'));
-$tableSchema = json_decode(file_get_contents('http://127.0.0.1?action=show-tables&auth=' . $authorizationToken), true);
+try {
+    $authorizationToken = JQLMicroService::getInstance()->createAnonymousAuthenticationToken(1, 1);
+    $jqlConfiguration = JQLMicroService::getInstance()->getFormJQLConfiguration($authorizationToken);
+} catch (\ContactForm\JQL\JQLMicroserviceError $e) {
+    $authorizationToken = null;
+    $jqlConfiguration = null;
+}
 
 ?>
 
@@ -42,7 +47,8 @@ $tableSchema = json_decode(file_get_contents('http://127.0.0.1?action=show-table
         <legend>Execute JQL Query:</legend>
         <label>
             <span>JQL</span>
-            <textarea style="height: 100px" name="jql" placeholder="SELECT * FROM foo WHERE foo=bar ORDER BY moo DESC, car ASC LIMIT 2">REMOTE SELECT * FROM persons2 LIMIT 3</textarea>
+            <textarea style="height: 100px" name="jql"
+                      placeholder="SELECT * FROM foo WHERE foo=bar ORDER BY moo DESC, car ASC LIMIT 2">REMOTE SELECT * FROM persons2 LIMIT 3</textarea>
         </label>
         <button data-role="run-query">Run</button>
         <div id="allowed-queries"></div>
@@ -61,7 +67,11 @@ $tableSchema = json_decode(file_get_contents('http://127.0.0.1?action=show-table
             db
                 .withAuthorizationToken(<?php echo json_encode($authorizationToken) ?>)
                 .withRPCEndpointName("http://127.0.0.1/")
-                .withTablesList( <?=json_encode($tableSchema);?> )
+                .withTablesList( <?=
+                    is_array($jqlConfiguration)
+                        ?  json_encode($jqlConfiguration['tables'])
+                        : '[]';
+                ?>)
                 .withFunction('sum', function (a, b) {
                     return a + b;
                 });

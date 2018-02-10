@@ -203,9 +203,9 @@ class FormEventsConfigurationDAO
             );
         }
 
-        Assertion::assertTrue(is_array($result));
+        Assertion::assertTrue(is_null($result) || is_array($result), 'Failed to decode form events configuration stored in database as JSON');
 
-        return $row;
+        return $result;
     }
 
 }
